@@ -1,0 +1,16 @@
+\frametitle{Exemple: versió paral·lelitzable}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+resultats <- future_map_dbl(1:1000, function(i) {
+  x <- rnorm(100, mean = 100, sd = 20)
+  mean(x)
+})
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Missatge}
+La idea estadística és la mateixa; el que canvia és com repartim el càlcul entre nuclis o processos.
+\end{block}

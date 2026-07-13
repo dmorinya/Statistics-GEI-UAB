@@ -1,0 +1,863 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+% ------------------------------------------------------------------
+% Presentació adaptada: Descriptiva bivariant amb orientació computacional
+% Grau en Enginyeria Informàtica - Estadística
+% ------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{xcolor}
+\usepackage{listings}
+\pgfplotsset{compat=1.18}
+
+% ------------------------------------------------------------------
+% Estil visual coherent amb Descriptiva univariant computacional
+% ------------------------------------------------------------------
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_smooth,geom_col,geom_tile,facet_wrap,scale_fill_gradient,
+    labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,arrange,set.seed,
+    rnorm,runif,cor,cov,lm,predict,residuals,broom,augment,glance,tibble,rep,seq},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{%
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{AccentOrange},
+  backgroundcolor=\color{CodeBack},
+  frame=single,
+  rulecolor=\color{CodeFrame},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+
+% ------------------------------------------------------------------
+% Dades de la presentació
+% ------------------------------------------------------------------
+\title[Descriptiva bivariant computacional]{Estadística descriptiva bivariant}
+\subtitle{Relacions entre variables, taules, gràfics i primers models}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.5cm}
+  \begin{center}
+  \small
+  \textcolor{DeepBlue}{Dues variables, una pregunta: hi ha relació?}
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per què descriptiva bivariant en informàtica?}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{itemize}
+  \item Molts problemes computacionals no depenen d'una sola variable.
+  \item Volem entendre \important{relacions} entre variables:
+  \begin{itemize}
+    \item navegador i estat d'una petició,
+    \item sistema operatiu i tipus d'error,
+    \item mida de l'entrada i temps d'execució,
+    \item càrrega del servidor i latència,
+    \item nombre d'usuaris i consum de memòria.
+  \end{itemize}
+  \item La descriptiva bivariant és el pas previ a la inferència, la regressió i el machine learning.
+\end{itemize}
+\column{0.4\textwidth}
+\begin{block}{Idea clau}
+Descriure dues variables és buscar patrons, dependències i anomalies en un sistema.
+\end{block}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.5cm,align=center,inner sep=8pt] {
+Variable A $+$ Variable B $\rightarrow$ Relació $\rightarrow$ Interpretació $\rightarrow$ Decisió
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Objectius del tema}
+Al final d'aquest tema hauríeu de poder:
+\begin{enumerate}
+  \item Construir i interpretar taules de contingència.
+  \item Calcular freqüències marginals, relatives i condicionades amb \R.
+  \item Visualitzar relacions entre dues variables qualitatives.
+  \item Construir i interpretar núvols de punts per a dues variables numèriques.
+  \item Calcular covariància, correlació i recta de regressió.
+  \item Interpretar prediccions i residus amb prudència.
+  \item Documentar l'anàlisi en un informe reproduïble amb codi i resultats.
+\end{enumerate}
+\vspace{0.2cm}
+\begin{block}{Enfocament computacional}
+Les fórmules són importants, però també ho és saber convertir-les en codi fiable, gràfics clars i conclusions útils.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mapa del tema}
+\begin{center}
+\begin{tikzpicture}[node distance=1.35cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,text width=3.2cm,align=center,minimum height=0.8cm] (qq) {Dues variables qualitatives};
+\node[draw,rounded corners,fill=UABLight,right of=qq,xshift=3.0cm,text width=3.2cm,align=center,minimum height=0.8cm] (nn) {Dues variables numèriques};
+\node[draw,rounded corners,fill=SoftGray,below of=qq,yshift=-0.2cm,text width=3.2cm,align=center,minimum height=0.8cm] (taules) {Taules de contingència};
+\node[draw,rounded corners,fill=SoftGray,below of=nn,yshift=-0.2cm,text width=3.2cm,align=center,minimum height=0.8cm] (scatter) {Núvols de punts};
+\node[draw,rounded corners,fill=SoftGray,below of=taules,yshift=-0.2cm,text width=3.2cm,align=center,minimum height=0.8cm] (cond) {Freqüències condicionades};
+\node[draw,rounded corners,fill=SoftGray,below of=scatter,yshift=-0.2cm,text width=3.2cm,align=center,minimum height=0.8cm] (corr) {Correlació i regressió};
+\draw[->,thick,UABGreen] (qq) -- (taules);
+\draw[->,thick,UABGreen] (taules) -- (cond);
+\draw[->,thick,UABGreen] (nn) -- (scatter);
+\draw[->,thick,UABGreen] (scatter) -- (corr);
+\draw[->,thick,AccentOrange] (cond) -- ++(0,-0.7) -| (corr);
+\end{tikzpicture}
+\end{center}
+\vspace{0.25cm}
+\begin{alertblock}{Pregunta transversal}
+Quan veiem una associació, és real, és rellevant, és lineal, és causal o és un artefacte de les dades?
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Dues variables qualitatives}
+
+\begin{frame}{Dues variables qualitatives: taula de contingència}
+Considerem dues variables qualitatives:
+\begin{itemize}
+  \item $A$ amb modalitats $A_1,A_2,\ldots,A_k$.
+  \item $B$ amb modalitats $B_1,B_2,\ldots,B_\ell$.
+\end{itemize}
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & $B_1$ & $B_2$ & $\cdots$ & $B_\ell$ \\
+\midrule
+$A_1$ & $n_{11}$ & $n_{12}$ & $\cdots$ & $n_{1\ell}$ \\
+$A_2$ & $n_{21}$ & $n_{22}$ & $\cdots$ & $n_{2\ell}$ \\
+$\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ \\
+$A_k$ & $n_{k1}$ & $n_{k2}$ & $\cdots$ & $n_{k\ell}$ \\
+\bottomrule
+\end{tabular}
+\column{0.43\textwidth}
+\begin{block}{Interpretació}
+$n_{ij}$ és el nombre d'observacions que tenen simultàniament la modalitat $A_i$ i la modalitat $B_j$.
+\end{block}
+\begin{exampleblock}{Exemple informàtic}
+$A =$ navegador, $B =$ estat de la petició: \texttt{OK}, \texttt{timeout}, \texttt{error 500}.
+\end{exampleblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Exemple: peticions web per navegador i estat}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Navegador & OK & Timeout & Error & Total \\
+\midrule
+Chrome  & 820 & 25 & 35 & 880 \\
+Firefox & 430 & 18 & 22 & 470 \\
+Safari  & 260 & 12 & 28 & 300 \\
+Edge    & 210 & 15 & 25 & 250 \\
+\midrule
+Total   & 1720 & 70 & 110 & 1900 \\
+\bottomrule
+\end{tabular}
+\vspace{0.3cm}
+\begin{block}{Lectura ràpida}
+La major part de peticions són correctes, però la proporció d'errors no és igual en tots els navegadors.
+\end{block}
+\column{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar stacked,
+  width=6.0cm,
+  height=4.3cm,
+  ymin=0,
+  ylabel={Peticions},
+  symbolic x coords={Chrome,Firefox,Safari,Edge},
+  xtick=data,
+  x tick label style={rotate=25,anchor=east,font=\scriptsize},
+  legend style={font=\scriptsize,at={(0.5,-0.25)},anchor=north,legend columns=3},
+  bar width=12pt,
+]
+\addplot+[fill=UABGreen!65,draw=UABGreen] coordinates {(Chrome,820) (Firefox,430) (Safari,260) (Edge,210)};
+\addplot+[fill=AccentOrange!65,draw=AccentOrange] coordinates {(Chrome,25) (Firefox,18) (Safari,12) (Edge,15)};
+\addplot+[fill=DeepBlue!55,draw=DeepBlue] coordinates {(Chrome,35) (Firefox,22) (Safari,28) (Edge,25)};
+\legend{OK,Timeout,Error}
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Freqüències marginals}
+Les freqüències marginals són els totals de files i columnes.
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Marge dret}
+\[
+ n_{i\cdot}=\sum_{j=1}^{\ell} n_{ij}
+\]
+Freqüència total de la modalitat $A_i$.
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Marge inferior}
+\[
+ n_{\cdot j}=\sum_{i=1}^{k} n_{ij}
+\]
+Freqüència total de la modalitat $B_j$.
+\end{block}
+\end{columns}
+\vspace{0.3cm}
+\begin{exampleblock}{En l'exemple}
+Hi ha 880 peticions de Chrome i 110 peticions amb error. La grandària total és $n=1900$.
+\end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Freqüències relatives}
+Les freqüències relatives s'obtenen dividint per la grandària total $n$:
+\[
+ f_{ij}=f(A_i\cap B_j)=\frac{n_{ij}}{n},\qquad
+ f_{i\cdot}=\frac{n_{i\cdot}}{n},\qquad
+ f_{\cdot j}=\frac{n_{\cdot j}}{n}.
+\]
+\vspace{0.15cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Per què són útils?}
+\begin{itemize}
+  \item Permeten comparar mostres de mida diferent.
+  \item Es poden llegir com a percentatges.
+  \item Són la base de les probabilitats empíriques.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{exampleblock}{Exemple}
+\[
+ f(\text{Chrome i Error})=\frac{35}{1900}=0.0184.
+\]
+Aproximadament un 1.84\% de totes les peticions són errors amb Chrome.
+\end{exampleblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Freqüències condicionades}
+Quan volem comparar correctament, sovint hem de condicionar.
+\vspace{0.15cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Condicionar per columnes}
+\[
+ f(A_i\mid B_j)=\frac{n_{ij}}{n_{\cdot j}}
+\]
+Distribució de $A$ dins la subpoblació $B_j$.
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Condicionar per files}
+\[
+ f(B_j\mid A_i)=\frac{n_{ij}}{n_{i\cdot}}
+\]
+Distribució de $B$ dins la subpoblació $A_i$.
+\end{block}
+\end{columns}
+\vspace{0.25cm}
+\begin{alertblock}{Missatge important}
+No és el mateix $f(A_i\cap B_j)$ que $f(B_j\mid A_i)$. Una pregunta sobre risc, error o rendiment acostuma a ser una pregunta condicionada.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Exemple: percentatge d'error per navegador}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Navegador & Total & Errors & $f(\text{Error}\mid\text{Navegador})$ \\
+\midrule
+Chrome  & 880 & 35 & 3.98\% \\
+Firefox & 470 & 22 & 4.68\% \\
+Safari  & 300 & 28 & 9.33\% \\
+Edge    & 250 & 25 & 10.00\% \\
+\bottomrule
+\end{tabular}
+\vspace{0.35cm}
+\begin{block}{Lectura}
+La freqüència absoluta d'errors és més gran a Chrome, però el percentatge d'error és més alt a Safari i Edge.
+\end{block}
+\column{0.45\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar,
+  width=6cm,
+  height=4.2cm,
+  ymin=0,ymax=12,
+  ylabel={Error (\%)},
+  symbolic x coords={Chrome,Firefox,Safari,Edge},
+  xtick=data,
+  x tick label style={rotate=25,anchor=east,font=\scriptsize},
+  bar width=14pt,
+  nodes near coords,
+  nodes near coords style={font=\scriptsize},
+]
+\addplot+[fill=AccentOrange!70,draw=AccentOrange] coordinates {(Chrome,3.98) (Firefox,4.68) (Safari,9.33) (Edge,10.00)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Taules de contingència amb R}
+\begin{lstlisting}
+# dades: una fila per peticio
+logs <- read_csv("data/logs_web.csv")
+
+# taula absoluta
+tab <- table(logs$navegador, logs$estat)
+addmargins(tab)
+
+# taula relativa global
+round(prop.table(tab), 3)
+
+# percentatges per fila: estat condicionat al navegador
+round(prop.table(tab, margin = 1), 3)
+
+# percentatges per columna: navegador condicionat a l'estat
+round(prop.table(tab, margin = 2), 3)
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Objectiu pràctic}
+Que la mateixa taula es pugui regenerar quan arriben nous logs o quan canviem el període d'anàlisi.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Visualitzar una taula: del número al patró}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{lstlisting}
+library(ggplot2)
+
+logs |>
+  count(navegador, estat) |>
+  group_by(navegador) |>
+  mutate(prop = n / sum(n)) |>
+  ggplot(aes(navegador, estat, fill = prop)) +
+  geom_tile() +
+  labs(fill = "Freq. cond.",
+       x = "Navegador", y = "Estat") +
+  theme_minimal()
+\end{lstlisting}
+\column{0.43\textwidth}
+\centering
+\begin{tikzpicture}
+\foreach \x/\lab in {0/Chrome,1.2/Firefox,2.4/Safari,3.6/Edge} {
+  \node[font=\scriptsize,rotate=35,anchor=east] at (\x+0.35,-0.2) {\lab};
+}
+\foreach \y/\lab in {0/OK,0.8/Timeout,1.6/Error} {
+  \node[font=\scriptsize,anchor=east] at (-0.15,\y+0.35) {\lab};
+}
+\foreach \x/\y/\c in {0/0/UABGreen!80,1.2/0/UABGreen!75,2.4/0/UABGreen!55,3.6/0/UABGreen!50,
+0/0.8/AccentOrange!20,1.2/0.8/AccentOrange!25,2.4/0.8/AccentOrange!28,3.6/0.8/AccentOrange!35,
+0/1.6/DeepBlue!25,1.2/1.6/DeepBlue!30,2.4/1.6/DeepBlue!50,3.6/1.6/DeepBlue!55} {
+  \draw[fill=\c,draw=white] (\x,\y) rectangle +(0.9,0.7);
+}
+\node[align=center,font=\small,text width=4.5cm] at (1.9,2.7) {Mapa de calor de freqüències condicionades};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Associació entre dues variables qualitatives}
+\begin{itemize}
+  \item Si la distribució de $B$ és semblant per a tots els nivells de $A$, direm que no hi ha un patró clar d'associació.
+  \item Si les freqüències condicionades canvien molt segons $A$, hi ha evidència descriptiva d'associació.
+  \item La inferència estadística permetrà decidir si aquesta diferència pot ser compatible amb l'atzar.
+\end{itemize}
+\vspace{0.3cm}
+\begin{exampleblock}{Pregunta computacional}
+El tipus d'error depèn del navegador, del sistema operatiu o de la versió desplegada?
+\end{exampleblock}
+\begin{alertblock}{Prudència}
+Una taula de contingència pot mostrar associació, però no demostra causalitat.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Dues variables numèriques}
+
+\begin{frame}{Dues variables numèriques: preguntes bàsiques}
+En l'estudi descriptiu de dues variables numèriques volem respondre:
+\begin{itemize}
+  \item Tenen aquestes variables alguna relació?
+  \item La relació és positiva, negativa o nul·la?
+  \item És aproximadament lineal o no lineal?
+  \item Hi ha observacions anòmales?
+  \item Podem predir una variable a partir de l'altra?
+\end{itemize}
+\vspace{0.25cm}
+\begin{exampleblock}{Exemples informàtics}
+\begin{itemize}
+  \item Mida de l'entrada i temps d'execució.
+  \item Nombre d'usuaris concurrents i latència.
+  \item Mida d'un fitxer i temps de compressió.
+  \item Nombre de tests i temps de CI/CD.
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{La dada bivariant: parelles $(x_i,y_i)$}
+Per a cada observació $i$ tenim dues mesures:
+\[
+ (x_i,y_i),\qquad i=1,\ldots,n.
+\]
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\small
+\begin{tabular}{rrrr}
+\toprule
+Execució & mida $x$ & temps $y$ & memòria \\
+\midrule
+1 & 1000 & 12.4 & 45 \\
+2 & 2000 & 19.8 & 51 \\
+3 & 3000 & 29.1 & 59 \\
+4 & 4000 & 38.7 & 67 \\
+5 & 5000 & 51.0 & 77 \\
+\bottomrule
+\end{tabular}
+\column{0.48\textwidth}
+\begin{block}{Visualització natural}
+Cada parella $(x_i,y_i)$ es representa com un punt en el pla.
+\end{block}
+\begin{tikzpicture}
+\begin{axis}[width=5.2cm,height=3.5cm,xlabel={mida},ylabel={temps},grid=major]
+\addplot+[only marks,mark=*,color=UABGreen] coordinates {(1,12.4) (2,19.8) (3,29.1) (4,38.7) (5,51)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Núvol de punts}
+\begin{columns}[T]
+\column{0.52\textwidth}
+El \important{núvol de punts} és la representació gràfica de totes les parelles $(x_i,y_i)$.
+\vspace{0.2cm}
+\begin{itemize}
+  \item Mostra tendències globals.
+  \item Detecta relacions no lineals.
+  \item Identifica valors atípics.
+  \item Evita confiar només en una única mesura numèrica.
+\end{itemize}
+\column{0.43\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=5.7cm,height=4.0cm,xlabel={mida entrada},ylabel={temps ms},grid=major]
+\addplot+[only marks,mark=*,color=UABGreen] coordinates {
+(1,9) (2,14) (3,18) (4,22) (5,28) (6,31) (7,36) (8,42) (9,46) (10,52)
+(2,17) (4,24) (6,34) (8,39) (10,55)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Patrons habituals en un núvol de punts}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=5.1cm,height=3.4cm,title={Relació positiva},xtick=\empty,ytick=\empty]
+\addplot+[only marks,color=UABGreen] coordinates {(1,2) (2,3.1) (3,3.6) (4,5.2) (5,5.7) (6,6.5) (7,8)};
+\end{axis}
+\end{tikzpicture}
+\vspace{0.1cm}
+\begin{tikzpicture}
+\begin{axis}[width=5.1cm,height=3.4cm,title={Sense relació clara},xtick=\empty,ytick=\empty]
+\addplot+[only marks,color=DeepBlue] coordinates {(1,5) (2,2) (3,7) (4,3.2) (5,8) (6,4) (7,6)};
+\end{axis}
+\end{tikzpicture}
+\column{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=5.1cm,height=3.4cm,title={Relació negativa},xtick=\empty,ytick=\empty]
+\addplot+[only marks,color=AccentOrange] coordinates {(1,8) (2,6.8) (3,6) (4,4.8) (5,3.5) (6,3) (7,2)};
+\end{axis}
+\end{tikzpicture}
+\vspace{0.1cm}
+\begin{tikzpicture}
+\begin{axis}[width=5.1cm,height=3.4cm,title={Relació no lineal},xtick=\empty,ytick=\empty]
+\addplot+[only marks,color=UABGreen] coordinates {(1,7) (2,4) (3,2.5) (4,2) (5,2.5) (6,4) (7,7)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Covariància}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Les mitjanes de les dues variables són:
+\[
+ \bar{x}=\frac{1}{n}\sum_{i=1}^n x_i,\qquad
+ \bar{y}=\frac{1}{n}\sum_{i=1}^n y_i.
+\]
+La covariància mostral és:
+\[
+ S_{XY}=\frac{1}{n-1}\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y}).
+\]
+\column{0.43\textwidth}
+\begin{block}{Interpretació}
+\begin{itemize}
+  \item $S_{XY}>0$: tendència conjunta positiva.
+  \item $S_{XY}<0$: tendència conjunta negativa.
+  \item $S_{XY}\approx 0$: no hi ha tendència lineal clara.
+\end{itemize}
+\end{block}
+\begin{alertblock}{Limitació}
+La covariància depèn de les unitats de mesura i és difícil de comparar entre problemes.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Correlació de Pearson}
+La correlació de Pearson normalitza la covariància:
+\[
+ r_{XY}=\frac{S_{XY}}{S_XS_Y},\qquad -1\leq r_{XY}\leq 1.
+\]
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Lectura del signe}
+\begin{itemize}
+  \item $r>0$: relació lineal positiva.
+  \item $r<0$: relació lineal negativa.
+  \item $r\approx 0$: no hi ha relació lineal clara.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Lectura de la magnitud}
+\begin{itemize}
+  \item $|r|$ proper a 1: relació lineal forta.
+  \item $|r|$ proper a 0: relació lineal feble.
+  \item $r^2$: proporció descriptiva de variabilitat explicada per la recta.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Correlació amb R}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}
+bench <- read_csv("data/benchmark.csv")
+
+# covariancia i correlacio
+cov(bench$mida, bench$temps_ms)
+cor(bench$mida, bench$temps_ms)
+
+# grafic bivariant
+ggplot(bench, aes(x = mida, y = temps_ms)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal()
+\end{lstlisting}
+\column{0.4\textwidth}
+\begin{block}{Bones pràctiques}
+\begin{itemize}
+  \item Mirar sempre el gràfic abans d'interpretar $r$.
+  \item Revisar valors atípics.
+  \item No confondre correlació amb causalitat.
+  \item Informar unitats i context.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Correlació: advertiments importants}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{alertblock}{1. Correlació no implica causalitat}
+Que dues variables es moguin juntes no vol dir que una causi l'altra.
+\end{alertblock}
+\begin{alertblock}{2. Pearson mesura relació lineal}
+Una relació no lineal pot tenir $r\approx 0$.
+\end{alertblock}
+\column{0.48\textwidth}
+\begin{alertblock}{3. Els outliers poden dominar}
+Un sol valor anòmal pot canviar molt la correlació.
+\end{alertblock}
+\begin{alertblock}{4. Barrejar grups pot enganyar}
+La relació global pot ser diferent de la relació dins de cada grup.
+\end{alertblock}
+\end{columns}
+\vspace{0.2cm}
+\begin{exampleblock}{Exemple informàtic}
+La relació entre mida d'entrada i temps pot dependre de l'algoritme, del maquinari i de la memòria cau.
+\end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Recta de regressió}
+
+\begin{frame}{Recta de regressió: primera idea}
+La recta de regressió resumeix una relació lineal entre dues variables:
+\[
+ \widehat{y}=a+bx.
+\]
+\vspace{0.1cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item $x$: variable explicativa o predictora.
+  \item $y$: variable resposta.
+  \item $b$: canvi mitjà en $y$ per una unitat més de $x$.
+  \item $a$: valor predit quan $x=0$.
+\end{itemize}
+\column{0.48\textwidth}
+\begin{block}{Criteri}
+Triem la recta que minimitza la suma de quadrats dels residus:
+\[
+ \sum_{i=1}^n \left[y_i-(a+bx_i)\right]^2.
+\]
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Coeficients de la recta}
+La recta ajustada és:
+\[
+ \widehat{y}=a+bx.
+\]
+Els coeficients es calculen com:
+\[
+ b=\frac{S_{XY}}{S_X^2},\qquad a=\bar{y}-b\bar{x}.
+\]
+\vspace{0.2cm}
+\begin{block}{Interpretació computacional}
+Si $x$ és la mida de l'entrada i $y$ és el temps d'execució, $b$ estima l'increment mitjà de temps quan augmentem una unitat la mida d'entrada.
+\end{block}
+\begin{alertblock}{Atenció}
+La recta és un resum descriptiu. No garanteix que el fenomen sigui realment lineal ni que pugui extrapolar-se fora del rang observat.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Exemple: mida de l'entrada i temps d'execució}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\small
+\begin{tabular}{rrrr}
+\toprule
+$mida$ & $temps$ & $\widehat{temps}$ & residu \\
+\midrule
+1000 & 12.4 & 11.7 & 0.7 \\
+2000 & 19.8 & 21.3 & -1.5 \\
+3000 & 29.1 & 30.9 & -1.8 \\
+4000 & 38.7 & 40.5 & -1.8 \\
+5000 & 51.0 & 50.1 & 0.9 \\
+6000 & 61.8 & 59.7 & 2.1 \\
+\bottomrule
+\end{tabular}
+\vspace{0.25cm}
+\begin{block}{Model descriptiu}
+\[
+ \widehat{temps}=2.1+0.0096\cdot mida.
+\]
+\end{block}
+\column{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=6.1cm,height=4.2cm,xlabel={mida entrada},ylabel={temps ms},grid=major]
+\addplot+[only marks,mark=*,color=UABGreen] coordinates {(1000,12.4) (2000,19.8) (3000,29.1) (4000,38.7) (5000,51) (6000,61.8)};
+\addplot+[domain=900:6200,samples=2,color=AccentOrange,thick] {2.1 + 0.0096*x};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Regressió amb R}
+\begin{lstlisting}
+bench <- read_csv("data/benchmark.csv")
+
+model <- lm(temps_ms ~ mida, data = bench)
+summary(model)
+
+# coeficients de la recta
+coef(model)
+
+# prediccions i residus
+bench$prediccio <- predict(model)
+bench$residu <- residuals(model)
+
+# grafic amb recta ajustada
+ggplot(bench, aes(mida, temps_ms)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal()
+\end{lstlisting}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Predicció i residus}
+Per a un valor $x^*$, la predicció és:
+\[
+ \widehat{y}^*=a+bx^*.
+\]
+El residu d'una observació és:
+\[
+ e_i=y_i-\widehat{y}_i.
+\]
+\vspace{0.15cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Quan confiar més en una predicció?}
+\begin{itemize}
+  \item $x^*$ és dins el rang observat.
+  \item El núvol de punts és aproximadament lineal.
+  \item No hi ha outliers dominants.
+  \item Els residus no mostren patrons evidents.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{alertblock}{Quan desconfiar?}
+\begin{itemize}
+  \item Extrapolem fora del rang.
+  \item La relació és clarament corba.
+  \item Hi ha canvis de règim.
+  \item Barrejar grups amaga diferències.
+\end{itemize}
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mirar residus: detectar el que la recta no explica}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=5.6cm,height=3.8cm,xlabel={mida},ylabel={residu},grid=major]
+\addplot+[only marks,color=DeepBlue] coordinates {(1,0.7) (2,-1.5) (3,-1.8) (4,-1.8) (5,0.9) (6,2.1)};
+\addplot+[domain=0.5:6.5,samples=2,color=AccentOrange,thick] {0};
+\end{axis}
+\end{tikzpicture}
+\column{0.48\textwidth}
+\begin{block}{Interpretació}
+\begin{itemize}
+  \item Residus al voltant de zero: ajust raonable.
+  \item Patró corbat: la recta és massa simple.
+  \item Residus molt grans: possibles outliers.
+  \item Variabilitat creixent: la incertesa depèn de $x$.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{De la descriptiva bivariant al modelatge}
+\begin{center}
+\begin{tikzpicture}[node distance=1.55cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,minimum width=2.4cm,minimum height=0.8cm] (plot) {Gràfic};
+\node[draw,rounded corners,fill=UABLight,right of=plot,xshift=1.6cm,minimum width=2.4cm,minimum height=0.8cm] (summary) {Mesura};
+\node[draw,rounded corners,fill=UABLight,right of=summary,xshift=1.6cm,minimum width=2.4cm,minimum height=0.8cm] (model) {Model};
+\node[draw,rounded corners,fill=UABLight,right of=model,xshift=1.6cm,minimum width=2.4cm,minimum height=0.8cm] (decision) {Decisió};
+\draw[->,thick,UABGreen] (plot) -- (summary);
+\draw[->,thick,UABGreen] (summary) -- (model);
+\draw[->,thick,UABGreen] (model) -- (decision);
+\end{tikzpicture}
+\end{center}
+\vspace{0.3cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Qualitatives}
+Taules, percentatges condicionats i comparació de perfils.
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Numèriques}
+Núvols de punts, correlació, regressió i residus.
+\end{block}
+\end{columns}
+\vspace{0.25cm}
+\begin{exampleblock}{Pont amb temes futurs}
+Inferència, contrasts d'hipòtesis, regressió, classificació i avaluació de models.
+\end{exampleblock}
+\end{frame}
+
+\end{document}

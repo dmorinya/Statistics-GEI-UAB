@@ -1,0 +1,820 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+% ------------------------------------------------------------------
+% Presentació adaptada: Probabilitat 2 amb orientació computacional
+% Grau en Enginyeria Informàtica - Estadística
+% ------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{xcolor}
+\usepackage{listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+
+% ------------------------------------------------------------------
+% Estil visual coherent amb les presentacions anteriors
+% ------------------------------------------------------------------
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_tile,geom_smooth,facet_wrap,
+    labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,arrange,set.seed,
+    rbinom,rgeom,rpois,dbinom,dgeom,dpois,pbinom,ppois,runif,sample,replicate,
+    cumsum,cummean,tibble,rep,seq,case_when,future_map_dbl,plan,multisession,
+    furrr,pmap_dbl,rowwise,data.frame},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{%
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{AccentOrange},
+  backgroundcolor=\color{CodeBack},
+  frame=single,
+  rulecolor=\color{CodeFrame},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+
+% ------------------------------------------------------------------
+% Dades de la presentació
+% ------------------------------------------------------------------
+\title[Variables aleatòries discretes]{Probabilitat II}
+\subtitle{Variables aleatòries discretes, esperança, variància i distribucions computacionals}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2025--26}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small
+  \textcolor{DeepBlue}{De comptar esdeveniments a simular sistemes: errors, intents, connexions i càrrega}
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per què variables aleatòries discretes en informàtica?}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{itemize}
+  \item Molts fenòmens informàtics són \important{comptatges}:
+  \begin{itemize}
+    \item nombre de paquets perduts,
+    \item nombre d'errors en una bateria de tests,
+    \item nombre d'intents fins al primer èxit,
+    \item nombre de connexions per segon,
+    \item nombre de bugs detectats en una versió,
+    \item nombre de col·lisions en una taula hash.
+  \end{itemize}
+  \item Les distribucions discretes donen models simples per simular i raonar sobre aquests comptatges.
+\end{itemize}
+\column{0.39\textwidth}
+\begin{block}{Idea clau}
+Una variable aleatòria transforma un fenomen incert en un nombre que podem \important{calcular, simular i visualitzar}.
+\end{block}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.5cm,align=center,inner sep=8pt] {
+Sistema incert $\rightarrow$ variable aleatòria $X$ $\rightarrow$ distribució $\rightarrow$ decisió
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Objectius del tema}
+Al final d'aquest tema hauríeu de poder:
+\begin{enumerate}
+  \item Definir una variable aleatòria discreta i la seva distribució.
+  \item Calcular i interpretar esperança i variància.
+  \item Reconèixer models de Bernoulli, binomial, geomètric i Poisson.
+  \item Traduir problemes d'informàtica a variables aleatòries.
+  \item Calcular probabilitats exactes amb fórmules i amb \R.
+  \item Verificar resultats amb simulació Monte Carlo.
+  \item Interpretar el paper de la variabilitat en sistemes computacionals.
+\end{enumerate}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mapa del tema}
+\begin{center}
+\begin{tikzpicture}[node distance=1.15cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,text width=3.0cm,align=center,minimum height=0.72cm] (va) {Variable aleatòria};
+\node[draw,rounded corners,fill=SoftGray,below of=va,text width=3.0cm,align=center,minimum height=0.72cm] (dist) {Distribució discreta};
+\node[draw,rounded corners,fill=SoftGray,below of=dist,text width=3.0cm,align=center,minimum height=0.72cm] (mom) {Esperança i variància};
+\node[draw,rounded corners,fill=UABLight,right of=mom,xshift=3.2cm,text width=3.0cm,align=center,minimum height=0.72cm] (sim) {Simulació amb R};
+\node[draw,rounded corners,fill=SoftGray,below of=mom,text width=2.5cm,align=center,minimum height=0.72cm] (bern) {Bernoulli};
+\node[draw,rounded corners,fill=SoftGray,right of=bern,xshift=2.0cm,text width=2.5cm,align=center,minimum height=0.72cm] (bin) {Binomial};
+\node[draw,rounded corners,fill=SoftGray,right of=bin,xshift=2.0cm,text width=2.5cm,align=center,minimum height=0.72cm] (geom) {Geomètrica};
+\node[draw,rounded corners,fill=SoftGray,right of=geom,xshift=2.0cm,text width=2.5cm,align=center,minimum height=0.72cm] (pois) {Poisson};
+\draw[->,thick,UABGreen] (va) -- (dist);
+\draw[->,thick,UABGreen] (dist) -- (mom);
+\draw[->,thick,AccentOrange] (mom) -- (sim);
+\draw[->,thick,UABGreen] (mom) -- (bern);
+\draw[->,thick,UABGreen] (mom) -- (bin);
+\draw[->,thick,UABGreen] (mom) -- (geom);
+\draw[->,thick,UABGreen] (mom) -- (pois);
+\end{tikzpicture}
+\end{center}
+\begin{alertblock}{Pregunta transversal}
+Quina distribució descriu millor el comptatge que observem?
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Variables aleatòries discretes}
+
+\begin{frame}{Variable aleatòria: de l'espai mostral al nombre}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Definició}
+Una \important{variable aleatòria} és una funció
+\[
+X:\Omega\longrightarrow \mathbb{R}
+\]
+que assigna un valor numèric a cada resultat possible d'un experiment aleatori.
+\end{block}
+\begin{itemize}
+  \item Els esdeveniments es poden escriure com $\{X=a\}$, $\{X\leq a\}$, etc.
+  \item La distribució ens diu amb quina probabilitat pren cada valor.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Exemple clàssic}
+Llancem dos daus i definim
+\[
+X=\text{suma dels resultats}.
+\]
+Aleshores $X$ pot valer $2,3,\ldots,12$.
+\end{block}
+\begin{block}{Exemple informàtic}
+Enviem 100 paquets i definim
+\[
+X=\text{nombre de paquets perduts}.
+\]
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Distribució d'una variable discreta}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Distribució}
+Per a una variable discreta $X$:
+\[
+0\leq \Prob(X=a)\leq 1,
+\qquad
+\sum_a \Prob(X=a)=1.
+\]
+\end{block}
+\begin{itemize}
+  \item La distribució és una taula de valors i probabilitats.
+  \item També es pot representar amb un gràfic de barres.
+\end{itemize}
+\column{0.46\textwidth}
+\begin{center}
+\begin{tabular}{c|cccccc}
+\toprule
+$x$ & 2 & 3 & 4 & $\cdots$ & 11 & 12 \\
+\midrule
+$\Prob(X=x)$ & $1/36$ & $2/36$ & $3/36$ & $\cdots$ & $2/36$ & $1/36$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\begin{axis}[
+  width=6.2cm,height=3.1cm,
+  ybar, bar width=7pt,
+  ymin=0, ymax=0.18,
+  xlabel={$x$}, ylabel={$\Prob(X=x)$},
+  xtick={2,3,4,5,6,7,8,9,10,11,12},
+  ytick={0,0.05,0.10,0.15},
+  grid=major]
+\addplot[fill=UABGreen!50,draw=UABGreen] coordinates {
+(2,0.0278) (3,0.0556) (4,0.0833) (5,0.1111) (6,0.1389) (7,0.1667) (8,0.1389) (9,0.1111) (10,0.0833) (11,0.0556) (12,0.0278)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Distribucions discretes amb R}
+\begin{lstlisting}
+# Distribució exacta de la suma de dos daus
+resultats <- expand.grid(dau1 = 1:6, dau2 = 1:6)
+resultats$suma <- resultats$dau1 + resultats$dau2
+
+table(resultats$suma)
+prop.table(table(resultats$suma))
+\end{lstlisting}
+
+\vspace{0.2cm}
+\begin{block}{Lectura computacional}
+\begin{itemize}
+  \item Generem tot l'espai mostral amb \texttt{expand.grid()}.
+  \item Convertim resultats en valors de $X$.
+  \item Comptem freqüències i les transformem en probabilitats.
+\end{itemize}
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Esperança: valor mitjà esperat}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Definició}
+L'esperança d'una variable aleatòria discreta és
+\[
+\E(X)=\mu_X=\sum_a a\,\Prob(X=a).
+\]
+\end{block}
+\begin{itemize}
+  \item És el valor mitjà que esperaríem si repetíssim l'experiment moltes vegades.
+  \item No ha de coincidir necessàriament amb un valor possible de $X$.
+\end{itemize}
+\column{0.46\textwidth}
+\begin{block}{Interpretació informàtica}
+Si $X$ és el nombre de tests que fallen en cada execució automàtica, $\E(X)$ és el nombre mitjà de fallades esperades per execució.
+\end{block}
+\begin{alertblock}{No és una predicció exacta}
+És un resum del comportament mitjà a llarg termini.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Variància: quant fluctua el resultat?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Definició}
+La variància és
+\[
+\Var(X)=\sigma_X^2=\sum_a (a-\mu_X)^2\,\Prob(X=a).
+\]
+\end{block}
+\begin{itemize}
+  \item Mesura la dispersió respecte l'esperança.
+  \item Una variància alta indica resultats més inestables.
+\end{itemize}
+\column{0.46\textwidth}
+\begin{block}{Exemple computacional}
+Dos algoritmes poden tenir el mateix temps mitjà però variàncies diferents:
+\begin{itemize}
+  \item un és estable,
+  \item l'altre és ràpid sovint però molt lent en alguns casos.
+\end{itemize}
+\end{block}
+\begin{alertblock}{Missatge}
+La mitjana sola pot ser insuficient per a decidir.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mateixa esperança, risc diferent}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Aposta A}
+Guanyem $+1$ amb probabilitat $18/37$ i perdem $-1$ amb probabilitat $19/37$.
+\[
+\E(X)=\frac{18}{37}-\frac{19}{37}=-\frac{1}{37}.
+\]
+\end{block}
+\column{0.44\textwidth}
+\begin{block}{Aposta B}
+Guanyem $+35$ amb probabilitat $1/37$ i perdem $-1$ amb probabilitat $36/37$.
+\[
+\E(Y)=35\frac{1}{37}-\frac{36}{37}=-\frac{1}{37}.
+\]
+\end{block}
+\end{columns}
+\vspace{0.2cm}
+\begin{alertblock}{Conclusió}
+Tenen la mateixa esperança, però no el mateix risc: $\Var(X)\approx 1.002$ i $\Var(Y)\approx 36.001$.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Esperança i variància amb R}
+\begin{lstlisting}
+# Aposta A
+x <- c(1, -1)
+px <- c(18/37, 19/37)
+EX <- sum(x * px)
+VX <- sum((x - EX)^2 * px)
+
+# Aposta B
+y <- c(35, -1)
+py <- c(1/37, 36/37)
+EY <- sum(y * py)
+VY <- sum((y - EY)^2 * py)
+
+c(EX = EX, VarX = VX, EY = EY, VarY = VY)
+\end{lstlisting}
+
+\begin{block}{Missatge computacional}
+Les fórmules són importants, però també ho és saber transformar-les en codi verificable.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Bernoulli i binomial}
+
+\begin{frame}{Distribució de Bernoulli}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Model}
+Una variable Bernoulli només pot prendre dos valors:
+\[
+X=1 \quad \text{èxit}, \qquad X=0 \quad \text{fracàs}.
+\]
+\[
+\Prob(X=1)=p, \qquad \Prob(X=0)=1-p=q.
+\]
+\[
+\E(X)=p, \qquad \Var(X)=pq.
+\]
+\end{block}
+\column{0.42\textwidth}
+\begin{block}{Exemples informàtics}
+\begin{itemize}
+  \item Un test passa o falla.
+  \item Un paquet arriba o es perd.
+  \item Un usuari clica o no clica.
+  \item Una petició HTTP retorna error o no.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Distribució binomial}
+\begin{block}{Model}
+Fem $n$ experiments Bernoulli independents, tots amb probabilitat d'èxit $p$.
+Si $X$ és el nombre d'èxits, escrivim
+\[
+X\sim B(n,p).
+\]
+\[
+\Prob(X=k)=\binom{n}{k}p^k(1-p)^{n-k},\qquad k=0,1,\ldots,n.
+\]
+\[
+\E(X)=np,\qquad \Var(X)=np(1-p).
+\]
+\end{block}
+\begin{alertblock}{Quan l'usem?}
+Quan comptem quants èxits hi ha en un nombre fix d'intents independents.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Binomial en informàtica: paquets perduts}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Plantejament}
+Enviem $n=100$ paquets. Cada paquet es perd amb probabilitat $p=0.02$, independentment dels altres.
+\[
+X=\text{nombre de paquets perduts}\sim B(100,0.02).
+\]
+\end{block}
+\begin{itemize}
+  \item Nombre esperat de paquets perduts: $\E(X)=100\cdot 0.02=2$.
+  \item Variància: $\Var(X)=100\cdot 0.02\cdot 0.98=1.96$.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Pregunta}
+Quina és la probabilitat de perdre més de 5 paquets?
+\[
+\Prob(X>5)=1-\Prob(X\leq 5).
+\]
+\end{block}
+\begin{alertblock}{Interpretació}
+Això pot ajudar a fixar llindars d'alerta en una xarxa.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Binomial amb R: càlcul exacte i simulació}
+\begin{lstlisting}
+n <- 100
+p <- 0.02
+
+# Càlcul exacte
+1 - pbinom(5, size = n, prob = p)
+
+# Simulació Monte Carlo
+set.seed(123)
+B <- 100000
+x <- rbinom(B, size = n, prob = p)
+mean(x > 5)
+mean(x)
+var(x)
+\end{lstlisting}
+
+\begin{block}{Dues maneres complementàries}
+\begin{itemize}
+  \item \texttt{pbinom()} dona el càlcul exacte del model.
+  \item \texttt{rbinom()} simula molts sistemes possibles.
+\end{itemize}
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Distribució binomial: forma de la distribució}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11.5cm,height=5.0cm,
+  ybar, bar width=4pt,
+  ymin=0, ymax=0.28,
+  xlabel={$k$ paquets perduts}, ylabel={$\Prob(X=k)$},
+  xtick={0,2,4,6,8,10},
+  ytick={0,0.1,0.2},
+  grid=major]
+\addplot[fill=UABGreen!55,draw=UABGreen] coordinates {
+(0,0.1326) (1,0.2707) (2,0.2734) (3,0.1823) (4,0.0902) (5,0.0353) (6,0.0114) (7,0.0031) (8,0.0007) (9,0.0001) (10,0.00002)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\vspace{-0.1cm}
+\begin{alertblock}{Lectura}
+Encara que la mitjana sigui 2, poden aparèixer valors més grans. La distribució quantifica com de sorprenents són.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Variable geomètrica}
+
+\begin{frame}{Variable geomètrica}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Model}
+Fem experiments Bernoulli independents fins obtenir el primer èxit.
+Si $X$ és el nombre de fracassos abans del primer èxit:
+\[
+\Prob(X=k)=q^k p,\qquad k=0,1,2,\ldots
+\]
+\[
+\E(X)=\frac{q}{p},\qquad \Var(X)=\frac{q}{p^2}.
+\]
+\end{block}
+\column{0.42\textwidth}
+\begin{block}{Exemples informàtics}
+\begin{itemize}
+  \item Nombre de reintents abans que una connexió funcioni.
+  \item Nombre de commits abans de detectar el primer test fallit.
+  \item Nombre de peticions fins que apareix el primer error 500.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Geomètrica: reintents de connexió}
+\begin{block}{Plantejament}
+Una petició a un servei té probabilitat d'èxit $p=0.8$. Definim
+\[
+X=\text{nombre de fracassos abans del primer èxit}.
+\]
+Aleshores
+\[
+X\sim \operatorname{Geom}(p=0.8),\qquad \E(X)=\frac{0.2}{0.8}=0.25.
+\]
+\end{block}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item $\Prob(X=0)=0.8$: funciona a la primera.
+  \item $\Prob(X=1)=0.2\cdot0.8=0.16$.
+  \item $\Prob(X\geq 3)=0.2^3=0.008$.
+\end{itemize}
+\column{0.46\textwidth}
+\begin{alertblock}{Ús pràctic}
+Serveix per raonar sobre polítiques de reintent, timeouts i degradació del servei.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Geomètrica amb R}
+\begin{lstlisting}
+p <- 0.8
+
+# P(X = k), on X = fracassos abans del primer èxit
+dgeom(0:5, prob = p)
+
+# P(X >= 3)
+1 - pgeom(2, prob = p)
+
+# Simulació
+set.seed(123)
+x <- rgeom(100000, prob = p)
+mean(x)
+var(x)
+\end{lstlisting}
+
+\begin{block}{Detall important}
+En \R, \texttt{rgeom()} segueix aquesta convenció: compta el nombre de fracassos abans del primer èxit.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Variable de Poisson}
+
+\begin{frame}{Variable de Poisson}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Model}
+La distribució de Poisson modelitza el nombre d'esdeveniments en un interval de temps o espai:
+\[
+X\sim \operatorname{Pois}(\lambda).
+\]
+\[
+\Prob(X=k)=\frac{\lambda^k e^{-\lambda}}{k!},\qquad k=0,1,2,\ldots
+\]
+\[
+\E(X)=\lambda,\qquad \Var(X)=\lambda.
+\]
+\end{block}
+\column{0.42\textwidth}
+\begin{block}{Exemples informàtics}
+\begin{itemize}
+  \item Connexions per segon a un servidor.
+  \item Errors per minut en un log.
+  \item Incidències obertes per dia.
+  \item Missatges que arriben a una cua.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Poisson: connexions a un servidor}
+\begin{block}{Plantejament}
+Un servidor rep de mitjana $2.5$ connexions per segon.
+\[
+X=\text{nombre de connexions en un segon}\sim \operatorname{Pois}(2.5).
+\]
+\end{block}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\[
+\Prob(X=0)=e^{-2.5}\approx 0.082
+\]
+\[
+\Prob(X=1)=2.5e^{-2.5}\approx 0.205
+\]
+\[
+\Prob(X=2)=\frac{2.5^2e^{-2.5}}{2!}\approx 0.257
+\]
+\column{0.46\textwidth}
+\begin{alertblock}{Pregunta operativa}
+Quina és la probabilitat de rebre 3 o més connexions en un segon?
+\[
+\Prob(X\geq 3)=1-\Prob(X\leq 2).
+\]
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Poisson amb R}
+\begin{lstlisting}
+lambda <- 2.5
+
+# Probabilitats puntuals
+pois_vals <- dpois(0:8, lambda = lambda)
+round(pois_vals, 3)
+
+# Probabilitat de 3 o més connexions
+1 - ppois(2, lambda = lambda)
+
+# Si l'interval és de 2 segons, lambda es multiplica per 2
+1 - dpois(0, lambda = 2 * lambda)
+\end{lstlisting}
+
+\begin{block}{Escalat temporal}
+Si el ritme mitjà és $\lambda$ per segon, en $t$ segons el paràmetre és $t\lambda$.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Distribució de Poisson: forma}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11.2cm,height=4.8cm,
+  ybar, bar width=8pt,
+  ymin=0, ymax=0.28,
+  xlabel={$k$ connexions en un segon}, ylabel={$\Prob(X=k)$},
+  xtick={0,1,2,3,4,5,6,7,8,9,10},
+  ytick={0,0.1,0.2},
+  grid=major]
+\addplot[fill=UABGreen!55,draw=UABGreen] coordinates {
+(0,0.0821) (1,0.2052) (2,0.2565) (3,0.2138) (4,0.1336) (5,0.0668) (6,0.0278) (7,0.0099) (8,0.0031) (9,0.0009) (10,0.0002)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\begin{alertblock}{Lectura}
+La massa es concentra al voltant de $\lambda=2.5$, però hi ha probabilitat no nul·la de pics de càrrega.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Poisson i monitoratge: un llindar d'alerta}
+\begin{columns}[T]
+\column{0.54\textwidth}
+\begin{block}{Context}
+Suposem que en condicions normals hi ha $\lambda=2.5$ errors per minut.
+Volem activar una alerta si observem un nombre molt alt d'errors.
+\end{block}
+\begin{itemize}
+  \item Si el llindar és $X\geq 8$, calculem $\Prob(X\geq 8)$ sota el funcionament normal.
+  \item Si aquesta probabilitat és petita, observar $8$ o més errors pot indicar una anomalia.
+\end{itemize}
+\column{0.40\textwidth}
+\begin{alertblock}{Idea estadística}
+Un llindar d'alerta és una decisió basada en una probabilitat de cua.
+\end{alertblock}
+\begin{block}{Amb R}
+\[
+\Prob(X\geq 8)=1-\Prob(X\leq 7).
+\]
+\texttt{1 - ppois(7, 2.5)}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Simulació i pràctica computacional}
+
+\begin{frame}[fragile]{Simulació Monte Carlo: quan el càlcul exacte no és còmode}
+\begin{lstlisting}
+set.seed(123)
+B <- 100000
+
+# Simulem 100000 segons d'activitat d'un servidor
+connexions <- rpois(B, lambda = 2.5)
+
+# Estimem probabilitats a partir de freqüències relatives
+mean(connexions >= 3)
+mean(connexions >= 8)
+
+# Resums descriptius
+mean(connexions)
+var(connexions)
+table(connexions)
+\end{lstlisting}
+
+\begin{block}{Connexió amb el tema anterior}
+Les freqüències relatives de la simulació s'aproximen a les probabilitats del model.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Paral·lelització bàsica de simulacions amb R}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+simula_prob_cua <- function(i) {
+  x <- rpois(100000, lambda = 2.5)
+  mean(x >= 8)
+}
+
+set.seed(123)
+resultats <- future_map_dbl(1:100, simula_prob_cua)
+
+mean(resultats)
+sd(resultats)
+\end{lstlisting}
+
+\begin{alertblock}{Per què és útil?}
+Quan repetim moltes simulacions, bootstrap o experiments de rendiment, la computació paral·lela redueix el temps d'espera.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Quina distribució triem?}
+\begin{center}
+\begin{tabular}{p{3.2cm}p{4.1cm}p{4.4cm}}
+\toprule
+\textbf{Distribució} & \textbf{Pregunta típica} & \textbf{Exemple informàtic} \\
+\midrule
+Bernoulli & Èxit o fracàs? & Un test passa o falla \\
+Binomial & Quants èxits en $n$ intents? & Paquets perduts en 100 enviaments \\
+Geomètrica & Quants fracassos abans del primer èxit? & Reintents abans d'una connexió exitosa \\
+Poisson & Quants esdeveniments en un interval? & Connexions per segon, errors per minut \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.2cm}
+\begin{alertblock}{Estratègia}
+Primer identifiquem què estem comptant; després escollim el model.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mini-pràctica proposada}
+\begin{block}{Objectiu}
+Analitzar i simular un sistema amb comptatges aleatoris.
+\end{block}
+\begin{enumerate}
+  \item Trieu un cas: paquets perduts, tests fallits, reintents de connexió o peticions a un servidor.
+  \item Definiu la variable aleatòria i proposeu una distribució.
+  \item Calculeu esperança, variància i una probabilitat rellevant.
+  \item Simuleu el sistema amb \R.
+  \item Compareu càlcul exacte i simulació.
+  \item Genereu un gràfic i un informe breu amb Quarto.
+  \item Pugeu el codi al repositori de \GitHub.
+\end{enumerate}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Tancament}
+\begin{columns}[T]
+\column{0.56\textwidth}
+\begin{itemize}
+  \item Les variables aleatòries discretes permeten modelitzar comptatges.
+  \item L'esperança resumeix el comportament mitjà.
+  \item La variància mesura la incertesa al voltant d'aquest comportament.
+  \item Bernoulli, binomial, geomètrica i Poisson cobreixen molts casos bàsics.
+  \item Amb \R podem calcular, simular i comunicar els resultats.
+\end{itemize}
+\column{0.38\textwidth}
+\begin{block}{Missatge final}
+La probabilitat no és només una fórmula: és una eina per dissenyar, monitorar i avaluar sistemes informàtics sota incertesa.
+\end{block}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.4cm,align=center,inner sep=8pt] {
+Model $+$ simulació $+$ visualització $=$ estadística computacional
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+\end{document}

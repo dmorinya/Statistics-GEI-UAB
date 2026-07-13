@@ -1,0 +1,7 @@
+\babel@toc {catalan}{}\relax 
+\beamer@sectionintoc {1}{Probabilitat i simulació}{5}{0}{1}
+\beamer@sectionintoc {2}{Probabilitat a partir de dades}{9}{0}{2}
+\beamer@sectionintoc {3}{Definició formal}{12}{0}{3}
+\beamer@sectionintoc {4}{Probabilitat condicionada i independència}{14}{0}{4}
+\beamer@sectionintoc {5}{Probabilitat total i Bayes}{19}{0}{5}
+\beamer@sectionintoc {6}{Simulació i paral·lelització}{28}{0}{6}

@@ -1,0 +1,21 @@
+\frametitle{Primer tast de paral·lelització amb R}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+simula_mitjana <- function(i) {
+  x <- rnorm(10000, mean = 0, sd = 1)
+  mean(x)
+}
+
+resultats <- future_map_dbl(1:1000, simula_mitjana)
+
+mean(resultats)
+sd(resultats)
+\end{lstlisting}
+
+\begin{block}{Lectura del codi}
+Fem 1000 simulacions independents i les distribuïm entre diversos processos.
+\end{block}

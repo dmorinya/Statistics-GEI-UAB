@@ -1,0 +1,850 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+% ------------------------------------------------------------------
+% Presentació adaptada: Descriptiva univariant amb orientació computacional
+% Grau en Enginyeria Informàtica - Estadística
+% ------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{statistics}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{eurosym}
+\pgfplotsset{compat=1.18}
+
+% ------------------------------------------------------------------
+% Estil visual
+% ------------------------------------------------------------------
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,quantile,ggplot,aes,geom_histogram,
+    geom_boxplot,summarise,group_by,mutate,read_csv,filter,arrange,set.seed,runif,rnorm,
+    future_map_dbl,plan,multisession},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{%
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{AccentOrange},
+  backgroundcolor=\color{CodeBack},
+  frame=single,
+  rulecolor=\color{CodeFrame},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+
+% ------------------------------------------------------------------
+% Dades de la presentació
+% ------------------------------------------------------------------
+\title[Descriptiva univariant computacional]{Estadística descriptiva univariant}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.5cm}
+  \begin{center}
+  \small
+  \textcolor{DeepBlue}{Dades, codi, visualització, simulació i reproduïbilitat}
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per què començar per descriptiva univariant?}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{itemize}
+  \item Abans de modelitzar, predir o programar un algoritme, cal \important{mirar les dades}.
+  \item La descriptiva univariant respon preguntes bàsiques:
+  \begin{itemize}
+    \item Quins valors apareixen?
+    \item Quin és un valor típic?
+    \item Hi ha molta variabilitat?
+    \item Hi ha valors estranys o errors?
+  \end{itemize}
+  \item En informàtica això apareix en \exemple{logs}, \exemple{benchmarks}, \exemple{latència}, \exemple{errors}, \exemple{memòria} i \exemple{experiments A/B}.
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{block}{Idea clau}
+Una variable no és només una columna: és una història sobre un sistema.
+\end{block}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.3cm,align=center,inner sep=8pt] {
+Dades $\rightarrow$ Resum $\rightarrow$ Gràfic $\rightarrow$ Interpretació $\rightarrow$ Decisió
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Objectius del tema}
+Al final d'aquest tema hauríeu de poder:
+\begin{enumerate}
+  \item Reconèixer el tipus d'una variable i escollir el resum adequat.
+  \item Construir taules de freqüències i gràfics amb \R.
+  \item Calcular i interpretar mitjana, mediana, moda, variància, desviació típica, quartils i percentils.
+  \item Detectar asimetria, valors atípics i possibles errors de registre.
+  \item Preparar un petit informe reproduïble amb \RStudio, Quarto i \GitHub.
+\end{enumerate}
+\vspace{0.2cm}
+\begin{block}{Enfocament computacional}
+No farem només càlculs manuals: aprendrem a \important{automatitzar}, \important{visualitzar} i \important{documentar} l'anàlisi.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{El flux de treball que farem servir}
+\begin{center}
+\begin{tikzpicture}[node distance=1.55cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,minimum width=2.3cm,minimum height=0.8cm] (data) {Dades};
+\node[draw,rounded corners,fill=UABLight,right of=data,xshift=1.6cm,minimum width=2.3cm,minimum height=0.8cm] (code) {Codi R};
+\node[draw,rounded corners,fill=UABLight,right of=code,xshift=1.6cm,minimum width=2.3cm,minimum height=0.8cm] (plot) {Gràfics};
+\node[draw,rounded corners,fill=UABLight,right of=plot,xshift=1.6cm,minimum width=2.3cm,minimum height=0.8cm] (report) {Informe};
+\draw[->,thick,UABGreen] (data) -- (code);
+\draw[->,thick,UABGreen] (code) -- (plot);
+\draw[->,thick,UABGreen] (plot) -- (report);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.4cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Eines}
+\begin{itemize}
+  \item \R{} per calcular.
+  \item \RStudio{} per treballar per projectes.
+  \item Quarto per fer informes.
+  \item \GitHub{} per versionar i lliurar.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Bones pràctiques}
+\begin{itemize}
+  \item Codi curt i llegible.
+  \item Dades separades del codi.
+  \item Resultats regenerables.
+  \item Commits amb missatges informatius.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Variables i dades}
+
+\begin{frame}{Tipus de variables: exemples informàtics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Qualitatives}
+\begin{itemize}
+  \item \important{Nominals}: sistema operatiu, navegador, estat d'una petició \texttt{OK/ERROR}, tipus d'usuari.
+  \item \important{Ordinals}: prioritat \texttt{baixa/mitjana/alta}, severitat d'un bug, nivell de risc.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Quantitatives}
+\begin{itemize}
+  \item \important{Discretes}: nombre d'errors, peticions per minut, commits per setmana.
+  \item \important{Contínues}: latència, temps d'execució, ús de memòria, temperatura d'un sensor.
+\end{itemize}
+\end{block}
+\end{columns}
+\vspace{0.35cm}
+\begin{alertblock}{Pregunta recurrent}
+El fet que una variable estigui codificada amb números no vol dir necessàriament que sigui quantitativa.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{La matriu de dades}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item Les \important{files} són casos o observacions.
+  \item Les \important{columnes} són variables.
+  \item La mida mostral és el nombre de files: $n$.
+  \item Cada columna ha de tenir un significat i unes unitats clares.
+\end{itemize}
+
+\column{0.48\textwidth}
+\centering
+\small
+\begin{tabular}{llllr}
+\toprule
+id & navegador & estat & mida & temps\_ms \\
+\midrule
+1 & Chrome  & OK    & gran  & 118 \\
+2 & Firefox & OK    & petit & 74 \\
+3 & Chrome  & ERROR & mitjà & 312 \\
+4 & Safari  & OK    & gran  & 141 \\
+5 & Chrome  & OK    & petit & 69 \\
+\bottomrule
+\end{tabular}
+\vspace{0.2cm}
+
+\scriptsize Exemple: registre simplificat de peticions a una aplicació web.
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Llegir dades amb R}
+\begin{lstlisting}
+library(tidyverse)
+
+logs <- read_csv("data/logs_api.csv")
+
+glimpse(logs)
+summary(logs$temps_ms)
+\end{lstlisting}
+\vspace{0.3cm}
+\begin{block}{Objectiu}
+Passar d'un fitxer de dades a un objecte que podem explorar, resumir i representar gràficament.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Freqüències i gràfics}
+
+\begin{frame}{Freqüència absoluta i relativa}
+Per una variable amb valors $x_1,\ldots,x_k$:
+\vspace{0.25cm}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\begin{block}{Freqüència absoluta}
+\[
+ n_i = \text{nombre d'observacions amb valor } x_i
+\]
+\[
+ \sum_{i=1}^k n_i = n
+\]
+\end{block}
+\column{0.45\textwidth}
+\begin{block}{Freqüència relativa}
+\[
+ f_i = \frac{n_i}{n}
+\]
+\[
+ \sum_{i=1}^k f_i = 1
+\]
+\end{block}
+\end{columns}
+\vspace{0.25cm}
+\begin{alertblock}{Interpretació}
+Les freqüències relatives permeten comparar mostres de mides diferents.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Taules de freqüències amb R}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{lstlisting}
+# Freqüències absolutes
+freq_abs <- table(logs$estat)
+
+# Freqüències relatives
+freq_rel <- prop.table(freq_abs)
+
+freq_abs
+freq_rel
+\end{lstlisting}
+\column{0.48\textwidth}
+\small
+\begin{tabular}{lrr}
+\toprule
+estat & $n_i$ & $f_i$ \\
+\midrule
+OK    & 824 & 0.824 \\
+ERROR & 176 & 0.176 \\
+\bottomrule
+\end{tabular}
+\vspace{0.25cm}
+\begin{block}{Pregunta}
+És acceptable una taxa d'error del 17.6\%? Depèn del context i del sistema.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Representació de variables qualitatives}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{itemize}
+  \item Per variables qualitatives fem servir sobretot \important{diagrames de barres}.
+  \item El diagrama de sectors pot ser útil amb poques categories, però sovint és menys informatiu.
+  \item En informàtica interessa veure ràpidament quina categoria domina.
+\end{itemize}
+\column{0.46\textwidth}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=6.2cm,
+    height=4.2cm,
+    ymin=0,
+    ylabel={Freqüència},
+    symbolic x coords={Chrome,Firefox,Safari,Edge},
+    xtick=data,
+    x tick label style={rotate=25,anchor=east},
+    bar width=13pt,
+    nodes near coords,
+    nodes near coords style={font=\scriptsize},
+    enlarge x limits=0.18]
+\addplot[fill=UABGreen!70] coordinates {(Chrome,430) (Firefox,260) (Safari,180) (Edge,130)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Gràfic de barres amb \texttt{ggplot2}}
+\begin{lstlisting}
+library(tidyverse)
+
+ggplot(logs, aes(x = navegador)) +
+  geom_bar() +
+  labs(
+    title = "Peticions per navegador",
+    x = "Navegador",
+    y = "Nombre de peticions"
+  )
+\end{lstlisting}
+\vspace{0.15cm}
+\begin{block}{Missatge metodològic}
+El codi del gràfic ha de formar part de l'informe. Això permet reproduir exactament el resultat.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Freqüències acumulades}
+Per variables numèriques ordenables:
+\[
+N_i = n_1 + n_2 + \cdots + n_i, \qquad F_i = \frac{N_i}{n}.
+\]
+\vspace{0.3cm}
+\begin{block}{Aplicació informàtica}
+Si $X$ és el temps de resposta d'una API, $F(200)$ pot interpretar-se com:
+\[
+\text{proporció de peticions amb temps de resposta } \leq 200 \text{ ms}.
+\]
+\end{block}
+\vspace{0.15cm}
+\begin{alertblock}{Pregunta útil}
+Quin percentatge de peticions compleix el llindar de qualitat del servei?
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Histogrames: forma de la distribució}
+\begin{columns}[T]
+\column{0.46\textwidth}
+\begin{itemize}
+  \item Per variables quantitatives contínues, l'histograma resumeix la distribució.
+  \item Cal escollir un nombre d'intervals o \textit{bins}.
+  \item Massa pocs intervals amaguen informació; massa intervals afegeixen soroll.
+\end{itemize}
+\column{0.5\textwidth}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar interval,
+  width=6.8cm,
+  height=4.2cm,
+  ymin=0,
+  xlabel={temps de resposta (ms)},
+  ylabel={freqüència},
+  xtick={50,100,150,200,250,300,350}]
+\addplot[fill=DeepBlue!65] coordinates {(50,8) (100,24) (150,35) (200,20) (250,9) (300,3) (350,0)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Histograma amb R}
+\begin{lstlisting}
+ggplot(logs, aes(x = temps_ms)) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribució dels temps de resposta",
+    x = "Temps de resposta (ms)",
+    y = "Nombre de peticions"
+  )
+\end{lstlisting}
+\vspace{0.25cm}
+\begin{block}{Experiment ràpid}
+Canvieu \texttt{bins = 10}, \texttt{bins = 30} i \texttt{bins = 80}. Canvia la història que explica el gràfic?
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Compte amb els intervals de diferent amplada}
+\begin{itemize}
+  \item Si tots els intervals tenen la mateixa amplada, podem dibuixar alçades proporcionals a les freqüències.
+  \item Si els intervals tenen amplades diferents, l'àrea del rectangle ha de ser proporcional a la freqüència.
+  \item Altrament podem obtenir una representació visualment enganyosa.
+\end{itemize}
+\vspace{0.3cm}
+\begin{block}{Regla pràctica}
+En un histograma, el que importa és l'\important{àrea}, no només l'alçada.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Mesures de centre}
+
+\begin{frame}{Mesures de centre}
+\begin{columns}[T]
+\column{0.33\textwidth}
+\begin{block}{Mitjana}
+\[
+\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i
+\]
+Valor d'equilibri. Sensible a valors extrems.
+\end{block}
+\column{0.33\textwidth}
+\begin{block}{Mediana}
+Valor central un cop ordenades les dades. Robusta davant d'extrems.
+\end{block}
+\column{0.33\textwidth}
+\begin{block}{Moda}
+Valor més freqüent. Molt útil en variables qualitatives o discretes.
+\end{block}
+\end{columns}
+\vspace{0.25cm}
+\begin{alertblock}{En dades computacionals}
+Temps de resposta, mida de fitxers i ús de memòria poden tenir cues llargues. La mediana sovint és més informativa que la mitjana.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mitjana i mediana amb valors extrems}
+\begin{center}
+\small
+\begin{tabular}{lrrrrrrr}
+\toprule
+Execució & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\midrule
+Temps A (ms) & 98 & 101 & 99 & 100 & 102 & 97 & 103 \\
+Temps B (ms) & 98 & 101 & 99 & 100 & 102 & 97 & 620 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Sistema A}
+\[
+\bar{x}=100, \qquad Md=100
+\]
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Sistema B}
+\[
+\bar{x}=174, \qquad Md=100
+\]
+\end{block}
+\end{columns}
+\vspace{0.25cm}
+\begin{alertblock}{Interpretació}
+Un sol valor extrem pot canviar molt la mitjana, però no necessàriament la mediana.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Resums amb R}
+\begin{lstlisting}
+logs %>%
+  summarise(
+    n = n(),
+    mitjana = mean(temps_ms),
+    mediana = median(temps_ms),
+    minim = min(temps_ms),
+    maxim = max(temps_ms)
+  )
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Bona pràctica}
+No doneu només un número. Doneu també el context: unitats, mida mostral i possibles valors atípics.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Quan la mitjana pot enganyar}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Exemple clàssic: sous}
+Quatre programadors cobren 1000\euro{} i el propietari 6000\euro{}.
+\[
+\bar{x}=\frac{4\cdot 1000+6000}{5}=2000
+\]
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Exemple informàtic: latència}
+Moltes peticions responen en 100 ms, però algunes fallen i triguen 2 s.
+\[
+\text{mitjana} > \text{mediana}
+\]
+\end{block}
+\end{columns}
+\vspace{0.25cm}
+\begin{alertblock}{Missatge}
+Sempre que hi hagi asimetria o valors extrems, compareu mitjana i mediana.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Mesures de dispersió}
+
+\begin{frame}{Mesures de dispersió}
+\begin{itemize}
+  \item Les mesures de centre no són suficients: dos sistemes poden tenir la mateixa mitjana i variabilitat molt diferent.
+  \item La dispersió indica com d'inestables o heterogènies són les observacions.
+\end{itemize}
+\vspace{0.25cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Variància corregida}
+\[
+s^2=\frac{1}{n-1}\sum_{i=1}^n (x_i-\bar{x})^2
+\]
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Desviació típica}
+\[
+s=\sqrt{s^2}
+\]
+Té les mateixes unitats que les dades.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mateixa mitjana, diferent estabilitat}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10.5cm,
+  height=4.7cm,
+  ymin=60,ymax=150,
+  xlabel={execució},
+  ylabel={temps (ms)},
+  legend pos=north west]
+\addplot[mark=*,DeepBlue,thick] coordinates {(1,98) (2,101) (3,99) (4,100) (5,102) (6,97) (7,103) (8,100)};
+\addplot[mark=square*,AccentOrange,thick] coordinates {(1,70) (2,130) (3,82) (4,145) (5,93) (6,121) (7,75) (8,144)};
+\legend{Sistema estable,Sistema variable}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\begin{block}{Pregunta}
+Quin sistema preferiríeu per a una aplicació en temps real?
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Dispersió amb R}
+\begin{lstlisting}
+logs %>%
+  summarise(
+    mitjana = mean(temps_ms),
+    variancia = var(temps_ms),
+    desviacio = sd(temps_ms),
+    rang = max(temps_ms) - min(temps_ms),
+    cv = sd(temps_ms) / mean(temps_ms) * 100
+  )
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Coeficient de variació}
+\[
+CV = \frac{s}{\bar{x}}\times 100
+\]
+Serveix per comparar variabilitat relativa entre variables o sistemes amb escales diferents.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Percentils, quartils i boxplots}
+
+\begin{frame}{Percentils i quartils}
+\begin{itemize}
+  \item El percentil $p$ és un valor que deixa aproximadament un $p\%$ de les observacions per sota.
+  \item La mediana és el percentil 50.
+  \item Els quartils divideixen les dades en quatre parts:
+  \[
+  Q_1=P_{25}, \qquad Q_2=P_{50}=Md, \qquad Q_3=P_{75}.
+  \]
+  \item El rang interquartílic és
+  \[
+  RI = Q_3-Q_1.
+  \]
+\end{itemize}
+\begin{alertblock}{En sistemes informàtics}
+El percentil 95 o 99 de la latència pot ser més important que la mitjana.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Quantils amb R}
+\begin{lstlisting}
+quantile(logs$temps_ms, probs = c(0.25, 0.50, 0.75, 0.95, 0.99))
+\end{lstlisting}
+\vspace{0.25cm}
+\begin{center}
+\small
+\begin{tabular}{rrrrr}
+\toprule
+P25 & P50 & P75 & P95 & P99 \\
+\midrule
+82 & 106 & 148 & 310 & 870 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.15cm}
+\begin{block}{Lectura}
+El 99\% de les peticions responen en 870 ms o menys. L'1\% restant pot ser crític.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Diagrama de caixa: detectar valors atípics}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item Resumeix mediana, quartils, rang interquartílic i possibles valors atípics.
+  \item Barreres internes:
+  \[
+  Q_1-1.5RI, \qquad Q_3+1.5RI.
+  \]
+  \item Els punts fora d'aquest interval són candidats a \important{outliers}.
+\end{itemize}
+\column{0.48\textwidth}
+\begin{tikzpicture}
+\begin{axis}[
+  width=6.3cm,
+  height=4.6cm,
+  boxplot/draw direction=y,
+  xtick={1},
+  xticklabels={temps},
+  ylabel={ms},
+  ymin=40,ymax=400]
+\addplot+[boxplot prepared={lower whisker=55, lower quartile=82, median=106, upper quartile=148, upper whisker=245}, mark=*] coordinates {(1,310) (1,360)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Boxplot amb R}
+\begin{lstlisting}
+ggplot(logs, aes(y = temps_ms)) +
+  geom_boxplot() +
+  labs(
+    title = "Diagrama de caixa dels temps de resposta",
+    y = "Temps de resposta (ms)"
+  )
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Ampliació natural}
+Comparar per grups:
+\begin{lstlisting}
+ggplot(logs, aes(x = navegador, y = temps_ms)) + geom_boxplot()
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Forma de la distribució}
+
+\begin{frame}{Asimetria}
+\begin{itemize}
+  \item Una distribució és simètrica si la seva forma és semblant a banda i banda del centre.
+  \item L'asimetria positiva és habitual en temps de resposta: moltes observacions petites i unes poques molt grans.
+  \item L'asimetria negativa és menys habitual en latències, però pot aparèixer en notes, puntuacions o percentatges limitats superiorment.
+\end{itemize}
+\vspace{0.25cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{block}{Coeficient d'asimetria}
+\[
+As=\frac{\frac{1}{n}\sum_{i=1}^n (x_i-\bar{x})^3}{s^3}
+\]
+\end{block}
+\column{0.45\textwidth}
+\begin{alertblock}{Senyal pràctic}
+Si $\bar{x} > Md$, sovint hi ha cua a la dreta.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Distribució simètrica i asimètrica}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10.5cm,
+  height=4.8cm,
+  domain=-3:7,
+  samples=200,
+  axis lines=left,
+  xlabel={$x$},
+  ylabel={densitat},
+  legend pos=north east,
+  ymin=0]
+\addplot[DeepBlue,thick] {exp(-x^2/2)/2.5066};
+\addplot[AccentOrange,thick] {x>0 ? 0.8*exp(-x/1.5) : 0};
+\legend{aprox. simètrica,cua a la dreta}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\begin{block}{Interpretació}
+La forma de la distribució ajuda a decidir quines mesures resum són més informatives.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Simulació i reproduïbilitat}
+
+\begin{frame}[fragile]{Simular per entendre}
+\begin{lstlisting}
+set.seed(2026)
+
+# Temps de resposta artificials: molts valors petits i alguns grans
+temps <- c(rnorm(950, mean = 100, sd = 20),
+           rnorm(50, mean = 500, sd = 80))
+
+mean(temps)
+median(temps)
+sd(temps)
+quantile(temps, c(.50, .95, .99))
+\end{lstlisting}
+\vspace{0.15cm}
+\begin{block}{Per què simular?}
+La simulació permet construir exemples controlats i veure com canvien els estadístics quan canvia el sistema.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Primer contacte amb càlcul repetit}
+\begin{lstlisting}
+set.seed(2026)
+
+resultats <- replicate(1000, {
+  x <- rnorm(100, mean = 100, sd = 20)
+  mean(x)
+})
+
+summary(resultats)
+sd(resultats)
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{alertblock}{Idea per més endavant}
+Quan repetim molts càlculs, podem plantejar-nos paral·lelitzar-los. La descriptiva és també una porta d'entrada a la simulació computacional.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Exemple: versió paral·lelitzable}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+resultats <- future_map_dbl(1:1000, function(i) {
+  x <- rnorm(100, mean = 100, sd = 20)
+  mean(x)
+})
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Missatge}
+La idea estadística és la mateixa; el que canvia és com repartim el càlcul entre nuclis o processos.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Reproduïbilitat amb GitHub}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Estructura recomanada}
+\small
+\begin{tabular}{ll}
+\toprule
+Carpeta/fitxer & Contingut \\
+\midrule
+\texttt{data/} & dades originals \\
+\texttt{R/} & scripts auxiliars \\
+\texttt{figures/} & gràfics generats \\
+\texttt{informe.qmd} & informe reproduïble \\
+\texttt{README.md} & descripció del projecte \\
+\bottomrule
+\end{tabular}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Commits útils}
+\begin{itemize}
+  \item \texttt{afegeix lectura de dades}
+  \item \texttt{calcula taula de freqüències}
+  \item \texttt{afegeix histograma de latència}
+  \item \texttt{interpreta valors atípics}
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+\end{document}

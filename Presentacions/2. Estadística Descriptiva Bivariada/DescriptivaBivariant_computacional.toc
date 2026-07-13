@@ -1,0 +1,4 @@
+\babel@toc {catalan}{}\relax 
+\beamer@sectionintoc {1}{Dues variables qualitatives}{5}{0}{1}
+\beamer@sectionintoc {2}{Dues variables numèriques}{14}{0}{2}
+\beamer@sectionintoc {3}{Recta de regressió}{22}{0}{3}

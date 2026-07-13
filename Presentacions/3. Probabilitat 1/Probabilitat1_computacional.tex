@@ -1,0 +1,996 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+% ------------------------------------------------------------------
+% Presentació adaptada: Probabilitat 1 amb orientació computacional
+% Grau en Enginyeria Informàtica - Estadística
+% ------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{xcolor}
+\usepackage{listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+
+% ------------------------------------------------------------------
+% Estil visual coherent amb les presentacions anteriors
+% ------------------------------------------------------------------
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_tile,geom_smooth,facet_wrap,
+    labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,arrange,set.seed,
+    rbinom,runif,sample,replicate,cumsum,cummean,tibble,rep,seq,case_when,
+    future_map_dbl,plan,multisession,furrr,pmap_dbl,rowwise},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{%
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{AccentOrange},
+  backgroundcolor=\color{CodeBack},
+  frame=single,
+  rulecolor=\color{CodeFrame},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+
+% ------------------------------------------------------------------
+% Dades de la presentació
+% ------------------------------------------------------------------
+\title[Probabilitat computacional]{Probabilitat I}
+\subtitle{Incertesa, simulació, probabilitat condicionada i Bayes}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2025--26}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.5cm}
+  \begin{center}
+  \small
+  \textcolor{DeepBlue}{La probabilitat com a llenguatge per raonar amb dades, algoritmes i sistemes incerts}
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per què probabilitat en Enginyeria Informàtica?}
+\begin{columns}[T]
+\column{0.56\textwidth}
+\begin{itemize}
+  \item Molts sistemes informàtics no són deterministes a escala observable.
+  \item Treballem amb \important{errors, fallades, latències, mostres, classificadors, soroll i decisions sota incertesa}.
+  \item La probabilitat permet modelitzar:
+  \begin{itemize}
+    \item pèrdua de paquets en una xarxa,
+    \item falsos positius en un detector,
+    \item col·lisions en hashing,
+    \item experiments A/B,
+    \item filtres de correu brossa,
+    \item fiabilitat de sistemes distribuïts.
+  \end{itemize}
+\end{itemize}
+\column{0.38\textwidth}
+\begin{block}{Idea clau}
+No n'hi ha prou amb dir ``ha passat'' o ``no ha passat''. Volem quantificar \important{com de probable} és i com canvia aquesta probabilitat quan tenim nova informació.
+\end{block}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.4cm,align=center,inner sep=8pt] {
+Dades $+$ model $+$ simulació $\rightarrow$ decisió informada
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Objectius del tema}
+Al final d'aquest tema hauríeu de poder:
+\begin{enumerate}
+  \item Interpretar la probabilitat com a freqüència relativa a llarg termini i com a model.
+  \item Definir espai mostral, esdeveniments, complementaris, unions i interseccions.
+  \item Calcular probabilitats a partir de taules de freqüències.
+  \item Entendre i aplicar la probabilitat condicionada.
+  \item Identificar esdeveniments independents.
+  \item Aplicar la fórmula de probabilitat total i el teorema de Bayes.
+  \item Verificar resultats amb simulació en \R.
+  \item Connectar aquests conceptes amb classificació, detecció d'errors i monitoratge de sistemes.
+\end{enumerate}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Mapa del tema}
+\begin{center}
+\begin{tikzpicture}[node distance=1.25cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,text width=3.0cm,align=center,minimum height=0.75cm] (freq) {Freqüències relatives};
+\node[draw,rounded corners,fill=SoftGray,below of=freq,yshift=-0.1cm,text width=3.0cm,align=center,minimum height=0.75cm] (prob) {Probabilitat formal};
+\node[draw,rounded corners,fill=SoftGray,below of=prob,yshift=-0.1cm,text width=3.0cm,align=center,minimum height=0.75cm] (cond) {Probabilitat condicionada};
+\node[draw,rounded corners,fill=SoftGray,right of=cond,xshift=3.2cm,text width=3.0cm,align=center,minimum height=0.75cm] (ind) {Independència};
+\node[draw,rounded corners,fill=SoftGray,below of=cond,yshift=-0.1cm,text width=3.0cm,align=center,minimum height=0.75cm] (total) {Probabilitat total};
+\node[draw,rounded corners,fill=UABLight,right of=total,xshift=3.2cm,text width=3.0cm,align=center,minimum height=0.75cm] (bayes) {Bayes};
+\node[draw,rounded corners,fill=AccentOrange!15,below of=total,yshift=-0.1cm,text width=6.8cm,align=center,minimum height=0.75cm] (sim) {Simulació amb R i interpretació computacional};
+\draw[->,thick,UABGreen] (freq) -- (prob);
+\draw[->,thick,UABGreen] (prob) -- (cond);
+\draw[->,thick,UABGreen] (cond) -- (total);
+\draw[->,thick,UABGreen] (total) -- (bayes);
+\draw[->,thick,AccentOrange] (cond) -- (ind);
+\draw[->,thick,AccentOrange] (bayes) -- (sim);
+\draw[->,thick,AccentOrange] (total) -- (sim);
+\end{tikzpicture}
+\end{center}
+\vspace{0.1cm}
+\begin{alertblock}{Pregunta transversal}
+Com actualitzem una probabilitat quan observem una nova evidència?
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Probabilitat i simulació}
+
+\begin{frame}{Un problema històric: de Méré i Fermat}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Joc 1}
+Llancem un dau 4 vegades. Guanyem si surt almenys un 6.
+\[
+\Prob(\text{guanyar})=1-\left(\frac{5}{6}\right)^4=0.5177.
+\]
+\end{block}
+\begin{block}{Joc 2}
+Llancem dos daus 24 vegades. Guanyem si surt almenys un doble 6.
+\[
+\Prob(\text{guanyar})=1-\left(\frac{35}{36}\right)^{24}=0.4914.
+\]
+\end{block}
+\column{0.42\textwidth}
+\begin{alertblock}{Lliçó}
+Una intuïció aparentment raonable pot fallar. La probabilitat ens dona una manera formal de comprovar-la.
+\end{alertblock}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.7cm,align=center,inner sep=8pt] {
+Càlcul exacte $+$ simulació $\Rightarrow$ comprensió del fenomen
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{El mateix problema amb R}
+\begin{lstlisting}
+# Probabilitats exactes
+p_joc1 <- 1 - (5/6)^4
+p_joc2 <- 1 - (35/36)^24
+
+p_joc1
+p_joc2
+
+# Simulació del segon joc
+set.seed(123)
+B <- 100000
+guanya <- replicate(B, {
+  daus1 <- sample(1:6, size = 24, replace = TRUE)
+  daus2 <- sample(1:6, size = 24, replace = TRUE)
+  any(daus1 == 6 & daus2 == 6)
+})
+mean(guanya)
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Missatge computacional}
+La simulació no substitueix la teoria, però ajuda a validar càlculs, detectar errors d'intuïció i entendre la variabilitat.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Freqüències relatives i probabilitats}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Per esdeveniments aleatoris independents repetits moltes vegades:
+\[
+\text{freqüència relativa} = \frac{\text{nombre d'èxits}}{\text{nombre de repeticions}}
+\]
+\vspace{-0.1cm}
+\[
+\text{freqüència relativa} \approx \Prob(\text{èxit}).
+\]
+\begin{itemize}
+  \item Amb poques repeticions pot variar força.
+  \item Amb moltes repeticions tendeix a estabilitzar-se.
+  \item Aquesta és la base de la simulació Monte Carlo.
+\end{itemize}
+\column{0.43\textwidth}
+\begin{tikzpicture}
+\begin{axis}[
+  width=6.0cm,height=4.2cm,
+  xlabel={Nombre de simulacions}, ylabel={Freq. relativa},
+  ymin=0.35,ymax=0.65,xmin=0,xmax=1000,
+  axis lines=left, grid=major, grid style={gray!20},
+  tick label style={font=\scriptsize}, label style={font=\scriptsize}]
+\addplot[DeepBlue, thick] coordinates {
+(10,0.600)(25,0.520)(50,0.540)(100,0.500)(150,0.507)(200,0.515)(300,0.503)(400,0.510)(600,0.505)(800,0.496)(1000,0.492)};
+\addplot[AccentOrange, dashed, thick] coordinates {(0,0.4914)(1000,0.4914)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Un patró de simulació reutilitzable}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}
+set.seed(2026)
+B <- 5000
+
+simula_joc <- function() {
+  daus1 <- sample(1:6, 24, replace = TRUE)
+  daus2 <- sample(1:6, 24, replace = TRUE)
+  any(daus1 == 6 & daus2 == 6)
+}
+
+resultats <- replicate(B, simula_joc())
+freq_acumulada <- cumsum(resultats) / seq_len(B)
+\end{lstlisting}
+\column{0.38\textwidth}
+\begin{block}{Bones pràctiques}
+\begin{itemize}
+  \item Fixar una llavor amb \texttt{set.seed()}.
+  \item Escriure funcions petites.
+  \item Separar simulació, càlcul i visualització.
+  \item Guardar el codi en un projecte de \RStudio{} i \GitHub{}.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Probabilitat a partir de dades}
+
+\begin{frame}{Esdeveniments a partir d'una taula de dades}
+Suposem un registre de 120 peticions a un sistema web:
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+ & Error & No error & Total \\
+\midrule
+Mòbil & 25 & 50 & 75 \\
+Escriptori & 20 & 25 & 45 \\
+\midrule
+Total & 45 & 75 & 120 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item $E$: la petició acaba amb error.
+  \item $M$: la petició ve de mòbil.
+  \item $D$: la petició ve d'escriptori.
+\end{itemize}
+\column{0.48\textwidth}
+\begin{align*}
+\Prob(E) &= 45/120 = 0.375,\\
+\Prob(M) &= 75/120 = 0.625,\\
+\Prob(D \cap E) &= 20/120 = 0.1667.
+\end{align*}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Unions, interseccions i complementaris}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Regla de la unió}
+\[
+\Prob(A\cup B)=\Prob(A)+\Prob(B)-\Prob(A\cap B).
+\]
+\end{block}
+\begin{block}{Complementari}
+\[
+\Prob(\overline{A})=1-\Prob(A).
+\]
+\end{block}
+\begin{exampleblock}{Exemple}
+\[
+\Prob(D\cup E)=0.375+0.375-0.1667=0.5833.
+\]
+\end{exampleblock}
+\column{0.42\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\fill[UABLight] (-1,0) circle (1.15);
+\fill[AccentOrange!25] (1,0) circle (1.15);
+\draw[thick,DeepBlue] (-1,0) circle (1.15);
+\draw[thick,UABGreen] (1,0) circle (1.15);
+\node at (-1.35,0.9) {$A$};
+\node at (1.35,0.9) {$B$};
+\node at (0,-0.05) {$A\cap B$};
+\node[align=center] at (0,-1.8) {La intersecció no s'ha de comptar dues vegades};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Taules de probabilitats amb R}
+\begin{lstlisting}
+peticions <- tibble::tribble(
+  ~dispositiu,   ~estat,      ~n,
+  "mobil",      "error",      25,
+  "mobil",      "no_error",   50,
+  "escriptori", "error",      20,
+  "escriptori", "no_error",   25
+)
+
+# Taula de freqüències absolutes
+xt <- xtabs(n ~ dispositiu + estat, data = peticions)
+addmargins(xt)
+
+# Taula de probabilitats relatives
+round(prop.table(xt), 4)
+
+# Probabilitats condicionades per dispositiu
+round(prop.table(xt, margin = 1), 4)
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Connexió amb descriptiva bivariant}
+Les taules de contingència també són una porta d'entrada natural a la probabilitat.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Definició formal}
+
+\begin{frame}{Definició formal de probabilitat}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{itemize}
+  \item \important{Espai mostral} $\Omega$: conjunt de tots els resultats possibles.
+  \item \important{Esdeveniments}: subconjunts de $\Omega$.
+  \item Una probabilitat és una funció
+  \[
+  \Prob: \mathcal{E} \longrightarrow [0,1]
+  \]
+  que assigna un nombre a cada esdeveniment.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Axiomes bàsics}
+\begin{enumerate}
+  \item $0\leq \Prob(A)\leq 1$.
+  \item $\Prob(\Omega)=1$ i $\Prob(\emptyset)=0$.
+  \item Si $A$ i $B$ són disjunts:
+  \[
+  \Prob(A\cup B)=\Prob(A)+\Prob(B).
+  \]
+\end{enumerate}
+\end{block}
+\end{columns}
+\vspace{0.1cm}
+\begin{alertblock}{Interpretació computacional}
+Un esdeveniment pot ser: ``temps de resposta $>$ 1 segon'', ``paquet perdut'', ``classificador diu spam'', ``test automàtic falla''.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Espai mostral en un sistema informàtic}
+\begin{center}
+\begin{tikzpicture}[node distance=1cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,text width=3.3cm,align=center,minimum height=0.8cm] (omega) {$\Omega$\\Totes les peticions};
+\node[draw,rounded corners,fill=SoftGray,below left=of omega,xshift=-0.5cm,text width=3.0cm,align=center,minimum height=0.8cm] (ok) {Peticions OK};
+\node[draw,rounded corners,fill=SoftGray,below right=of omega,xshift=0.5cm,text width=3.0cm,align=center,minimum height=0.8cm] (err) {Peticions amb error};
+\node[draw,rounded corners,fill=AccentOrange!15,below=of err,text width=3.0cm,align=center,minimum height=0.8cm] (timeout) {Timeout};
+\node[draw,rounded corners,fill=AccentOrange!15,below=of ok,text width=3.0cm,align=center,minimum height=0.8cm] (fast) {Latència $<100$ ms};
+\draw[->,thick,UABGreen] (omega) -- (ok);
+\draw[->,thick,UABGreen] (omega) -- (err);
+\draw[->,thick,AccentOrange] (err) -- (timeout);
+\draw[->,thick,AccentOrange] (ok) -- (fast);
+\end{tikzpicture}
+\end{center}
+\vspace{0.2cm}
+\begin{block}{Traducció estadística}
+Cada filtre sobre les dades defineix un esdeveniment. Les probabilitats poden estimar-se com a freqüències relatives o modelitzar-se teòricament.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Probabilitat condicionada i independència}
+
+\begin{frame}{Probabilitat condicionada}
+\begin{block}{Definició}
+La probabilitat que passi $A$ sabent que ha passat $B$ és:
+\[
+\Prob(A\mid B)=\frac{\Prob(A\cap B)}{\Prob(B)}, \qquad \Prob(B)>0.
+\]
+\end{block}
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{exampleblock}{Exemple}
+Probabilitat que una petició tingui error sabent que ve d'escriptori:
+\[
+\Prob(E\mid D)=\frac{\Prob(E\cap D)}{\Prob(D)}
+=\frac{20/120}{45/120}=0.4444.
+\]
+\end{exampleblock}
+\column{0.48\textwidth}
+\begin{alertblock}{Interpretació}
+Condicionar vol dir canviar la població de referència. Ja no mirem totes les peticions, només les que compleixen $D$.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Independència}
+\begin{block}{Definició}
+Dos esdeveniments $A$ i $B$ són independents si:
+\[
+\Prob(A\cap B)=\Prob(A)\Prob(B).
+\]
+Equivalentment, si $\Prob(B)>0$:
+\[
+\Prob(A\mid B)=\Prob(A).
+\]
+\end{block}
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item Si saber $B$ no canvia la probabilitat de $A$, no hi ha informació addicional.
+  \item En dades reals, la independència exacta és rara.
+\end{itemize}
+\column{0.48\textwidth}
+\begin{alertblock}{En informàtica}
+No assumiu independència sense pensar-hi: errors de xarxa, caigudes de serveis i temps de resposta poden estar correlacionats.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Comprovar independència amb dades}
+\begin{lstlisting}
+# Probabilitat d'error global
+p_error <- sum(xt[, "error"]) / sum(xt)
+
+# Probabilitat d'error condicionada pel dispositiu
+p_error_cond <- prop.table(xt, margin = 1)[, "error"]
+
+p_error
+p_error_cond
+
+# Si són molt diferents, el dispositiu aporta informació
+p_error_cond - p_error
+\end{lstlisting}
+\vspace{0.15cm}
+\begin{block}{Important}
+Amb una mostra petita, diferències petites poden ser només soroll. La inferència estadística ajudarà a decidir si la diferència és compatible amb l'atzar.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{El problema dels aniversaris}
+\begin{columns}[T]
+\column{0.56\textwidth}
+Volem calcular la probabilitat que, entre $k$ persones, almenys dues comparteixin aniversari.
+\vspace{0.15cm}
+\begin{itemize}
+  \item És més fàcil calcular el complementari: cap aniversari repetit.
+\end{itemize}
+\[
+\Prob(\text{cap repetit})=\frac{365\cdot 364\cdot \ldots \cdot (365-k+1)}{365^k}.
+\]
+\[
+\Prob(\text{almenys un repetit})=1-\Prob(\text{cap repetit}).
+\]
+\column{0.38\textwidth}
+\begin{center}
+\small
+\begin{tabular}{cc}
+\toprule
+$k$ & $\Prob(\text{repetit})$ \\
+\midrule
+10 & 0.1169 \\
+20 & 0.4114 \\
+23 & 0.5073 \\
+30 & 0.7063 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{alertblock}{Sorprenent?}
+Amb 23 persones ja superem el 50\%.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Simular el problema dels aniversaris}
+\begin{lstlisting}
+simula_aniversaris <- function(k) {
+  dies <- sample(1:365, size = k, replace = TRUE)
+  any(duplicated(dies))
+}
+
+set.seed(123)
+B <- 10000
+ks <- c(10, 20, 23, 30)
+
+prob_sim <- sapply(ks, function(k) {
+  mean(replicate(B, simula_aniversaris(k)))
+})
+
+tibble::tibble(k = ks, prob_simulada = prob_sim)
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Lectura computacional}
+Aquest exemple mostra com una probabilitat aparentment complicada es pot entendre amb una combinació de complementaris i simulació.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Probabilitat total i Bayes}
+
+\begin{frame}{Particions de l'espai mostral}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Una partició divideix $\Omega$ en esdeveniments disjunts:
+\[
+\Omega=H_1\cup H_2\cup\cdots\cup H_n,
+\qquad H_i\cap H_j=\emptyset.
+\]
+Qualsevol esdeveniment $A$ es pot descompondre com:
+\[
+A=(A\cap H_1)\cup\cdots\cup(A\cap H_n).
+\]
+\column{0.42\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\draw[thick,rounded corners] (0,0) rectangle (4,2.7);
+\fill[UABLight] (0,0) rectangle (1.3,2.7);
+\fill[SoftGray] (1.3,0) rectangle (2.7,2.7);
+\fill[AccentOrange!18] (2.7,0) rectangle (4,2.7);
+\draw[thick] (1.3,0) -- (1.3,2.7);
+\draw[thick] (2.7,0) -- (2.7,2.7);
+\node at (0.65,2.35) {$H_1$};
+\node at (2.0,2.35) {$H_2$};
+\node at (3.35,2.35) {$H_3$};
+\draw[DeepBlue,very thick] (2,1.35) ellipse (1.45 and 0.7);
+\node[DeepBlue] at (2,1.35) {$A$};
+\node at (2,-0.35) {$\Omega$};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Fórmula de probabilitat total}
+Si $H_1,\ldots,H_n$ formen una partició:
+\[
+\Prob(A)=\Prob(A\cap H_1)+\cdots+\Prob(A\cap H_n).
+\]
+Com que
+\[
+\Prob(A\cap H_i)=\Prob(A\mid H_i)\Prob(H_i),
+\]
+tenim:
+\[
+\boxed{\Prob(A)=\sum_{i=1}^n \Prob(A\mid H_i)\Prob(H_i)}
+\]
+\vspace{0.1cm}
+\begin{block}{Interpretació}
+La probabilitat global de $A$ és una mitjana ponderada de les probabilitats condicionades de $A$ dins de cada grup.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Teorema de Bayes}
+\begin{block}{Fórmula}
+Si $H_1,\ldots,H_n$ formen una partició i observem $A$:
+\[
+\boxed{
+\Prob(H_j\mid A)=
+\frac{\Prob(A\mid H_j)\Prob(H_j)}
+{\sum_{i=1}^n \Prob(A\mid H_i)\Prob(H_i)}
+}
+\]
+\end{block}
+\vspace{0.2cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item $\Prob(H_j)$: probabilitat abans d'observar $A$.
+  \item $\Prob(A\mid H_j)$: versemblança de l'evidència.
+  \item $\Prob(H_j\mid A)$: probabilitat després d'observar $A$.
+\end{itemize}
+\column{0.48\textwidth}
+\begin{alertblock}{Lectura informàtica}
+Bayes és el nucli de molts raonaments de diagnòstic: spam, alertes, tests automàtics, detecció d'intrusions i classificadors probabilístics.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Exemple: filtre de correu brossa}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Un compte de correu rep missatges:
+\begin{itemize}
+  \item $30\%$ són spam: $\Prob(S)=0.3$.
+  \item Si és spam, el $30\%$ conté una paraula sospitosa $V$: $\Prob(V\mid S)=0.3$.
+  \item Si no és spam, l'1\% conté $V$: $\Prob(V\mid \overline{S})=0.01$.
+\end{itemize}
+Si un missatge conté $V$, quina és la probabilitat que sigui spam?
+\column{0.42\textwidth}
+\begin{align*}
+\Prob(V) &= 0.3\cdot 0.3 + 0.01\cdot 0.7 \\
+&=0.097,\\[0.2cm]
+\Prob(S\mid V) &= \frac{\Prob(V\mid S)\Prob(S)}{\Prob(V)}\\
+&=\frac{0.3\cdot 0.3}{0.097}=0.9278.
+\end{align*}
+\begin{block}{Conclusió}
+La paraula $V$ és molt informativa, però no perfecta.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Bayes amb una taula en R}
+\begin{lstlisting}
+prior_spam <- 0.30
+p_v_spam <- 0.30
+p_v_no_spam <- 0.01
+
+p_v <- p_v_spam * prior_spam +
+       p_v_no_spam * (1 - prior_spam)
+
+posterior_spam <- p_v_spam * prior_spam / p_v
+posterior_spam
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{block}{Extensió natural}
+En lloc d'una sola paraula, podem tenir moltes característiques: paraules, domini, adjunts, hora d'enviament, historial del remitent... Aquesta és la porta d'entrada als classificadors probabilístics.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Exemple: alarma d'un sistema}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Un sistema de monitoratge dispara una alarma si detecta una incidència.
+\begin{itemize}
+  \item Probabilitat real d'incidència: $\Prob(I)=0.01$.
+  \item Si hi ha incidència, l'alarma es dispara amb probabilitat $0.97$.
+  \item Si no hi ha incidència, hi ha falsa alarma amb probabilitat $0.02$.
+\end{itemize}
+Si sona l'alarma, quina és la probabilitat que hi hagi incidència?
+\column{0.42\textwidth}
+\begin{align*}
+\Prob(I\mid A)&=\frac{\Prob(A\mid I)\Prob(I)}{\Prob(A\mid I)\Prob(I)+\Prob(A\mid \overline{I})\Prob(\overline{I})}\\[0.2cm]
+&=\frac{0.97\cdot 0.01}{0.97\cdot 0.01+0.02\cdot 0.99}\\[0.2cm]
+&=0.3288.
+\end{align*}
+\end{columns}
+\begin{alertblock}{Lliçó}
+Una alarma molt bona pot tenir una probabilitat posterior moderada si l'esdeveniment real és molt rar.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Base rate fallacy: el risc d'oblidar la prevalença}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{itemize}
+  \item L'alarma té sensibilitat alta: $\Prob(A\mid I)=0.97$.
+  \item Però la incidència és molt rara: $\Prob(I)=0.01$.
+  \item Moltes alarmes provenen de casos sense incidència, perquè són molt més nombrosos.
+\end{itemize}
+\vspace{0.1cm}
+\begin{block}{Traducció informàtica}
+En detecció d'intrusions, frau o anomalies, no podem mirar només la taxa d'encert. Cal tenir en compte la freqüència real de l'esdeveniment.
+\end{block}
+\column{0.4\textwidth}
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+ & Alarma & No alarma \\
+\midrule
+Incidència & 0.0097 & 0.0003 \\
+No incidència & 0.0198 & 0.9702 \\
+\midrule
+Total & 0.0295 & 0.9705 \\
+\bottomrule
+\end{tabular}
+\vspace{0.2cm}
+\[
+\frac{0.0097}{0.0295}=0.3288
+\]
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Exemple: qualitat de software o hardware}
+\begin{columns}[T]
+\column{0.55\textwidth}
+Tres proveïdors fabriquen components. Les quotes i percentatges defectuosos són:
+\begin{center}
+\small
+\begin{tabular}{lcc}
+\toprule
+Proveïdor & Quota & Defectuosos \\
+\midrule
+A & 70\% & 4\% \\
+B & 24\% & 3\% \\
+C & 6\% & 1\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{itemize}
+  \item Probabilitat que un component sigui defectuós?
+  \item Si és defectuós, probabilitat que sigui de C?
+  \item Si funciona, probabilitat que sigui de B?
+\end{itemize}
+\column{0.4\textwidth}
+\begin{align*}
+\Prob(D) &= 0.04\cdot 0.70 + 0.03\cdot 0.24 + 0.01\cdot 0.06 \\
+&=0.0358,\\[0.2cm]
+\Prob(C\mid D) &= \frac{0.01\cdot 0.06}{0.0358}=0.0168,\\[0.2cm]
+\Prob(B\mid \overline{D}) &= \frac{0.97\cdot 0.24}{1-0.0358}=0.2414.
+\end{align*}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Codi genèric per a probabilitat total i Bayes}
+\begin{lstlisting}
+proveidors <- tibble::tribble(
+  ~proveidor, ~quota, ~prob_defecte_cond,
+  "A",        0.70,    0.04,
+  "B",        0.24,    0.03,
+  "C",        0.06,    0.01
+)
+
+prob_defecte_total <- sum(
+  proveidors$quota * proveidors$prob_defecte_cond
+)
+
+proveidors <- proveidors |>
+  dplyr::mutate(
+    prob_proveidor_si_defecte =
+      quota * prob_defecte_cond / prob_defecte_total
+  )
+
+proveidors
+\end{lstlisting}
+\vspace{0.1cm}
+\begin{block}{Programar estadística també és programar bé}
+Noms clars, funcions petites i informes reproduïbles redueixen errors matemàtics i errors de codi.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\section{Simulació i paral·lelització}
+
+\begin{frame}{Quan la probabilitat exacta és difícil}
+\begin{columns}[T]
+\column{0.55\textwidth}
+En problemes reals, el càlcul exacte pot ser difícil:
+\begin{itemize}
+  \item molts components,
+  \item dependències entre fallades,
+  \item regles complexes,
+  \item grans volums de dades,
+  \item probabilitats rares.
+\end{itemize}
+\vspace{0.1cm}
+\begin{block}{Estratègia}
+Simular moltes vegades el sistema i estimar la probabilitat com a freqüència relativa.
+\end{block}
+\column{0.4\textwidth}
+\begin{tikzpicture}[node distance=0.8cm, every node/.style={font=\small}]
+\node[draw,rounded corners,fill=UABLight,text width=3.9cm,align=center] (model) {Model del sistema};
+\node[draw,rounded corners,fill=SoftGray,below=of model,text width=3.9cm,align=center] (sim) {Simular $B$ vegades};
+\node[draw,rounded corners,fill=SoftGray,below=of sim,text width=3.9cm,align=center] (freq) {Comptar esdeveniments};
+\node[draw,rounded corners,fill=AccentOrange!15,below=of freq,text width=3.9cm,align=center] (prob) {Estimar probabilitat};
+\draw[->,thick,UABGreen] (model) -- (sim);
+\draw[->,thick,UABGreen] (sim) -- (freq);
+\draw[->,thick,UABGreen] (freq) -- (prob);
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Exemple: fiabilitat d'un sistema amb rèpliques}
+Un servei funciona si almenys 2 de 3 servidors estan actius. Cada servidor falla amb probabilitat 0.05.
+\begin{lstlisting}
+set.seed(123)
+B <- 100000
+
+simula_sistema <- function() {
+  actiu <- rbinom(n = 3, size = 1, prob = 0.95)
+  sum(actiu) >= 2
+}
+
+funciona <- replicate(B, simula_sistema())
+mean(funciona)
+\end{lstlisting}
+\vspace{0.1cm}
+\begin{block}{Lectura}
+Aquest tipus de simulació connecta probabilitat, arquitectura de sistemes i presa de decisions sobre redundància.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Accelerar simulacions amb paral·lelització}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+B <- 10000
+resultats <- future_map_dbl(1:B, function(i) {
+  actiu <- rbinom(n = 3, size = 1, prob = 0.95)
+  as.numeric(sum(actiu) >= 2)
+})
+
+mean(resultats)
+\end{lstlisting}
+\column{0.38\textwidth}
+\begin{block}{Missatge}
+La probabilitat proporciona el model; la computació permet repetir-lo moltes vegades.
+\end{block}
+\begin{alertblock}{Important}
+La paral·lelització és útil quan cada simulació és prou costosa. Per problemes petits, el cost de coordinar processos pot no compensar.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Pràctica proposada}
+\begin{block}{Pràctica: probabilitat, Bayes i simulació}
+Treball individual o en parelles, lliurat com a informe reproduïble en \RStudio{} i \GitHub{}.
+\end{block}
+\begin{enumerate}
+  \item Simular el problema de de Méré i comparar amb el valor teòric.
+  \item Simular el problema dels aniversaris per a diferents valors de $k$.
+  \item Analitzar una taula de peticions web i calcular probabilitats condicionades.
+  \item Aplicar Bayes a un sistema d'alertes o a un filtre de spam.
+  \item Escriure una conclusió curta: què canvia quan condicionem o quan observem evidència?
+\end{enumerate}
+\vspace{0.15cm}
+\begin{alertblock}{Lliurament}
+Repositori amb script \texttt{probabilitat.R}, informe \texttt{probabilitat.qmd} i almenys un gràfic generat automàticament.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Errors habituals}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{alertblock}{Matemàtics}
+\begin{itemize}
+  \item Confondre $\Prob(A\mid B)$ amb $\Prob(B\mid A)$.
+  \item Oblidar la probabilitat de base $\Prob(H_i)$.
+  \item Comptar dues vegades una intersecció.
+  \item Assumir independència sense justificar-la.
+\end{itemize}
+\end{alertblock}
+\column{0.48\textwidth}
+\begin{alertblock}{Computacionals}
+\begin{itemize}
+  \item No fixar la llavor de simulació.
+  \item Fer servir noms de variables ambigus.
+  \item Simular massa poc i treure conclusions fortes.
+  \item No separar dades, codi i resultats.
+\end{itemize}
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Resum del tema}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{itemize}
+  \item La probabilitat quantifica incertesa.
+  \item Les freqüències relatives connecten dades i probabilitat.
+  \item La probabilitat condicionada canvia la població de referència.
+  \item Bayes actualitza probabilitats quan observem evidència.
+  \item La simulació permet aproximar probabilitats difícils.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Per emportar-se}
+\[
+\Prob(H\mid A) \propto \Prob(A\mid H)\Prob(H)
+\]
+\vspace{-0.2cm}
+\begin{center}
+\small
+posterior $\propto$ evidència $\times$ coneixement previ
+\end{center}
+\end{block}
+\vspace{0.2cm}
+\begin{tikzpicture}
+\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.6cm,align=center,inner sep=8pt] {
+Probabilitat $+$ simulació $+$ codi reproduïble $=$ raonament fiable
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Què hauríeu de saber fer ara?}
+\begin{enumerate}
+  \item Escriure correctament unions, interseccions i complementaris.
+  \item Calcular probabilitats en taules de freqüències.
+  \item Interpretar $\Prob(A\mid B)$ en paraules.
+  \item Reconèixer quan una probabilitat condicionada no és la inversa d'una altra.
+  \item Aplicar probabilitat total i Bayes en problemes amb particions.
+  \item Comprovar càlculs amb simulacions en \R.
+  \item Explicar una conclusió en llenguatge estadístic i computacional.
+\end{enumerate}
+\vspace{0.2cm}
+\begin{block}{Proper pas}
+Variables aleatòries discretes: convertir esdeveniments en variables numèriques i estudiar-ne la distribució.
+\end{block}
+\end{frame}
+
+\end{document}

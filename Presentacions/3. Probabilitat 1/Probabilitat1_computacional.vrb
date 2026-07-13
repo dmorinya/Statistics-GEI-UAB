@@ -1,0 +1,25 @@
+\frametitle{Accelerar simulacions amb paral·lelització}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+B <- 10000
+resultats <- future_map_dbl(1:B, function(i) {
+  actiu <- rbinom(n = 3, size = 1, prob = 0.95)
+  as.numeric(sum(actiu) >= 2)
+})
+
+mean(resultats)
+\end{lstlisting}
+\column{0.38\textwidth}
+\begin{block}{Missatge}
+La probabilitat proporciona el model; la computació permet repetir-lo moltes vegades.
+\end{block}
+\begin{alertblock}{Important}
+La paral·lelització és útil quan cada simulació és prou costosa. Per problemes petits, el cost de coordinar processos pot no compensar.
+\end{alertblock}
+\end{columns}

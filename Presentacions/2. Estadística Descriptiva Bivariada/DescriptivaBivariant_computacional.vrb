@@ -1,0 +1,20 @@
+\frametitle{Regressió amb R}
+\begin{lstlisting}
+bench <- read_csv("data/benchmark.csv")
+
+model <- lm(temps_ms ~ mida, data = bench)
+summary(model)
+
+# coeficients de la recta
+coef(model)
+
+# prediccions i residus
+bench$prediccio <- predict(model)
+bench$residu <- residuals(model)
+
+# grafic amb recta ajustada
+ggplot(bench, aes(mida, temps_ms)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal()
+\end{lstlisting}

@@ -1,0 +1,728 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+% ------------------------------------------------------------------
+% Tema 0: Eines per a una estadística computacional
+% Grau en Enginyeria Informàtica - Estadística
+% ------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+
+% ------------------------------------------------------------------
+% Estil visual coherent amb les presentacions anteriors
+% ------------------------------------------------------------------
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,install.packages,mean,median,sd,var,summary,table,prop.table,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_boxplot,geom_smooth,
+    labs,theme_minimal,summarise,group_by,mutate,read_csv,write_csv,filter,arrange,
+    select,rename,set.seed,runif,rnorm,rbinom,rpois,sample,replicate,system.time,
+    tibble,data.frame,head,str,glimpse,sessionInfo,dir.create,file.path,list.files,
+    plan,multisession,future_map_dbl,map_dbl},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstdefinelanguage{bash}{%
+  morekeywords={git,cd,mkdir,ls,pwd,quarto,Rscript,status,add,commit,push,pull,clone,init},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{%
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{AccentOrange},
+  backgroundcolor=\color{CodeBack},
+  frame=single,
+  rulecolor=\color{CodeFrame},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\Quarto}{\textsf{Quarto}}
+\newcommand{\Git}{\textsf{Git}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+
+% ------------------------------------------------------------------
+% Dades de la presentació
+% ------------------------------------------------------------------
+\title[Tema 0: eines computacionals]{Tema 0. Eines per a una estadística computacional}
+\subtitle{R, RStudio/Posit, Quarto, GitHub i fluxos de treball reproduïbles}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.4cm}
+  \begin{center}
+  \small
+  \textcolor{DeepBlue}{De les dades al codi, del codi als resultats, dels resultats a una decisió}
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per què un tema 0?}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{itemize}
+  \item En aquesta assignatura no només farem càlculs: també aprendrem a \important{treballar amb dades}.
+  \item L'objectiu és que cada resultat sigui:
+  \begin{itemize}
+    \item traçable,
+    \item reproduïble,
+    \item comunicable,
+    \item i fàcil de revisar.
+  \end{itemize}
+  \item Això és especialment important en informàtica: dades, scripts, versions i informes han de conviure.
+\end{itemize}
+
+\column{0.40\textwidth}
+\begin{block}{Idea central}
+\centering
+\large
+\important{Estadística = dades + probabilitat + codi + interpretació}
+\end{block}
+\vspace{0.2cm}
+\begin{alertblock}{Missatge pràctic}
+El codi que no es pot reproduir és difícil de validar.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Objectius de la sessió}
+Al final d'aquest tema hauríeu de poder:
+\begin{enumerate}
+  \item Obrir un projecte d'\RStudio{} de manera ordenada.
+  \item Crear i executar un script senzill en \R.
+  \item Importar dades i generar una primera taula o gràfic.
+  \item Preparar un informe breu amb \Quarto.
+  \item Fer servir \Git{} i \GitHub{} per lliurar una pràctica reproduïble.
+  \item Entendre per què la simulació i la computació paral·lela apareixeran al llarg del curs.
+\end{enumerate}
+
+\vspace{0.25cm}
+\begin{block}{No és un curs de programació avançada}
+És una introducció al \important{flux de treball computacional} que farem servir per aprendre estadística.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Les eines del curs}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Treball local}
+\begin{itemize}
+  \item \R: llenguatge per a càlcul estadístic.
+  \item \RStudio: entorn de treball.
+  \item \Quarto: informes amb text, codi i resultats.
+\end{itemize}
+\end{block}
+
+\begin{block}{Treball amb versions}
+\begin{itemize}
+  \item \Git: historial de canvis.
+  \item \GitHub: repositori remot i lliuraments.
+\end{itemize}
+\end{block}
+
+\column{0.48\textwidth}
+\begin{block}{Paquets d'\R}
+\begin{itemize}
+  \item \texttt{tidyverse}: manipulació i visualització.
+  \item \texttt{readr}: lectura de fitxers.
+  \item \texttt{ggplot2}: gràfics.
+  \item \texttt{future}, \texttt{furrr}: paral·lelització.
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{Durant el curs}
+No cal memoritzar totes les funcions: cal aprendre a construir un procés net i verificable.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Flux de treball recomanat}
+\begin{center}
+\begin{tikzpicture}[node distance=1.15cm, every node/.style={font=\small}]
+\node[draw, rounded corners, fill=UABLight, minimum width=2.3cm, minimum height=0.8cm] (data) {Dades};
+\node[draw, rounded corners, fill=SoftGray, right=of data, minimum width=2.3cm, minimum height=0.8cm] (code) {Codi};
+\node[draw, rounded corners, fill=SoftGray, right=of code, minimum width=2.3cm, minimum height=0.8cm] (results) {Resultats};
+\node[draw, rounded corners, fill=SoftGray, right=of results, minimum width=2.3cm, minimum height=0.8cm] (report) {Informe};
+\node[draw, rounded corners, fill=UABLight, below=of code, minimum width=2.6cm, minimum height=0.8cm] (git) {Git/GitHub};
+\draw[-{Latex[length=3mm]}, thick, color=UABGreen] (data) -- (code);
+\draw[-{Latex[length=3mm]}, thick, color=UABGreen] (code) -- (results);
+\draw[-{Latex[length=3mm]}, thick, color=UABGreen] (results) -- (report);
+\draw[-{Latex[length=3mm]}, thick, color=AccentOrange] (git) -- (code);
+\draw[-{Latex[length=3mm]}, thick, color=AccentOrange] (report) -- ++(0,-1) -| (git);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.25cm}
+\begin{block}{Principi de reproduïbilitat}
+Una altra persona hauria de poder obtenir els mateixos resultats executant el vostre codi en el mateix projecte.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{R com a calculadora estadística}
+\begin{columns}[T]
+\column{0.54\textwidth}
+\begin{lstlisting}
+# Operacions bàsiques
+2 + 3
+sqrt(16)
+log(100)
+
+# Objectes
+x <- c(12, 15, 13, 18, 20)
+mean(x)
+sd(x)
+summary(x)
+\end{lstlisting}
+
+\column{0.42\textwidth}
+\begin{itemize}
+  \item En \R{} assignem valors amb \texttt{<-}.
+  \item Un vector és una col·lecció de valors.
+  \item Moltes funcions estadístiques bàsiques ja estan incorporades.
+\end{itemize}
+
+\begin{alertblock}{Bon hàbit}
+Comenteu el codi amb \texttt{\#}: ajuda a entendre què esteu fent.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Primer exemple: temps d'execució}
+\begin{columns}[T]
+\column{0.57\textwidth}
+\begin{lstlisting}
+set.seed(123)
+
+temps_ms <- c(31, 29, 34, 30, 35, 33, 32, 80)
+
+mean(temps_ms)
+median(temps_ms)
+sd(temps_ms)
+summary(temps_ms)
+\end{lstlisting}
+
+\column{0.39\textwidth}
+\begin{block}{Pregunta estadística}
+Quin és un temps típic d'execució? Hi ha algun valor sospitós?
+\end{block}
+
+\begin{itemize}
+  \item La mitjana és sensible a valors extrems.
+  \item La mediana pot ser més robusta.
+  \item La desviació típica mesura variabilitat.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Dades en format taula}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}
+library(tidyverse)
+
+bench <- tibble(
+  algorisme = c("A", "A", "A", "B", "B", "B"),
+  mida = c(1000, 5000, 10000, 1000, 5000, 10000),
+  temps_ms = c(8, 40, 85, 6, 29, 62)
+)
+
+bench
+\end{lstlisting}
+
+\column{0.41\textwidth}
+\begin{block}{Una fila = una observació}
+Cada fila representa una execució o mesura.
+\end{block}
+
+\begin{block}{Una columna = una variable}
+Per exemple: algorisme, mida de l'entrada, temps d'execució.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Una primera visualització}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}
+ggplot(bench, aes(x = mida, y = temps_ms,
+                  color = algorisme)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(
+    x = "Mida de l'entrada",
+    y = "Temps d'execució (ms)",
+    color = "Algorisme"
+  ) +
+  theme_minimal()
+\end{lstlisting}
+
+\column{0.38\textwidth}
+\begin{itemize}
+  \item Els gràfics ajuden a detectar patrons.
+  \item En informàtica són útils per estudiar rendiment.
+  \item El codi genera el gràfic: no cal copiar-lo manualment.
+\end{itemize}
+
+\begin{alertblock}{Connexió amb el curs}
+La descriptiva bivariant començarà precisament amb relacions entre dues variables.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Projectes d'RStudio}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Què és un projecte?}
+Una carpeta que conté tot el necessari per a una anàlisi:
+\begin{itemize}
+  \item dades,
+  \item scripts,
+  \item informes,
+  \item resultats,
+  \item historial de versions.
+\end{itemize}
+\end{block}
+
+\column{0.44\textwidth}
+\begin{block}{Estructura recomanada}
+\ttfamily\small
+estadistica-ei/\\
+\quad data/\\
+\quad R/\\
+\quad reports/\\
+\quad figures/\\
+\quad README.md\\
+\quad practica0.qmd
+\end{block}
+\end{columns}
+
+\vspace{0.25cm}
+\begin{alertblock}{Regla pràctica}
+Eviteu rutes absolutes com \texttt{/home/usuari/Escriptori/...}. Feu servir camins relatius dins del projecte.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Llegir dades}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}
+library(tidyverse)
+
+logs <- read_csv("data/logs_servidor.csv")
+
+glimpse(logs)
+summary(logs)
+\end{lstlisting}
+
+\column{0.41\textwidth}
+\begin{block}{Exemples de dades del curs}
+\begin{itemize}
+  \item Logs de servidor.
+  \item Temps d'execució.
+  \item Resultats de simulacions.
+  \item Errors de transmissió.
+  \item Peticions per segon.
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{Important}
+No modifiqueu manualment les dades originals: creeu scripts que facin la neteja.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Quarto: informes reproduïbles}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Un informe Quarto combina}
+\begin{itemize}
+  \item text explicatiu,
+  \item codi en \R,
+  \item taules,
+  \item gràfics,
+  \item conclusions.
+\end{itemize}
+\end{block}
+
+\column{0.46\textwidth}
+\begin{alertblock}{Per què és útil?}
+Si canvien les dades o el codi, l'informe es pot tornar a generar automàticament.
+\end{alertblock}
+
+\begin{block}{Lliuraments}
+Les pràctiques poden contenir el fitxer \texttt{.qmd}, el codi, les dades i el resultat en HTML o PDF.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Un fragment mínim de Quarto}
+\begin{lstlisting}[language=bash]
+---
+title: "Pràctica 0"
+author: "Nom Cognoms"
+format: html
+---
+
+## Objectiu
+Analitzem els temps d'execució d'un algoritme.
+
+```{r}
+temps <- c(31, 29, 34, 30, 35, 33, 32, 80)
+summary(temps)
+```
+
+## Comentari
+La mediana és menys sensible al valor extrem que la mitjana.
+\end{lstlisting}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Git: control de versions}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Què resol Git?}
+\begin{itemize}
+  \item Guardar l'historial del projecte.
+  \item Recuperar versions anteriors.
+  \item Saber què ha canviat.
+  \item Treballar de forma ordenada.
+\end{itemize}
+\end{block}
+
+\column{0.44\textwidth}
+\begin{alertblock}{Sense Git}
+\ttfamily\small
+practica.R\\
+practica\_final.R\\
+practica\_final\_bona.R\\
+practica\_final\_bona2.R
+\end{alertblock}
+
+\begin{block}{Amb Git}
+Un fitxer, amb historial de canvis.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Cicle bàsic amb Git}
+\begin{columns}[T]
+\column{0.54\textwidth}
+\begin{lstlisting}[language=bash]
+git status
+
+git add practica0.qmd R/analisi.R
+
+git commit -m "Afegeix primera anàlisi descriptiva"
+
+git push
+\end{lstlisting}
+
+\column{0.42\textwidth}
+\begin{enumerate}
+  \item Miro l'estat del projecte.
+  \item Marco els fitxers que vull guardar.
+  \item Faig una fotografia del projecte.
+  \item La pujo a GitHub.
+\end{enumerate}
+
+\begin{alertblock}{Missatges de commit}
+Han de descriure el canvi, no només dir ``canvis''.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{GitHub: lliuraments i col·laboració}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Què aportarà GitHub al curs?}
+\begin{itemize}
+  \item Repositoris per a pràctiques.
+  \item Historial de lliuraments.
+  \item README amb instruccions.
+  \item Possibilitat de revisar codi.
+\end{itemize}
+\end{block}
+
+\column{0.46\textwidth}
+\begin{block}{Un bon repositori conté}
+\begin{itemize}
+  \item \texttt{README.md}: què fa el projecte.
+  \item \texttt{data/}: dades necessàries.
+  \item \texttt{R/}: scripts.
+  \item \texttt{reports/}: informe final.
+  \item commits clars i ordenats.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Exemple de README}
+\begin{lstlisting}[language=bash]
+# Pràctica 0: temps d'execució
+
+Objectiu: analitzar descriptivament els temps d'execució
+simulats de dos algoritmes.
+
+## Fitxers
+- data/temps_algoritmes.csv: dades d'entrada
+- R/analisi.R: codi principal
+- reports/practica0.qmd: informe reproduïble
+
+## Com reproduir els resultats
+1. Obrir el projecte a RStudio.
+2. Executar reports/practica0.qmd.
+\end{lstlisting}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Simulació: una idea que apareixerà sovint}
+\begin{columns}[T]
+\column{0.56\textwidth}
+\begin{lstlisting}
+set.seed(2026)
+
+# Simulem 1000 temps de resposta en ms
+temps <- rnorm(n = 1000, mean = 120, sd = 15)
+
+mean(temps)
+quantile(temps, c(.05, .50, .95))
+\end{lstlisting}
+
+\column{0.40\textwidth}
+\begin{itemize}
+  \item La simulació ens ajuda a entendre fenòmens aleatoris.
+  \item Permet experimentar sense tenir encara dades reals.
+  \item Serà central en probabilitat, inferència i bootstrap.
+\end{itemize}
+
+\begin{alertblock}{Reproduïbilitat}
+\texttt{set.seed()} fa que una simulació es pugui repetir.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Exemple: simular peticions a un servidor}
+\begin{columns}[T]
+\column{0.58\textwidth}
+\begin{lstlisting}
+set.seed(123)
+
+# Nombre de peticions per segon
+peticions <- rpois(n = 60, lambda = 2.5)
+
+tibble(segon = 1:60, peticions = peticions) |>
+  ggplot(aes(x = segon, y = peticions)) +
+  geom_col() +
+  theme_minimal()
+\end{lstlisting}
+
+\column{0.38\textwidth}
+\begin{block}{Pregunta}
+Quina és la probabilitat de tenir més de 5 peticions en un segon?
+\end{block}
+
+\begin{itemize}
+  \item Aquest exemple connecta amb la distribució de Poisson.
+  \item També connecta amb capacitat, rendiment i cues.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per què parlar de computació paral·lela?}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Moltes tasques estadístiques són repetitives}
+\begin{itemize}
+  \item 10.000 simulacions Monte Carlo.
+  \item 5.000 mostres bootstrap.
+  \item Comparar molts paràmetres.
+  \item Avaluar molts escenaris.
+\end{itemize}
+\end{block}
+
+\column{0.44\textwidth}
+\begin{alertblock}{Idea}
+Si les repeticions són independents, sovint podem repartir-les entre diversos nuclis del processador.
+\end{alertblock}
+
+\begin{block}{En aquest curs}
+Ho veurem només de manera introductòria i aplicada.
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}[fragile]{Primer tast de paral·lelització amb R}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+simula_mitjana <- function(i) {
+  x <- rnorm(10000, mean = 0, sd = 1)
+  mean(x)
+}
+
+resultats <- future_map_dbl(1:1000, simula_mitjana)
+
+mean(resultats)
+sd(resultats)
+\end{lstlisting}
+
+\begin{block}{Lectura del codi}
+Fem 1000 simulacions independents i les distribuïm entre diversos processos.
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Bones pràctiques des del primer dia}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Codi}
+\begin{itemize}
+  \item Noms de variables clars.
+  \item Comentaris breus i útils.
+  \item Scripts ordenats per blocs.
+  \item Cap resultat copiat manualment.
+\end{itemize}
+\end{block}
+
+\column{0.46\textwidth}
+\begin{block}{Projecte}
+\begin{itemize}
+  \item Carpeta estructurada.
+  \item Fitxers amb noms informatius.
+  \item README actualitzat.
+  \item Commits freqüents i descriptius.
+\end{itemize}
+\end{block}
+\end{columns}
+
+\vspace{0.25cm}
+\begin{alertblock}{Objectiu}
+Que una altra persona pugui entendre què heu fet sense preguntar-vos-ho.
+\end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Errors habituals}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{alertblock}{Eviteu}
+\begin{itemize}
+  \item Codi només a la consola.
+  \item Fitxers sense estructura.
+  \item Rutes absolutes.
+  \item Gràfics enganxats manualment.
+  \item No fer commits fins al final.
+\end{itemize}
+\end{alertblock}
+
+\column{0.48\textwidth}
+\begin{block}{Feu}
+\begin{itemize}
+  \item Scripts i informes reproduïbles.
+  \item Projectes d'RStudio.
+  \item Camins relatius.
+  \item Taules i gràfics generats amb codi.
+  \item Commits petits i freqüents.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------
+\begin{frame}{Per practicar}
+\begin{block}{Tasques}
+\begin{enumerate}
+  \item Instal·lar o comprovar \R, \RStudio{}, \Git{} i \Quarto.
+  \item Crear un repositori a \GitHub{} per a l'assignatura.
+  \item Crear un projecte d'\RStudio{} connectat al repositori.
+  \item Escriure un script que simuli o llegeixi dades de temps d'execució.
+  \item Crear un informe \texttt{practica0.qmd} amb una taula, un gràfic i una interpretació breu.
+  \item Fer alguns commits i pujar-los a \GitHub{}.
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+\end{document}

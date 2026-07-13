@@ -1,0 +1,8 @@
+\babel@toc {catalan}{}\relax 
+\beamer@sectionintoc {1}{Variables i dades}{5}{0}{1}
+\beamer@sectionintoc {2}{Freqüències i gràfics}{8}{0}{2}
+\beamer@sectionintoc {3}{Mesures de centre}{16}{0}{3}
+\beamer@sectionintoc {4}{Mesures de dispersió}{20}{0}{4}
+\beamer@sectionintoc {5}{Percentils, quartils i boxplots}{23}{0}{5}
+\beamer@sectionintoc {6}{Forma de la distribució}{27}{0}{6}
+\beamer@sectionintoc {7}{Simulació i reproduïbilitat}{29}{0}{7}
