@@ -1,0 +1,22 @@
+\frametitle{Paral·lelització bàsica de simulacions amb R}
+\begin{lstlisting}
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+simula_prob_cua <- function(i) {
+  x <- rpois(100000, lambda = 2.5)
+  mean(x >= 8)
+}
+
+set.seed(123)
+resultats <- future_map_dbl(1:100, simula_prob_cua)
+
+mean(resultats)
+sd(resultats)
+\end{lstlisting}
+
+\begin{alertblock}{Per què és útil?}
+Quan repetim moltes simulacions, bootstrap o experiments de rendiment, la computació paral·lela redueix el temps d'espera.
+\end{alertblock}

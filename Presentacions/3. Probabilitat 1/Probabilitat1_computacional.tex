@@ -92,9 +92,8 @@
 % Dades de la presentació
 % ------------------------------------------------------------------
 \title[Probabilitat computacional]{Probabilitat I}
-\subtitle{Incertesa, simulació, probabilitat condicionada i Bayes}
 \author{Estadística -- Grau en Enginyeria Informàtica}
-\date{Curs 2025--26}
+\date{Curs 2026--27}
 
 \begin{document}
 
@@ -901,96 +900,6 @@ La probabilitat proporciona el model; la computació permet repetir-lo moltes ve
 La paral·lelització és útil quan cada simulació és prou costosa. Per problemes petits, el cost de coordinar processos pot no compensar.
 \end{alertblock}
 \end{columns}
-\end{frame}
-
-% ------------------------------------------------------------------
-\begin{frame}{Pràctica proposada}
-\begin{block}{Pràctica: probabilitat, Bayes i simulació}
-Treball individual o en parelles, lliurat com a informe reproduïble en \RStudio{} i \GitHub{}.
-\end{block}
-\begin{enumerate}
-  \item Simular el problema de de Méré i comparar amb el valor teòric.
-  \item Simular el problema dels aniversaris per a diferents valors de $k$.
-  \item Analitzar una taula de peticions web i calcular probabilitats condicionades.
-  \item Aplicar Bayes a un sistema d'alertes o a un filtre de spam.
-  \item Escriure una conclusió curta: què canvia quan condicionem o quan observem evidència?
-\end{enumerate}
-\vspace{0.15cm}
-\begin{alertblock}{Lliurament}
-Repositori amb script \texttt{probabilitat.R}, informe \texttt{probabilitat.qmd} i almenys un gràfic generat automàticament.
-\end{alertblock}
-\end{frame}
-
-% ------------------------------------------------------------------
-\begin{frame}{Errors habituals}
-\begin{columns}[T]
-\column{0.48\textwidth}
-\begin{alertblock}{Matemàtics}
-\begin{itemize}
-  \item Confondre $\Prob(A\mid B)$ amb $\Prob(B\mid A)$.
-  \item Oblidar la probabilitat de base $\Prob(H_i)$.
-  \item Comptar dues vegades una intersecció.
-  \item Assumir independència sense justificar-la.
-\end{itemize}
-\end{alertblock}
-\column{0.48\textwidth}
-\begin{alertblock}{Computacionals}
-\begin{itemize}
-  \item No fixar la llavor de simulació.
-  \item Fer servir noms de variables ambigus.
-  \item Simular massa poc i treure conclusions fortes.
-  \item No separar dades, codi i resultats.
-\end{itemize}
-\end{alertblock}
-\end{columns}
-\end{frame}
-
-% ------------------------------------------------------------------
-\begin{frame}{Resum del tema}
-\begin{columns}[T]
-\column{0.52\textwidth}
-\begin{itemize}
-  \item La probabilitat quantifica incertesa.
-  \item Les freqüències relatives connecten dades i probabilitat.
-  \item La probabilitat condicionada canvia la població de referència.
-  \item Bayes actualitza probabilitats quan observem evidència.
-  \item La simulació permet aproximar probabilitats difícils.
-\end{itemize}
-\column{0.42\textwidth}
-\begin{block}{Per emportar-se}
-\[
-\Prob(H\mid A) \propto \Prob(A\mid H)\Prob(H)
-\]
-\vspace{-0.2cm}
-\begin{center}
-\small
-posterior $\propto$ evidència $\times$ coneixement previ
-\end{center}
-\end{block}
-\vspace{0.2cm}
-\begin{tikzpicture}
-\node[draw=UABGreen,rounded corners,fill=UABLight,text width=4.6cm,align=center,inner sep=8pt] {
-Probabilitat $+$ simulació $+$ codi reproduïble $=$ raonament fiable
-};
-\end{tikzpicture}
-\end{columns}
-\end{frame}
-
-% ------------------------------------------------------------------
-\begin{frame}{Què hauríeu de saber fer ara?}
-\begin{enumerate}
-  \item Escriure correctament unions, interseccions i complementaris.
-  \item Calcular probabilitats en taules de freqüències.
-  \item Interpretar $\Prob(A\mid B)$ en paraules.
-  \item Reconèixer quan una probabilitat condicionada no és la inversa d'una altra.
-  \item Aplicar probabilitat total i Bayes en problemes amb particions.
-  \item Comprovar càlculs amb simulacions en \R.
-  \item Explicar una conclusió en llenguatge estadístic i computacional.
-\end{enumerate}
-\vspace{0.2cm}
-\begin{block}{Proper pas}
-Variables aleatòries discretes: convertir esdeveniments en variables numèriques i estudiar-ne la distribució.
-\end{block}
 \end{frame}
 
 \end{document}

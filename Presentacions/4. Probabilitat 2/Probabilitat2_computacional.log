@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.5.5)  13 JUL 2026 09:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.5.5)  13 JUL 2026 09:36
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"/home/dmorina/Insync/2102177@uab.cat/OneDrive Biz/Docència/UAB/2026-2027/Primer Semestre/Estadística (Informàtica)/Presentacions/2. Estadística Descriptiva Bivariada/DescriptivaBivariant_computacional.tex"
-(/home/dmorina/Insync/2102177@uab.cat/OneDrive Biz/Docència/UAB/2026-2027/Primer Semestre/Estadística (Informàtica)/Presentacions/2. Estadística Descriptiva Bivariada/DescriptivaBivariant_computacional.tex
+**"/home/dmorina/Insync/2102177@uab.cat/OneDrive Biz/Docència/UAB/2026-2027/Primer Semestre/Estadística (Informàtica)/Presentacions/4. Probabilitat 2/Probabilitat2_computacional.tex"
+(/home/dmorina/Insync/2102177@uab.cat/OneDrive Biz/Docència/UAB/2026-2027/Primer Semestre/Estadística (Informàtica)/Presentacions/4. Probabilitat 2/Probabilitat2_computacional.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamer.cls
@@ -703,33 +703,47 @@ Package: listings 2025/11/14 1.11b (Carsten Heinz)
     but found:
         2025/11/14 1.11b (Carsten Heinz)
     so I'm assuming it got fixed.
-(/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamerthemeMadrid.sty (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamercolorthemewhale.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamercolorthemeorchid.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamerinnerthemerounded.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamerouterthemeinfolines.sty)) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamercolorthemestructure.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+(/home/dmorina/.TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (/home/dmorina/.TinyTeX/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowinset=\dimen352
+\pgfarrowlength=\dimen353
+\pgfarrowwidth=\dimen354
+\pgfarrowlinewidth=\dimen355
+) (/home/dmorina/.TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+) (/home/dmorina/.TinyTeX/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+ (/home/dmorina/.TinyTeX/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamerthemeMadrid.sty (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamercolorthemewhale.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamercolorthemeorchid.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamerinnerthemerounded.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamerouterthemeinfolines.sty)) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/beamer/beamercolorthemestructure.sty) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count388
-) (./DescriptivaBivariant_computacional.aux
+) (./Probabilitat2_computacional.aux
 Package babel Info: 'catalan' activates 'catalan' shorthands.
 (babel)             Reported on input line 8.
 )
-\openout1 = `DescriptivaBivariant_computacional.aux'.
+\openout1 = `Probabilitat2_computacional.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 101.
+LaTeX Font Info:    ... okay on input line 101.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -771,53 +785,53 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring OFF on input line 95.
- (./DescriptivaBivariant_computacional.out) (./DescriptivaBivariant_computacional.out)
+Package hyperref Info: Link coloring OFF on input line 101.
+ (./Probabilitat2_computacional.out) (./Probabilitat2_computacional.out)
 \@outlinefile=\write5
-\openout5 = `DescriptivaBivariant_computacional.out'.
+\openout5 = `Probabilitat2_computacional.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 95.
+(Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 101.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> OT1/cmss/b/n on input line 95.
+(Font)                  OT1/cmr/bx/n --> OT1/cmss/b/n on input line 101.
 \symnumbers=\mathgroup6
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/cmss/m/n --> T1/cmr/m/n on input line 95.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 95.
+(Font)                  OT1/cmss/m/n --> T1/cmr/m/n on input line 101.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> T1/cmss/b/n on input line 95.
+(Font)                  OT1/cmr/bx/n --> T1/cmss/b/n on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/cmr/bx/n --> T1/cmss/b/n on input line 95.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 95.
+(Font)                  OT1/cmr/bx/n --> T1/cmss/b/n on input line 101.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> T1/cmss/m/n on input line 95.
+(Font)                  OT1/cmss/m/n --> T1/cmss/m/n on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> T1/cmss/m/n on input line 95.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 95.
+(Font)                  OT1/cmss/bx/n --> T1/cmss/m/n on input line 101.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> T1/cmss/m/it on input line 95.
+(Font)                  OT1/cmr/m/it --> T1/cmss/m/it on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> T1/cmss/m/it on input line 95.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 95.
+(Font)                  OT1/cmr/bx/it --> T1/cmss/m/it on input line 101.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> T1/cmtt/m/n on input line 95.
+(Font)                  OT1/cmtt/m/n --> T1/cmtt/m/n on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> T1/cmtt/m/n on input line 95.
+(Font)                  OT1/cmtt/m/n --> T1/cmtt/m/n on input line 101.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  T1/cmss/m/n --> T1/cmss/b/n on input line 95.
+(Font)                  T1/cmss/m/n --> T1/cmss/b/n on input line 101.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  T1/cmss/m/it --> T1/cmss/b/it on input line 95.
+(Font)                  T1/cmss/m/it --> T1/cmss/b/it on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/cmss/b/n --> T1/cmr/b/n on input line 95.
+(Font)                  OT1/cmss/b/n --> T1/cmr/b/n on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  T1/cmss/b/n --> T1/cmss/b/n on input line 95.
+(Font)                  T1/cmss/b/n --> T1/cmss/b/n on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  T1/cmss/m/n --> T1/cmss/b/n on input line 95.
+(Font)                  T1/cmss/m/n --> T1/cmss/b/n on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  T1/cmss/m/it --> T1/cmss/b/it on input line 95.
+(Font)                  T1/cmss/m/it --> T1/cmss/b/it on input line 101.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  T1/cmtt/m/n --> T1/cmtt/b/n on input line 95.
+(Font)                  T1/cmtt/m/n --> T1/cmtt/b/n on input line 101.
  (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/translator/translator-basic-dictionary-English.dict
 Dictionary: translator-basic-dictionary, Language: English 
 ) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/translator/translator-bibliography-dictionary-English.dict
@@ -831,20 +845,20 @@ Dictionary: translator-numbers-dictionary, Language: English
 ) (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/translator/translator-theorem-dictionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-LaTeX Info: Redefining \l on input line 95.
-LaTeX Info: Redefining \L on input line 95.
+LaTeX Info: Redefining \l on input line 101.
+LaTeX Info: Redefining \L on input line 101.
 
 Package pgfplots notification 'compat/show suggested version=true': document has been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
 \c@lstlisting=\count389
-(./DescriptivaBivariant_computacional.nav) [1
+(./Probabilitat2_computacional.nav) [1
 
 {/home/dmorina/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 134.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 140.
  (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 134.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 140.
  (/home/dmorina/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [2
@@ -856,38 +870,41 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ] [5
 
 ]
-Package pgfplots info on input line 254: Using 'lua backend=false' for axis: stacked plots unsupported (yet).
-Package pgfplots info on input line 254: Using 'lua backend=false' for axis: x coord trafo unsupported.
- [6
+Overfull \hbox (38.248pt too wide) in paragraph at lines 257--257
+ [] 
+ []
 
-] [7
+[6
+
+]
+\openout4 = `Probabilitat2_computacional.vrb'.
+
+ (./Probabilitat2_computacional.vrb
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <7> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 7.
+) [7
 
 ] [8
 
 ] [9
 
-]
-Package pgfplots info on input line 375: Using 'lua backend=false' for axis: x coord trafo unsupported.
- [10
+] [10
 
 ]
-\openout4 = `DescriptivaBivariant_computacional.vrb'.
+\openout4 = `Probabilitat2_computacional.vrb'.
 
- (./DescriptivaBivariant_computacional.vrb
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <7> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 4.
-) [11
+ (./Probabilitat2_computacional.vrb) [11
 
-]
-\openout4 = `DescriptivaBivariant_computacional.vrb'.
-
- (./DescriptivaBivariant_computacional.vrb) [12
+] [12
 
 ] [13
 
 ] [14
 
-] [15
+]
+\openout4 = `Probabilitat2_computacional.vrb'.
+
+ (./Probabilitat2_computacional.vrb) [15
 
 ] [16
 
@@ -895,63 +912,67 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <7> not available
 
 ] [18
 
-] [19
-
 ]
-\openout4 = `DescriptivaBivariant_computacional.vrb'.
+\openout4 = `Probabilitat2_computacional.vrb'.
 
- (./DescriptivaBivariant_computacional.vrb) [20
+ (./Probabilitat2_computacional.vrb) [19
+
+] [20
 
 ] [21
 
-] [22
+]
+\openout4 = `Probabilitat2_computacional.vrb'.
+
+ (./Probabilitat2_computacional.vrb) [22
 
 ] [23
 
 ] [24
 
 ]
-\openout4 = `DescriptivaBivariant_computacional.vrb'.
+\openout4 = `Probabilitat2_computacional.vrb'.
 
- (./DescriptivaBivariant_computacional.vrb) [25
+ (./Probabilitat2_computacional.vrb) [25
 
-] [26
+]
+\openout4 = `Probabilitat2_computacional.vrb'.
+
+ (./Probabilitat2_computacional.vrb) [26
 
 ] [27
 
-] [28
-
 ]
 \tf@nav=\write6
-\openout6 = `DescriptivaBivariant_computacional.nav'.
+\openout6 = `Probabilitat2_computacional.nav'.
 
 \tf@toc=\write7
-\openout7 = `DescriptivaBivariant_computacional.toc'.
+\openout7 = `Probabilitat2_computacional.toc'.
 
 \tf@snm=\write8
-\openout8 = `DescriptivaBivariant_computacional.snm'.
+\openout8 = `Probabilitat2_computacional.snm'.
 
- (./DescriptivaBivariant_computacional.aux)
+ (./Probabilitat2_computacional.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-Package rerunfilecheck Info: File `DescriptivaBivariant_computacional.out' has not changed.
-(rerunfilecheck)             Checksum: D2A88D2AB0C15508AA3D210D0DBA14DB;503.
+Package rerunfilecheck Info: File `Probabilitat2_computacional.out' has not changed.
+(rerunfilecheck)             Checksum: C67A9A95F3822186386988850EA6EBC4;867.
  ) 
 Here is how much of TeX's memory you used:
- 38642 strings out of 469474
- 904654 string characters out of 5468734
- 1512532 words of memory out of 5000000
- 66568 multiletter control sequences out of 15000+600000
- 647824 words of font info for 87 fonts, out of 8000000 for 9000
+ 39420 strings out of 469474
+ 925238 string characters out of 5468734
+ 1531443 words of memory out of 5000000
+ 67324 multiletter control sequences out of 15000+600000
+ 646130 words of font info for 82 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 101i,21n,107p,921b,2570s stack positions out of 10000i,1000n,20000p,200000b,200000s
- </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi1440.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcss1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt0800.525pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi0600.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0600.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi0900.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi0700.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0700.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0500.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1200.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0900.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1440.600pk></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on DescriptivaBivariant_computacional.pdf (28 pages, 351297 bytes).
+ 101i,14n,107p,894b,2360s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcss1440.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcss1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt0800.525pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0700.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi0700.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0500.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsi1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1200.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tcss0900.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0900.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1000.600pk> </home/dmorina/.TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss1440.600pk></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></home/dmorina/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on Probabilitat2_computacional.pdf (27 pages, 295536 bytes).
 PDF statistics:
- 1223 PDF objects out of 1440 (max. 8388607)
- 501 compressed objects within 6 object streams
+ 1187 PDF objects out of 1200 (max. 8388607)
+ 496 compressed objects within 5 object streams
  60 named destinations out of 1000 (max. 500000)
- 1537 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1655 words of extra memory for PDF output out of 10000 (max. 10000000)
 

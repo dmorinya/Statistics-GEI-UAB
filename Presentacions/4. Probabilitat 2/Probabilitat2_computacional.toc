@@ -1,0 +1,6 @@
+\babel@toc {catalan}{}\relax 
+\beamer@sectionintoc {1}{Variables aleatòries discretes}{5}{0}{1}
+\beamer@sectionintoc {2}{Bernoulli i binomial}{12}{0}{2}
+\beamer@sectionintoc {3}{Variable geomètrica}{17}{0}{3}
+\beamer@sectionintoc {4}{Variable de Poisson}{20}{0}{4}
+\beamer@sectionintoc {5}{Simulació i pràctica computacional}{25}{0}{5}
