@@ -1,0 +1,253 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Inferència III]{Inferència III}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{De l'estimació a la decisió}
+\begin{itemize}
+  \item Els intervals de confiança responen: ``quin rang és plausible?''
+  \item Els tests d'hipòtesi responen: ``les dades són compatibles amb una afirmació concreta?''
+\end{itemize}
+\begin{block}{Exemple informàtic}
+Una versió nova redueix la latència mitjana per sota de 100 ms? Una taxa d'error supera el 1\%?
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius}
+\begin{enumerate}
+  \item Formular hipòtesi nul·la i alternativa.
+  \item Entendre error de tipus I, tipus II i significació.
+  \item Calcular estadístics de contrast i p-valors.
+  \item Distingir tests bilaterals i unilaterals.
+  \item Aplicar tests simples per mitjana, proporció i variància amb \R.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Hipòtesi nul·la i alternativa}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\[
+H_0: \theta=\theta_0
+\]
+\[
+H_1: \theta\ne\theta_0,\quad \theta>\theta_0,\quad \theta<\theta_0.
+\]
+\begin{itemize}
+  \item $H_0$ és el model de referència.
+  \item $H_1$ representa l'efecte que busquem evidenciar.
+\end{itemize}
+\column{0.44\textwidth}
+\begin{block}{Exemples}
+\begin{itemize}
+  \item $H_0: \mu=100$ ms.
+  \item $H_1: \mu<100$ ms.
+  \item $H_0: p=0.01$.
+  \item $H_1: p>0.01$.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Errors i p-valor}
+\begin{itemize}
+  \item Error tipus I: rebutjar $H_0$ quan és certa.
+  \item Error tipus II: no rebutjar $H_0$ quan $H_1$ és certa.
+  \item Significació $\alpha$: risc màxim tolerat d'error tipus I.
+\end{itemize}
+\begin{block}{p-valor}
+Probabilitat d'obtenir un resultat igual o més extrem que l'observat, assumint que $H_0$ és certa.
+\end{block}
+\begin{alertblock}{Regla}
+Si p-valor $<\alpha$, rebutgem $H_0$.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Cues del test}
+\begin{columns}[T]
+\column{0.33\textwidth}
+\begin{block}{Cua dreta}
+$H_1:\theta>\theta_0$\\
+Ex.: la taxa d'error és massa alta.
+\end{block}
+\column{0.33\textwidth}
+\begin{block}{Cua esquerra}
+$H_1:\theta<\theta_0$\\
+Ex.: la latència ha baixat.
+\end{block}
+\column{0.33\textwidth}
+\begin{block}{Bilateral}
+$H_1:\theta\ne\theta_0$\\
+Ex.: el rendiment ha canviat.
+\end{block}
+\end{columns}
+\vspace{0.3cm}
+\begin{alertblock}{Clau}
+La hipòtesi alternativa es decideix abans de mirar el resultat.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Test simple per a la mitjana}
+\begin{block}{$\sigma$ coneguda o $n$ gran}
+\[
+E=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1)\quad \text{sota }H_0.
+\]
+\end{block}
+\begin{lstlisting}
+xbar <- 96; mu0 <- 100; sigma <- 15; n <- 64
+Eobs <- (xbar - mu0)/(sigma/sqrt(n))
+pval_esq <- pnorm(Eobs)  # H1: mu < mu0
+Eobs; pval_esq
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Test simple per a la mitjana amb $\sigma$ desconeguda}
+\begin{block}{t-test}
+\[
+T=\frac{\bar X-\mu_0}{S/\sqrt n}\sim t_{n-1}.
+\]
+\end{block}
+\begin{lstlisting}
+set.seed(1)
+lat <- rnorm(25, mean = 96, sd = 15)
+t.test(lat, mu = 100, alternative = "less")
+\end{lstlisting}
+\begin{itemize}
+  \item \texttt{alternative = "less"}: $H_1:\mu<100$.
+  \item \texttt{alternative = "greater"}: $H_1:\mu>100$.
+  \item Per defecte, \texttt{two.sided}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Test per a una proporció}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Suposem que el sistema ha de tenir una taxa d'error màxima de 1\%.
+En 5000 peticions observem 68 errors.
+\[
+H_0:p=0.01,\qquad H_1:p>0.01.
+\]
+\column{0.42\textwidth}
+\begin{lstlisting}
+x <- 68; n <- 5000
+prop.test(x, n, p = 0.01,
+          alternative = "greater",
+          correct = FALSE)
+binom.test(x, n, p = 0.01,
+           alternative = "greater")
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Test per a una variància}
+\begin{itemize}
+  \item Volem saber si la variabilitat supera un llindar.
+  \item Si la població és normal:
+\end{itemize}
+\[
+\chi^2=\frac{(n-1)S^2}{\sigma_0^2}\sim\chi^2_{n-1}\quad \text{sota }H_0.
+\]
+\begin{lstlisting}
+n <- 30; s <- 18; sigma0 <- 15
+Eobs <- (n-1)*s^2/sigma0^2
+pval <- 1 - pchisq(Eobs, df = n-1) # H1: sigma^2 > sigma0^2
+Eobs; pval
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Resultat estadístic vs decisió pràctica}
+\begin{block}{No n'hi ha prou amb el p-valor}
+Cal mirar també:
+\begin{itemize}
+  \item mida de l'efecte,
+  \item interval de confiança,
+  \item cost d'actuar o no actuar,
+  \item qualitat i independència de les dades.
+\end{itemize}
+\end{block}
+\begin{alertblock}{En enginyeria}
+Una diferència estadísticament significativa pot ser irrellevant si només redueix 0.1 ms, i una diferència no significativa pot requerir més dades.
+\end{alertblock}
+\end{frame}
+
+\end{document}

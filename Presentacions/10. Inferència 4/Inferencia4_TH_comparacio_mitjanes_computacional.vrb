@@ -1,0 +1,10 @@
+\frametitle{Criteris pràctics de decisió}
+\begin{itemize}
+  \item Estadística: p-valor i interval de confiança.
+  \item Enginyeria: diferència rellevant per a l'usuari o el sistema.
+  \item Cost: complexitat afegida, manteniment, estabilitat.
+  \item Reproduïbilitat: scripts, llavors, entorn i dades versionades.
+\end{itemize}
+\begin{alertblock}{Pregunta final}
+La diferència és estadísticament detectable i pràcticament útil?
+\end{alertblock}

@@ -1,0 +1,225 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Inferència II]{Inferència II}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Què falta després de la mitjana?}
+\begin{itemize}
+  \item La mitjana descriu el nivell central d'una variable.
+  \item La variància descriu l'estabilitat o dispersió.
+  \item La proporció descriu freqüències d'esdeveniments binaris.
+\end{itemize}
+\begin{block}{Exemples informàtics}
+\begin{itemize}
+  \item Variància del temps de resposta d'un servei.
+  \item Proporció de peticions amb error 500.
+  \item Proporció de tests superats en una integració contínua.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius}
+\begin{enumerate}
+  \item Introduir la distribució $\chi^2$ i recordar la t de Student.
+  \item Construir intervals per a $\sigma^2$ i $\sigma$.
+  \item Construir intervals per a una proporció $p$.
+  \item Aplicar-ho a estabilitat de sistemes i taxes d'error.
+  \item Fer els càlculs amb \R.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Distribució khi-quadrat}
+\begin{block}{Definició}
+Si $Z_1,\ldots,Z_n\sim N(0,1)$ independents,
+\[
+Z_1^2+\cdots+Z_n^2\sim \chi^2_n.
+\]
+\end{block}
+\begin{itemize}
+  \item Només pren valors positius.
+  \item No és simètrica.
+  \item Apareix quan estudiem la variància mostral d'una mostra normal.
+\end{itemize}
+\[
+\frac{(n-1)S^2}{\sigma^2}\sim \chi^2_{n-1}.
+\]
+\end{frame}
+
+\begin{frame}[fragile]{IC per a la variància}
+\begin{block}{Condició: normalitat}
+Si la mostra prové d'una població normal,
+\[
+\IC_{1-\alpha}(\sigma^2)=
+\left(\frac{(n-1)S^2}{\chi^2_{n-1,1-\alpha/2}},
+\frac{(n-1)S^2}{\chi^2_{n-1,\alpha/2}}\right).
+\]
+\end{block}
+Per obtenir l'interval per $\sigma$, fem l'arrel quadrada dels extrems.
+\begin{lstlisting}
+n <- 20; s <- 1.6; alpha <- 0.05
+qmin <- qchisq(alpha/2, df = n-1)
+qmax <- qchisq(1-alpha/2, df = n-1)
+ic_var <- c((n-1)*s^2/qmax, (n-1)*s^2/qmin)
+sqrt(ic_var)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: estabilitat de latència}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Un servei és acceptable si la variabilitat de la latència és baixa. En una mostra de 40 peticions:
+\begin{itemize}
+  \item desviació típica mostral $S=18$ ms;
+  \item suposem normalitat aproximada.
+\end{itemize}
+Construïm un IC del 95\% per a $\sigma$.
+\column{0.42\textwidth}
+\begin{lstlisting}
+n <- 40; s <- 18
+alpha <- 0.05
+ic_var <- c(
+ (n-1)*s^2/qchisq(.975,n-1),
+ (n-1)*s^2/qchisq(.025,n-1)
+)
+sqrt(ic_var)
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Proporció poblacional}
+\begin{block}{Situació}
+Tenim una variable binària: èxit/fracàs, error/no error, spam/no spam.
+\end{block}
+Si observem $x$ èxits en $n$ intents:
+\[
+\hat p=\frac{x}{n}.
+\]
+Per $n$ prou gran:
+\[
+\hat p\approx N\left(p,\sqrt{\frac{p(1-p)}{n}}\right).
+\]
+\end{frame}
+
+\begin{frame}[fragile]{IC aproximat per a una proporció}
+\begin{block}{Interval normal aproximat}
+\[
+\IC_{1-\alpha}(p)=
+\hat p\pm z_{1-\alpha/2}\sqrt{\frac{\hat p(1-\hat p)}{n}}.
+\]
+\end{block}
+\begin{itemize}
+  \item Funciona raonablement si $n\hat p$ i $n(1-\hat p)$ són prou grans.
+  \item En casos extrems, millor usar mètodes exactes o Wilson.
+\end{itemize}
+\begin{lstlisting}
+x <- 37; n <- 1000
+phat <- x/n
+z <- qnorm(.975)
+phat + c(-1,1)*z*sqrt(phat*(1-phat)/n)
+prop.test(x, n, correct = FALSE)$conf.int
+binom.test(x, n)$conf.int
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: taxa d'errors d'una API}
+\begin{columns}[T]
+\column{0.52\textwidth}
+En 10.000 peticions, 83 retornen error 500.
+\[
+\hat p=83/10000=0.0083.
+\]
+Volem un IC del 95\% per a la taxa real d'errors.
+\column{0.42\textwidth}
+\begin{lstlisting}
+x <- 83; n <- 10000
+prop.test(x, n, correct = FALSE)$conf.int
+binom.test(x, n)$conf.int
+\end{lstlisting}
+\begin{alertblock}{Lectura}
+No és només un percentatge observat: és un interval plausible per a la taxa real del sistema.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\end{document}

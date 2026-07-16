@@ -1,0 +1,257 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Probabilitat IV]{Probabilitat IV}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Per què el TCL és central en estadística computacional?}
+\begin{itemize}
+  \item La mitjana de moltes contribucions independents tendeix a comportar-se com una normal.
+  \item Això explica per què la normal apareix en errors de mesura, benchmarks repetits i estimadors.
+  \item Permet quantificar incertesa sense conèixer exactament la distribució original.
+\end{itemize}
+\begin{block}{Idea clau}
+Encara que les dades originals no siguin normals, la mitjana mostral pot ser aproximadament normal quan $n$ és prou gran.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius del tema}
+\begin{enumerate}
+  \item Recordar independència, suma d'esperances i suma de variàncies.
+  \item Formular el Teorema Central del Límit.
+  \item Aplicar el TCL a sumes i mitjanes.
+  \item Verificar-lo amb simulació Monte Carlo en \R.
+  \item Connectar-lo amb estimació, intervals de confiança i benchmarking.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Variables independents i agregació}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Si $X$ i $Y$ són independents:
+\[
+\E(X+Y)=\E(X)+\E(Y),
+\]
+\[
+\Var(X+Y)=\Var(X)+\Var(Y).
+\]
+Per constants $\lambda$:
+\[
+\E(\lambda X)=\lambda\E(X),\quad
+\Var(\lambda X)=\lambda^2\Var(X).
+\]
+\column{0.42\textwidth}
+\begin{block}{Exemple}
+La durada total de 45 components independents és la suma de 45 durades individuals.
+\end{block}
+\begin{alertblock}{Atenció}
+La independència no és només una qüestió tècnica: si hi ha dependència, la variància agregada pot canviar molt.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Teorema Central del Límit}
+\begin{block}{TCL clàssic}
+Si $X_1,\ldots,X_n$ són independents i idènticament distribuïdes amb
+\[
+\E(X_i)=\mu,\qquad \Var(X_i)=\sigma^2,
+\]
+aleshores, per $n$ prou gran,
+\[
+\bar X=\frac{X_1+\cdots+X_n}{n}\approx N\left(\mu,\frac{\sigma}{\sqrt n}\right).
+\]
+\end{block}
+\begin{itemize}
+  \item La desviació típica de $\bar X$ és $\sigma/\sqrt n$.
+  \item Augmentar $n$ redueix la incertesa de la mitjana.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Interpretació per a benchmarks}
+\begin{columns}[T]
+\column{0.56\textwidth}
+Quan mesurem moltes vegades el temps d'execució d'un algoritme:
+\begin{itemize}
+  \item cada execució té soroll: càrrega del sistema, memòria cau, processos concurrents;
+  \item la mitjana de moltes execucions és més estable;
+  \item el TCL justifica aproximar la distribució de la mitjana amb una normal.
+\end{itemize}
+\column{0.38\textwidth}
+\begin{block}{Regla pràctica}
+No comparem algoritmes amb una sola execució. Repetim, resumim i quantifiquem incertesa.
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: vida total de components}
+\begin{itemize}
+  \item 45 components funcionen un darrere l'altre.
+  \item Cada component té vida mitjana 50 h i desviació típica 4 h.
+  \item La durada total és $X=X_1+\cdots+X_{45}$.
+\end{itemize}
+\[
+\E(X)=45\cdot 50=2250,
+\quad
+\operatorname{sd}(X)=\sqrt{45\cdot 4^2}\approx 26.8.
+\]
+Pel TCL:
+\[
+X\approx N(2250,26.8).
+\]
+\begin{lstlisting}
+mu <- 45 * 50
+sigma <- sqrt(45 * 4^2)
+1 - pnorm(2300, mean = mu, sd = sigma)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Simulació del TCL amb dades no normals}
+\begin{lstlisting}
+library(tidyverse)
+set.seed(123)
+B <- 10000
+n <- 40
+mitjanes <- replicate(B, mean(rexp(n, rate = 1)))
+
+tibble(mitjanes) |>
+  ggplot(aes(mitjanes)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40) +
+  geom_density(linewidth = 1) +
+  theme_minimal()
+\end{lstlisting}
+\begin{block}{Observació}
+Tot i que l'exponencial és asimètrica, les mitjanes simulades són molt més semblants a una normal.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Com canvia la distribució de la mitjana?}
+\begin{columns}[T]
+\column{0.46\textwidth}
+\begin{itemize}
+  \item Amb $n$ petit, la mitjana conserva part de la forma original.
+  \item Amb $n$ gran, la forma s'aproxima a la normal.
+  \item La variabilitat baixa com $1/\sqrt n$.
+\end{itemize}
+\column{0.48\textwidth}
+\begin{lstlisting}
+sim_mitjana <- function(n, B = 5000) {
+  replicate(B, mean(rexp(n, rate = 1)))
+}
+
+sd(sim_mitjana(5))
+sd(sim_mitjana(50))
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Aproximació normal de proporcions}
+\begin{block}{Connexió amb la binomial}
+Si $X\sim B(n,p)$, aleshores $\hat p=X/n$ és la mitjana de $n$ Bernoulli.
+Pel TCL:
+\[
+\hat p \approx N\left(p,\sqrt{\frac{p(1-p)}{n}}\right).
+\]
+\end{block}
+\begin{itemize}
+  \item Exemple: taxa d'errors en 10.000 peticions.
+  \item Base dels intervals de confiança i tests per proporcions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Paral·lelitzar simulacions Monte Carlo}
+\begin{lstlisting}
+library(furrr)
+plan(multisession, workers = 4)
+
+simula <- function(n) mean(rexp(n, rate = 1))
+mitjanes <- future_map_dbl(1:10000, ~ simula(100))
+
+mean(mitjanes)
+sd(mitjanes)
+\end{lstlisting}
+\begin{alertblock}{Per què té sentit paral·lelitzar?}
+Cada repetició Monte Carlo és independent: és un cas natural de càlcul paral·lel.
+\end{alertblock}
+\end{frame}
+
+\end{document}

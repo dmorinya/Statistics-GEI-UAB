@@ -1,0 +1,9 @@
+\frametitle{Flux de treball reproduïble}
+\begin{enumerate}
+  \item Definir la pregunta: què volem estimar?
+  \item Recollir o simular dades de manera transparent.
+  \item Calcular estimadors i interval.
+  \item Visualitzar la mostra i discutir condicions.
+  \item Escriure conclusions en un informe Quarto.
+  \item Guardar codi i dades a \GitHub.
+\end{enumerate}

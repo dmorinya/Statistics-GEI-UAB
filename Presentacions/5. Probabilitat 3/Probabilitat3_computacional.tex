@@ -1,0 +1,309 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Probabilitat III]{Probabilitat III}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Per què variables contínues en informàtica?}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{itemize}
+  \item Moltes magnituds computacionals són gairebé contínues:
+  \begin{itemize}
+    \item temps de resposta d'una API,
+    \item latència de xarxa,
+    \item temps fins a una fallada,
+    \item soroll en sensors,
+    \item ús de CPU o memòria en un interval.
+  \end{itemize}
+  \item Les distribucions contínues ens permeten calcular probabilitats d'intervals.
+\end{itemize}
+\column{0.38\textwidth}
+\begin{block}{Pregunta guia}
+Quina probabilitat hi ha que la latència sigui inferior a 100 ms? I que superi un llindar crític?
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius del tema}
+\begin{enumerate}
+  \item Entendre el paper de la densitat $f$ i de la distribució acumulada $F$.
+  \item Calcular probabilitats com àrees o diferències $F(b)-F(a)$.
+  \item Reconèixer distribucions uniforme, exponencial i normal.
+  \item Fer càlculs amb \R: \texttt{p*}, \texttt{q*}, \texttt{d*}, \texttt{r*}.
+  \item Simular dades contínues i comparar-les amb el model teòric.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Variables aleatòries contínues}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{block}{Densitat}
+Una variable contínua pren valors reals i no assigna probabilitat a punts individuals, sinó a intervals:
+\[
+\Prob(a\le X\le b)=\int_a^b f(t)\,dt,
+\qquad \int_{-\infty}^{\infty} f(t)\,dt=1.
+\]
+\end{block}
+\begin{itemize}
+  \item $f(t)\ge 0$ és una funció de densitat.
+  \item $\Prob(X=a)=0$ per a qualsevol punt concret.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{tikzpicture}
+\begin{axis}[width=5.2cm,height=3.6cm,axis lines=left,xtick=\empty,ytick=\empty,xmin=-3,xmax=3,ymin=0,ymax=.45]
+\addplot[name path=A,domain=-3:3,samples=100,thick,DeepBlue]{1/sqrt(2*pi)*exp(-x^2/2)};
+\path[name path=B] (axis cs:-0.8,0) -- (axis cs:1.2,0);
+\addplot[UABGreen!35] fill between[of=A and B,soft clip={domain=-0.8:1.2}];
+\node at (axis cs:.2,.18) {\scriptsize $\Prob(a\le X\le b)$};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Funció de distribució: càlcul computacional}
+\begin{block}{Definició}
+\[
+F(b)=\Prob(X\le b)=\int_{-\infty}^{b} f(t)\,dt.
+\]
+\end{block}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item Interval: $\Prob(a\le X\le b)=F(b)-F(a)$.
+  \item Cua dreta: $\Prob(X\ge a)=1-F(a)$.
+  \item Quantil: valor $q$ tal que $F(q)=p$.
+\end{itemize}
+\column{0.45\textwidth}
+\begin{lstlisting}
+# En R, per a la normal estàndard:
+pnorm(1.96)       # F(1.96)
+pnorm(1.2)-pnorm(-0.8)
+1 - pnorm(2)
+qnorm(0.975)      # quantil 97.5%
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Uniforme: incertesa sense preferències dins d'un interval}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{$X\sim U(a,b)$}
+\[
+f(t)=\frac{1}{b-a},\quad a<t<b,
+\qquad
+E(X)=\frac{a+b}{2},\quad \Var(X)=\frac{(b-a)^2}{12}.
+\]
+\end{block}
+\begin{itemize}
+  \item Model simple per temps d'arribada dins d'una finestra.
+  \item Útil per generar aleatorietat: \texttt{runif()}.
+\end{itemize}
+\column{0.43\textwidth}
+\begin{lstlisting}
+set.seed(123)
+latencia <- runif(10000, min = 20, max = 80)
+mean(latencia)
+mean(latencia <= 50)
+\end{lstlisting}
+\begin{alertblock}{Interpretació}
+Si $X\sim U(20,80)$, $\Prob(X\le 50)=0.5$.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Exponencial: temps fins al proper esdeveniment}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{$X\sim Exp(\lambda)$}
+\[
+f(t)=\lambda e^{-\lambda t},\quad t\ge 0,
+\qquad F(t)=1-e^{-\lambda t}.
+\]
+\[
+E(X)=\frac{1}{\lambda},\qquad \Var(X)=\frac{1}{\lambda^2}.
+\]
+\end{block}
+\begin{itemize}
+  \item Temps entre connexions si les arribades són Poisson.
+  \item Temps fins a una fallada en un sistema simple.
+\end{itemize}
+\column{0.43\textwidth}
+\begin{lstlisting}
+# Mitjana de 0.4 segons entre peticions
+lambda <- 1 / 0.4
+pexp(1, rate = lambda)     # P(X <= 1)
+1 - pexp(1, rate = lambda) # P(X > 1)
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Normal: variabilitat al voltant d'un valor mitjà}
+\begin{block}{$X\sim N(\mu,\sigma)$}
+\[
+f(x)=\frac{1}{\sigma\sqrt{2\pi}}\exp\left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2\right].
+\]
+\end{block}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{itemize}
+  \item Model aproximat per errors agregats, mesures i mitjanes.
+  \item Estandardització:
+  \[
+  Z=\frac{X-\mu}{\sigma}\sim N(0,1).
+  \]
+\end{itemize}
+\column{0.45\textwidth}
+\begin{lstlisting}
+mu <- 120; sigma <- 15
+pnorm(100, mean = mu, sd = sigma)
+1 - pnorm(150, mean = mu, sd = sigma)
+qnorm(0.95, mean = mu, sd = sigma)
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple informàtic: latència d'una API}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Suposem que la latència d'una API, en ms, es pot aproximar per
+\[
+X\sim N(120,20).
+\]
+Volem calcular:
+\begin{itemize}
+  \item $\Prob(X\le 100)$: resposta molt ràpida.
+  \item $\Prob(X>160)$: resposta lenta.
+  \item el percentil 95: llindar que només superen el 5\% de peticions.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{lstlisting}
+pnorm(100, 120, 20)
+1 - pnorm(160, 120, 20)
+qnorm(0.95, 120, 20)
+\end{lstlisting}
+\begin{block}{Resultat aproximat}
+$\Prob(X>160)\simeq 0.023$: uns 23 casos de cada 1000.
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Visualitzar i simular amb R}
+\begin{lstlisting}
+library(tidyverse)
+set.seed(123)
+dades <- tibble(
+  latencia = rnorm(5000, mean = 120, sd = 20)
+)
+
+ggplot(dades, aes(latencia)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 35) +
+  geom_density(linewidth = 1) +
+  labs(x = "Latència (ms)", y = "Densitat") +
+  theme_minimal()
+\end{lstlisting}
+\begin{alertblock}{Objectiu}
+Comparar la forma empírica de les dades simulades amb la densitat teòrica.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Quan el model normal pot fallar}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{itemize}
+  \item La normal és simètrica: pot no ser adequada per temps positius amb cua llarga.
+  \item Les latències sovint tenen \important{asimetria} i valors extrems.
+  \item Per això convé mirar gràfics i no només fórmules.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Alternatives}
+\begin{itemize}
+  \item Exponencial o Gamma per temps positius.
+  \item Log-normal per temps multiplicatius.
+  \item Simulació empírica si tenim dades reals.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+\end{document}

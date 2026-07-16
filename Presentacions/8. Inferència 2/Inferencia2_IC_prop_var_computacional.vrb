@@ -1,0 +1,18 @@
+\frametitle{Exemple: taxa d'errors d'una API}
+\begin{columns}[T]
+\column{0.52\textwidth}
+En 10.000 peticions, 83 retornen error 500.
+\[
+\hat p=83/10000=0.0083.
+\]
+Volem un IC del 95\% per a la taxa real d'errors.
+\column{0.42\textwidth}
+\begin{lstlisting}
+x <- 83; n <- 10000
+prop.test(x, n, correct = FALSE)$conf.int
+binom.test(x, n)$conf.int
+\end{lstlisting}
+\begin{alertblock}{Lectura}
+No és només un percentatge observat: és un interval plausible per a la taxa real del sistema.
+\end{alertblock}
+\end{columns}

@@ -1,0 +1,232 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Inferència V]{Inferència V}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Per què comparar variàncies?}
+\begin{itemize}
+  \item En enginyeria, no només importa el valor mitjà: importa l'estabilitat.
+  \item Dos sistemes poden tenir la mateixa latència mitjana però variabilitat molt diferent.
+  \item La variància mesura fluctuació i risc de valors extrems.
+\end{itemize}
+\begin{block}{Exemple}
+Comparar la variabilitat de potència de dos generadors làser o la variabilitat de latència de dues versions d'un servei.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius}
+\begin{enumerate}
+  \item Introduir la distribució F de Fisher-Snedecor.
+  \item Formular tests per comparar dues variàncies.
+  \item Fer càlculs amb \texttt{var.test()} en \R.
+  \item Interpretar resultats en termes d'estabilitat.
+  \item Discutir condicions i alternatives robustes.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Hipòtesi sobre quocient de variàncies}
+\begin{block}{Plantejament}
+\[
+H_0:\sigma_1^2=\sigma_2^2
+\quad \Longleftrightarrow \quad
+H_0:\frac{\sigma_1^2}{\sigma_2^2}=1.
+\]
+\[
+H_1:\frac{\sigma_1^2}{\sigma_2^2}>1,
+\quad <1,
+\quad \ne 1.
+\]
+\end{block}
+\begin{itemize}
+  \item No comparem variàncies restant-les, sinó fent-ne el quocient.
+  \item Sota normalitat, el quocient de variàncies mostrals segueix una F.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Distribució F}
+\begin{block}{Definició}
+Si $U_1\sim\chi^2_{d_1}$ i $U_2\sim\chi^2_{d_2}$ independents,
+\[
+\frac{U_1/d_1}{U_2/d_2}\sim F(d_1,d_2).
+\]
+\end{block}
+\begin{itemize}
+  \item Només pren valors positius.
+  \item Té dos graus de llibertat: numerador i denominador.
+  \item És asimètrica.
+\end{itemize}
+\begin{lstlisting}
+qf(.95, df1 = 10, df2 = 4)
+qf(.05, df1 = 10, df2 = 4)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Test F per a dues variàncies}
+\begin{block}{Estadístic}
+\[
+F_{obs}=\frac{S_1^2}{S_2^2}\sim F(n_1-1,n_2-1)
+\quad \text{sota }H_0.
+\]
+\end{block}
+\begin{lstlisting}
+x1 <- rnorm(31, mean = 0, sd = sqrt(0.020))
+x2 <- rnorm(16, mean = 0, sd = sqrt(0.012))
+var.test(x1, x2, alternative = "two.sided")
+\end{lstlisting}
+\begin{alertblock}{Condició important}
+Aquest test és sensible a la no-normalitat. Cal visualitzar dades i considerar alternatives robustes.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: dos generadors}
+\begin{itemize}
+  \item $n_1=31$, $s_1^2=0.020$.
+  \item $n_2=16$, $s_2^2=0.012$.
+  \item Volem contrastar si les variàncies són diferents.
+\end{itemize}
+\[
+F_{obs}=\frac{0.020}{0.012}=1.667,
+\quad df_1=30,
+\quad df_2=15.
+\]
+\begin{lstlisting}
+Fobs <- 0.020 / 0.012
+pval <- 2 * min(pf(Fobs, 30, 15), 1 - pf(Fobs, 30, 15))
+Fobs; pval
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple computacional: estabilitat de dues versions}
+\begin{columns}[T]
+\column{0.50\textwidth}
+La versió B pot tenir la mateixa mitjana que A però més variabilitat.
+\begin{itemize}
+  \item Els usuaris perceben pitjor els pics de latència.
+  \item Comparar variàncies ajuda a detectar inestabilitat.
+\end{itemize}
+\column{0.44\textwidth}
+\begin{lstlisting}
+set.seed(4)
+A <- rnorm(50, 120, 15)
+B <- rnorm(50, 120, 25)
+var.test(B, A, alternative = "greater")
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Visualitzar variabilitat}
+\begin{lstlisting}
+library(tidyverse)
+dades <- tibble(
+  latencia = c(A, B),
+  versio = rep(c("A", "B"), each = 50)
+)
+
+ggplot(dades, aes(versio, latencia)) +
+  geom_boxplot() +
+  geom_point() +
+  theme_minimal()
+\end{lstlisting}
+\begin{block}{Indicadors útils}
+Desviació típica, rang interquartílic, percentils 90/95/99 i gràfics.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Alternatives i prudència}
+\begin{itemize}
+  \item El test F exigeix normalitat aproximada.
+  \item Les latències solen ser asimètriques i amb cua llarga.
+  \item Alternatives: transformacions, bootstrap, Levene/Brown-Forsythe, comparació de quantils.
+\end{itemize}
+\begin{lstlisting}
+# Bootstrap simple del quocient de variàncies
+Bboot <- 2000
+ratio <- replicate(Bboot, {
+  var(sample(B, replace = TRUE)) / var(sample(A, replace = TRUE))
+})
+quantile(ratio, c(.025, .975))
+\end{lstlisting}
+\end{frame}
+
+\end{document}

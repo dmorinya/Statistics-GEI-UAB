@@ -1,0 +1,256 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Inferència VI]{Inferència VI}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Per què tests no paramètrics?}
+\begin{itemize}
+  \item Fins ara hem contrastat paràmetres: mitjanes, proporcions i variàncies.
+  \item Ara contrastem estructures: independència o ajust a una distribució.
+  \item Són especialment útils amb variables categòriques i taules de contingència.
+\end{itemize}
+\begin{block}{Exemples informàtics}
+Sistema operatiu i tipus d'error; navegador i conversió; distribució esperada de codis d'estat HTTP.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius}
+\begin{enumerate}
+  \item Formular tests $\chi^2$ d'independència i d'ajustament.
+  \item Calcular valors observats i esperats.
+  \item Interpretar residus i contribucions.
+  \item Fer els tests amb \texttt{chisq.test()} en \R.
+  \item Relacionar resultats amb decisions sobre producte o sistema.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Dos tipus de tests $\chi^2$}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Independència}
+\[
+H_0:\text{dues variables són independents.}
+\]
+Exemple: tipus de dispositiu i error.
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Ajustament}
+\[
+H_0:\text{les dades segueixen una distribució donada.}
+\]
+Exemple: freqüències de codis HTTP segons proporcions esperades.
+\end{block}
+\end{columns}
+\vspace{0.3cm}
+En ambdós casos, l'estadístic és gran quan observat i esperat difereixen molt.
+\end{frame}
+
+\begin{frame}[fragile]{Test d'independència}
+\begin{block}{Taula de contingència}
+Per cada cel·la $(i,j)$ tenim observat $o_{ij}$ i esperat
+\[
+e_{ij}=\frac{(\text{total fila }i)(\text{total columna }j)}{n}.
+\]
+\[
+E=\sum_{i,j}\frac{(o_{ij}-e_{ij})^2}{e_{ij}}
+\sim \chi^2_{(f-1)(c-1)}.
+\]
+\end{block}
+\begin{alertblock}{Condició pràctica}
+Els esperats haurien de ser prou grans, habitualment $e_{ij}\ge 5$.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: dispositiu i error}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\begin{tabular}{lrr}
+\toprule
+ & Error & Sense error\\
+\midrule
+Mòbil & 48 & 952\\
+Escriptori & 22 & 978\\
+\bottomrule
+\end{tabular}
+\vspace{0.3cm}
+\[
+H_0:\text{dispositiu i error són independents.}
+\]
+\column{0.48\textwidth}
+\begin{lstlisting}
+taula <- matrix(c(48, 952, 22, 978),
+                nrow = 2, byrow = TRUE)
+rownames(taula) <- c("mobil", "desktop")
+colnames(taula) <- c("error", "ok")
+chisq.test(taula, correct = FALSE)
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Mirar més enllà del p-valor}
+\begin{lstlisting}
+res <- chisq.test(taula, correct = FALSE)
+res$expected      # valors esperats
+res$residuals     # residus de Pearson
+res$stdres        # residus estandarditzats
+\end{lstlisting}
+\begin{itemize}
+  \item Les cel·les amb residus grans expliquen la dependència.
+  \item Això ajuda a traduir el test en accions concretes.
+\end{itemize}
+\begin{block}{Interpretació}
+No només interessa si hi ha relació, sinó on apareix la diferència.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Test d'ajustament}
+\begin{block}{Una sola variable categòrica}
+Tenim freqüències observades $o_i$ i probabilitats esperades $p_i$.
+\[
+e_i=n p_i,
+\qquad
+E=\sum_i\frac{(o_i-e_i)^2}{e_i}.
+\]
+\end{block}
+\[
+H_0:\text{les dades segueixen les probabilitats }p_i.
+\]
+\begin{lstlisting}
+observat <- c(200, 720, 80)
+esperat_p <- c(.2, .75, .05)
+chisq.test(observat, p = esperat_p)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: codis HTTP}
+\begin{columns}[T]
+\column{0.50\textwidth}
+En condicions normals esperem:
+\begin{itemize}
+  \item 2xx: 92\%,
+  \item 3xx: 5\%,
+  \item 4xx: 2\%,
+  \item 5xx: 1\%.
+\end{itemize}
+Avui observem 10.000 respostes: 9000, 520, 260, 220.
+\column{0.44\textwidth}
+\begin{lstlisting}
+obs <- c(9000, 520, 260, 220)
+p0 <- c(.92, .05, .02, .01)
+chisq.test(obs, p = p0)
+\end{lstlisting}
+\begin{alertblock}{Pregunta}
+El patró d'avui és compatible amb el funcionament normal?
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Visualització de contribucions}
+\begin{lstlisting}
+res <- chisq.test(obs, p = p0)
+contrib <- (obs - res$expected)^2 / res$expected
+
+tibble(codi = c("2xx","3xx","4xx","5xx"), contrib) |>
+  ggplot(aes(codi, contrib)) +
+  geom_col() +
+  theme_minimal()
+\end{lstlisting}
+\begin{block}{Idea}
+Les contribucions indiquen quines categories expliquen el rebuig de $H_0$.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Limitacions}
+\begin{itemize}
+  \item Requereix freqüències esperades prou grans.
+  \item No mesura causalitat.
+  \item Amb mostres molt grans, diferències petites poden ser significatives.
+  \item Cal complementar amb mida de l'efecte i interpretació de domini.
+\end{itemize}
+\begin{block}{Opcional}
+Per taules $2\times 2$, es pot mirar també odds ratio o diferència de proporcions.
+\end{block}
+\end{frame}
+
+\end{document}

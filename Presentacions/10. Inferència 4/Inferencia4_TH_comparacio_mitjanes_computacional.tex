@@ -1,0 +1,226 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Inferència IV]{Inferència IV}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Per què comparar mitjanes?}
+\begin{itemize}
+  \item Volem saber si dues configuracions tenen el mateix rendiment mitjà.
+  \item Comparar una versió nova amb una versió anterior és una situació habitual.
+  \item La pregunta estadística és si la diferència observada supera el soroll mostral.
+\end{itemize}
+\begin{block}{Exemples}
+Latència abans/després, temps d'execució de dos algoritmes, consum de memòria amb dues configuracions.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius}
+\begin{enumerate}
+  \item Distingir dades aparellades i mostres independents.
+  \item Formular tests de comparació de mitjanes.
+  \item Aplicar tests t adequats amb \R.
+  \item Interpretar p-valors, intervals i diferències estimades.
+  \item Relacionar-ho amb benchmarking i experiments A/B quantitatius.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Dades aparellades o independents?}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Aparellades}
+Les dues mesures corresponen a la mateixa unitat.
+\begin{itemize}
+  \item mateix servidor abans/després,
+  \item mateix conjunt de tasques amb dos algoritmes,
+  \item mateix usuari en dues condicions.
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Independents}
+Les dues mostres provenen de grups diferents.
+\begin{itemize}
+  \item dos grups d'usuaris,
+  \item dues màquines diferents,
+  \item dues mostres de peticions no relacionades.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Dades aparellades: reduir a un test simple}
+\begin{block}{Diferències}
+Si tenim parelles $(X_i,Y_i)$, definim
+\[
+D_i=Y_i-X_i.
+\]
+El test sobre dues mitjanes es converteix en un test sobre una mitjana:
+\[
+H_0:\mu_D=0.
+\]
+\end{block}
+\begin{lstlisting}
+abans  <- c(120,118,130,125,119,122,121,128)
+despres <- c(112,116,124,120,116,119,117,121)
+t.test(despres, abans, paired = TRUE,
+       alternative = "less")
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Mostres independents: test de Welch}
+\begin{block}{Opció recomanada per defecte}
+El test t de Welch no exigeix variàncies iguals:
+\[
+H_0:\mu_1=\mu_2,\qquad H_1:\mu_1\ne\mu_2.
+\]
+\end{block}
+\begin{lstlisting}
+alg_A <- c(34, 31, 33, 36, 35, 32, 37, 34)
+alg_B <- c(29, 30, 31, 28, 32, 30, 29, 31)
+t.test(alg_A, alg_B, alternative = "greater")
+\end{lstlisting}
+\begin{itemize}
+  \item \texttt{greater}: la mitjana d'A és més gran que la de B.
+  \item En temps d'execució, ``més gran'' pot voler dir pitjor.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Mostres independents amb variàncies iguals}
+Si assumim normalitat i variàncies iguals, es pot usar la versió amb variància combinada.
+\begin{lstlisting}
+t.test(alg_A, alg_B,
+       alternative = "greater",
+       var.equal = TRUE)
+\end{lstlisting}
+\begin{alertblock}{Prudència}
+En dades de rendiment, les variàncies sovint poden diferir entre configuracions. Welch és més robust.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple: comparació d'algoritmes}
+\begin{columns}[T]
+\column{0.52\textwidth}
+Tenim temps d'execució de dos algoritmes sobre problemes independents.
+\begin{itemize}
+  \item $H_0:\mu_A=\mu_B$.
+  \item $H_1:\mu_A>\mu_B$ si volem demostrar que A és més lent.
+  \item També podem plantejar $H_1:\mu_A<\mu_B$ si volem demostrar que A és més ràpid.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Informe}
+No direm només ``p < 0.05''. Cal indicar diferència estimada i interval de confiança.
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Visualització abans del test}
+\begin{lstlisting}
+library(tidyverse)
+dades <- tibble(
+  temps = c(alg_A, alg_B),
+  algoritme = rep(c("A", "B"), each = length(alg_A))
+)
+
+ggplot(dades, aes(algoritme, temps)) +
+  geom_boxplot() +
+  geom_point() +
+  theme_minimal()
+\end{lstlisting}
+\begin{block}{Regla}
+Abans d'un test, sempre visualitzem les dades.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Criteris pràctics de decisió}
+\begin{itemize}
+  \item Estadística: p-valor i interval de confiança.
+  \item Enginyeria: diferència rellevant per a l'usuari o el sistema.
+  \item Cost: complexitat afegida, manteniment, estabilitat.
+  \item Reproduïbilitat: scripts, llavors, entorn i dades versionades.
+\end{itemize}
+\begin{alertblock}{Pregunta final}
+La diferència és estadísticament detectable i pràcticament útil?
+\end{alertblock}
+\end{frame}
+
+\end{document}

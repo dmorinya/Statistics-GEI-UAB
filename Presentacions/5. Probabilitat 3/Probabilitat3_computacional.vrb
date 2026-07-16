@@ -1,0 +1,17 @@
+\frametitle{Quan el model normal pot fallar}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{itemize}
+  \item La normal és simètrica: pot no ser adequada per temps positius amb cua llarga.
+  \item Les latències sovint tenen \important{asimetria} i valors extrems.
+  \item Per això convé mirar gràfics i no només fórmules.
+\end{itemize}
+\column{0.42\textwidth}
+\begin{block}{Alternatives}
+\begin{itemize}
+  \item Exponencial o Gamma per temps positius.
+  \item Log-normal per temps multiplicatius.
+  \item Simulació empírica si tenim dades reals.
+\end{itemize}
+\end{block}
+\end{columns}

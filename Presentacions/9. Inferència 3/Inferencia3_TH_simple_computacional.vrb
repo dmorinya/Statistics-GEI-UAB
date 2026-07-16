@@ -1,0 +1,13 @@
+\frametitle{Resultat estadístic vs decisió pràctica}
+\begin{block}{No n'hi ha prou amb el p-valor}
+Cal mirar també:
+\begin{itemize}
+  \item mida de l'efecte,
+  \item interval de confiança,
+  \item cost d'actuar o no actuar,
+  \item qualitat i independència de les dades.
+\end{itemize}
+\end{block}
+\begin{alertblock}{En enginyeria}
+Una diferència estadísticament significativa pot ser irrellevant si només redueix 0.1 ms, i una diferència no significativa pot requerir més dades.
+\end{alertblock}

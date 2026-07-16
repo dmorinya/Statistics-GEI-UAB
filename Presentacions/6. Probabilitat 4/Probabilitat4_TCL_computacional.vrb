@@ -1,0 +1,14 @@
+\frametitle{Paral·lelitzar simulacions Monte Carlo}
+\begin{lstlisting}
+library(furrr)
+plan(multisession, workers = 4)
+
+simula <- function(n) mean(rexp(n, rate = 1))
+mitjanes <- future_map_dbl(1:10000, ~ simula(100))
+
+mean(mitjanes)
+sd(mitjanes)
+\end{lstlisting}
+\begin{alertblock}{Per què té sentit paral·lelitzar?}
+Cada repetició Monte Carlo és independent: és un cas natural de càlcul paral·lel.
+\end{alertblock}

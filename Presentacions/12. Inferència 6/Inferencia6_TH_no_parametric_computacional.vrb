@@ -1,0 +1,10 @@
+\frametitle{Limitacions}
+\begin{itemize}
+  \item Requereix freqüències esperades prou grans.
+  \item No mesura causalitat.
+  \item Amb mostres molt grans, diferències petites poden ser significatives.
+  \item Cal complementar amb mida de l'efecte i interpretació de domini.
+\end{itemize}
+\begin{block}{Opcional}
+Per taules $2\times 2$, es pot mirar també odds ratio o diferència de proporcions.
+\end{block}

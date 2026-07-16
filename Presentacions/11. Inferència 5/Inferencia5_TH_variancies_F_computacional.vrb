@@ -1,0 +1,14 @@
+\frametitle{Alternatives i prudència}
+\begin{itemize}
+  \item El test F exigeix normalitat aproximada.
+  \item Les latències solen ser asimètriques i amb cua llarga.
+  \item Alternatives: transformacions, bootstrap, Levene/Brown-Forsythe, comparació de quantils.
+\end{itemize}
+\begin{lstlisting}
+# Bootstrap simple del quocient de variàncies
+Bboot <- 2000
+ratio <- replicate(Bboot, {
+  var(sample(B, replace = TRUE)) / var(sample(A, replace = TRUE))
+})
+quantile(ratio, c(.025, .975))
+\end{lstlisting}

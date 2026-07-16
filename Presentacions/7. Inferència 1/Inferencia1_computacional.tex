@@ -1,0 +1,241 @@
+
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[catalan]{babel}
+\usepackage{amsmath,amssymb,booktabs,array,multicol}
+\usepackage{tikz,pgfplots,xcolor,listings}
+\usetikzlibrary{positioning,arrows.meta,calc,shapes.geometric}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\definecolor{UABGreen}{RGB}{0,103,71}
+\definecolor{UABLight}{RGB}{224,241,236}
+\definecolor{DeepBlue}{RGB}{20,65,110}
+\definecolor{AccentOrange}{RGB}{230,126,34}
+\definecolor{SoftGray}{RGB}{245,247,250}
+\definecolor{CodeBack}{RGB}{248,248,248}
+\definecolor{CodeFrame}{RGB}{210,215,220}
+
+\usetheme{Madrid}
+\usecolortheme[named=UABGreen]{structure}
+\setbeamercolor{title}{fg=white,bg=UABGreen}
+\setbeamercolor{frametitle}{fg=white,bg=UABGreen}
+\setbeamercolor{block title}{fg=white,bg=DeepBlue}
+\setbeamercolor{block body}{fg=black,bg=SoftGray}
+\setbeamercolor{alerted text}{fg=AccentOrange}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{UABGreen}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{AccentOrange}$\bullet$}
+\setbeamertemplate{enumerate item}{\color{UABGreen}\insertenumlabel.}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.4em]{author in head/foot}%
+    Estadística -- Grau en Enginyeria Informàtica
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.4ex,dp=1ex,center]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\lstdefinelanguage{R}{%
+  morekeywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,NA,NaN,Inf,
+    library,mean,median,sd,var,summary,table,prop.table,xtabs,addmargins,round,
+    ggplot,aes,geom_point,geom_line,geom_col,geom_histogram,geom_density,geom_smooth,
+    geom_tile,facet_wrap,labs,theme_minimal,summarise,group_by,mutate,read_csv,filter,
+    arrange,set.seed,rbinom,rgeom,rpois,runif,rexp,rnorm,dnorm,pnorm,qnorm,dt,pt,qt,
+    dchisq,pchisq,qchisq,df,pf,qf,dbinom,pbinom,dpois,ppois,replicate,sample,rep,seq,
+    tibble,data.frame,confint,t.test,var.test,chisq.test,binom.test,prop.test,lm,
+    broom,glance,augment,tidy,future_map_dbl,plan,multisession,map_dbl,purrr,future,furrr},
+  sensitive=true,
+  morecomment=[l]\#,
+  morestring=[b]",
+  morestring=[b]'
+}
+\lstset{language=R,basicstyle=\ttfamily\scriptsize,keywordstyle=\color{DeepBlue}\bfseries,
+  commentstyle=\color{gray},stringstyle=\color{AccentOrange},backgroundcolor=\color{CodeBack},
+  frame=single,rulecolor=\color{CodeFrame},breaklines=true,columns=fullflexible,keepspaces=true,
+  showstringspaces=false,
+  literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ï}{{\"i}}1 {ò}{{\`o}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ü}{{\"u}}1 {ç}{{\c{c}}}1 {À}{{\`A}}1 {È}{{\`E}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ò}{{\`O}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1}
+
+\newcommand{\R}{\textsf{R}}
+\newcommand{\RStudio}{\textsf{RStudio/Posit}}
+\newcommand{\GitHub}{\textsf{GitHub}}
+\newcommand{\important}[1]{\textcolor{UABGreen}{\textbf{#1}}}
+\newcommand{\exemple}[1]{\textcolor{AccentOrange}{\textbf{#1}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\IC}{\operatorname{IC}}
+
+\title[Inferència I]{Inferència I}
+\author{Estadística -- Grau en Enginyeria Informàtica}
+\date{Curs 2026--27}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.45cm}
+  \begin{center}
+  \small\textcolor{DeepBlue}{Estadística computacional amb \R, simulació i exemples d'enginyeria informàtica}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{De la mostra a la decisió}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{itemize}
+  \item En descriptiva resumim dades observades.
+  \item En inferència volem dir alguna cosa sobre una població o procés.
+  \item La mostra és només una finestra parcial i aleatòria.
+\end{itemize}
+\column{0.44\textwidth}
+\begin{block}{Exemples informàtics}
+\begin{itemize}
+  \item Temps mitjà de resposta d'un servidor.
+  \item Proporció de builds que fallen.
+  \item Variabilitat de potència en dispositius.
+  \item Diferència de rendiment entre dues versions.
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Objectius del bloc d'inferència}
+\begin{enumerate}
+  \item Distingir població, mostra, paràmetre i estadístic.
+  \item Construir intervals de confiança per quantificar incertesa.
+  \item Interpretar correctament el nivell de confiança.
+  \item Connectar fórmules amb càlculs en \R.
+  \item Preparar el terreny per als tests d'hipòtesi.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Població, mostra i estimadors}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Població}
+Procés o conjunt complet que ens interessa.
+\[
+\mu,\quad \sigma^2,\quad p
+\]
+\end{block}
+\begin{block}{Mostra}
+Subconjunt observat o repeticions mesurades.
+\[
+\bar X,\quad S^2,\quad \hat p
+\]
+\end{block}
+\column{0.44\textwidth}
+\begin{alertblock}{Exemple}
+Volem estimar la latència mitjana real d'una API. Mesurem 200 peticions i obtenim $\bar X$ i $S$.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Interval de confiança: idea}
+\begin{block}{Forma general}
+\[
+\text{estimador} \pm \text{marge d'error}.
+\]
+\end{block}
+\begin{itemize}
+  \item El marge d'error depèn de la variabilitat, la mida mostral i el nivell de confiança.
+  \item Més dades $\Rightarrow$ interval més estret.
+  \item Més confiança $\Rightarrow$ interval més ample.
+\end{itemize}
+\begin{alertblock}{Interpretació correcta}
+Un 95\% de confiança vol dir que, si repetíssim el procediment moltes vegades, aproximadament el 95\% dels intervals construïts contindrien el paràmetre real.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{IC per a la mitjana amb $\sigma$ coneguda}
+\begin{block}{Condicions}
+$X$ normal o bé mida mostral prou gran.
+\end{block}
+\[
+Z=\frac{\bar X-\mu}{\sigma/\sqrt n}\sim N(0,1)
+\]
+\[
+\IC_{1-\alpha}(\mu)=
+\bar X\pm z_{1-\alpha/2}\frac{\sigma}{\sqrt n}.
+\]
+\begin{lstlisting}
+xbar <- 27.2; sigma <- 10.65; n <- 50
+z <- qnorm(0.975)
+e <- z * sigma / sqrt(n)
+c(xbar - e, xbar + e)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{IC per a la mitjana amb $\sigma$ desconeguda}
+\begin{block}{Substituïm $\sigma$ per $S$}
+\[
+T=\frac{\bar X-\mu}{S/\sqrt n}\sim t_{n-1}
+\]
+\[
+\IC_{1-\alpha}(\mu)=
+\bar X\pm t_{n-1,1-\alpha/2}\frac{S}{\sqrt n}.
+\]
+\end{block}
+\begin{lstlisting}
+x <- c(115, 122, 119, 131, 125, 118, 121, 130)
+t.test(x, conf.level = 0.95)$conf.int
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exemple computacional: latència mitjana}
+\begin{columns}[T]
+\column{0.50\textwidth}
+Hem mesurat 80 peticions d'una API:
+\begin{itemize}
+  \item mitjana mostral: 118 ms,
+  \item desviació típica mostral: 22 ms.
+\end{itemize}
+Volem un IC del 95\% per a la latència mitjana real.
+\column{0.44\textwidth}
+\begin{lstlisting}
+xbar <- 118; s <- 22; n <- 80
+crit <- qt(0.975, df = n - 1)
+e <- crit * s / sqrt(n)
+c(xbar - e, xbar + e)
+\end{lstlisting}
+\begin{block}{Lectura}
+El resultat no és ``la latència sempre estarà dins l'interval'', sinó incertesa sobre la mitjana poblacional.
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Disseny mostral: quantes observacions necessitem?}
+\begin{block}{Amb $\sigma$ aproximadament coneguda}
+Per obtenir marge d'error màxim $e$:
+\[
+n\ge \left(\frac{z_{1-\alpha/2}\sigma}{e}\right)^2.
+\]
+\end{block}
+\begin{lstlisting}
+sigma <- 20     # ms
+error <- 5      # marge màxim
+z <- qnorm(0.975)
+ceiling((z * sigma / error)^2)
+\end{lstlisting}
+\begin{itemize}
+  \item En benchmarking, això ajuda a planificar quantes repeticions cal fer.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Flux de treball reproduïble}
+\begin{enumerate}
+  \item Definir la pregunta: què volem estimar?
+  \item Recollir o simular dades de manera transparent.
+  \item Calcular estimadors i interval.
+  \item Visualitzar la mostra i discutir condicions.
+  \item Escriure conclusions en un informe Quarto.
+  \item Guardar codi i dades a \GitHub.
+\end{enumerate}
+\end{frame}
+
+\end{document}
