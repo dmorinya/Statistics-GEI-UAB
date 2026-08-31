@@ -1,0 +1,147 @@
+/* Tema reveal.js inspirat en la paleta UAB del curs d'Estadística (Grau EI).
+   Tots els colors d'aquest fitxer són un dels set valors base del curs
+   (UABGreen, UABLight, DeepBlue, AccentOrange, SoftGray, CodeBack, CodeFrame)
+   o un to/matís derivat d'un d'ells -- cap color queda fora de la paleta. */
+
+:root {
+  --uab-green: #006747;
+  --uab-green-dark: #00432E;   /* matís de uab-green, per a solutionblock */
+  --uab-light: #E0F1EC;
+  --deep-blue: #14416E;
+  --accent-orange: #E67E22;
+  --accent-orange-light: #FDECE3; /* to d'accent-orange, per a alertblock */
+  --soft-gray: #F5F7FA;
+  --code-back: #F8F8F8;
+  --code-frame: #D2D7DC;
+
+  /* reveal.js llegeix directament aquestes variables, així que fixar-les
+     aquí evita que el tema 'simple' apliqui els seus propis colors
+     (blau per defecte als enllaços, etc.) que no són de la paleta UAB. */
+  --r-background-color: #ffffff;
+  --r-main-color: #1a1a1a;
+  --r-main-font-size: 30px;
+  --r-heading-color: var(--deep-blue);
+  --r-link-color: var(--uab-green);
+  --r-link-color-hover: var(--accent-orange);
+  --r-selection-background-color: var(--uab-light);
+  --r-code-font: "Fira Code", Consolas, Monaco, monospace;
+}
+
+.reveal {
+  font-size: 30px;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  color: var(--deep-blue);
+}
+
+.reveal h2 {
+  border-bottom: 3px solid var(--uab-green);
+  padding-bottom: 0.15em;
+}
+
+.reveal .slide-number {
+  background-color: var(--deep-blue);
+  color: white;
+}
+
+.reveal .progress { color: var(--uab-green); }
+
+.reveal ul li::marker { color: var(--uab-green); }
+
+/* Enllaços: forcem la paleta UAB en lloc del blau per defecte del tema */
+.reveal a { color: var(--uab-green); }
+.reveal a:hover { color: var(--accent-orange); }
+
+/* Codi en línia i blocs de codi: fons neutre i vora amb to UABLight,
+   en lloc del fons de ressaltat de sintaxi per defecte del tema. */
+.reveal code {
+  color: var(--deep-blue);
+  background-color: var(--code-back);
+  border-radius: 3px;
+  padding: 0.05em 0.3em;
+}
+.reveal pre {
+  box-shadow: none;
+  border: 1px solid var(--code-frame);
+  border-radius: 6px;
+  width: 100%;
+}
+.reveal pre code {
+  background-color: var(--code-back);
+  max-height: 480px;
+  padding: 0.6em 0.8em;
+}
+
+.reveal ::selection {
+  background: var(--r-selection-background-color);
+}
+
+/* Blocs a l'estil beamer: block / exampleblock / alertblock / solutionblock */
+.block, .exampleblock, .alertblock, .solutionblock {
+  border-radius: 6px;
+  padding: 0.5em 0.9em;
+  margin: 0.5em 0;
+  text-align: left;
+  font-size: 0.85em;
+}
+.block > :first-child, .exampleblock > :first-child,
+.alertblock > :first-child, .solutionblock > :first-child {
+  font-weight: bold;
+  color: white;
+  border-radius: 4px 4px 0 0;
+  margin: -0.5em -0.9em 0.4em -0.9em !important;
+  padding: 0.25em 0.9em;
+}
+
+.block { background-color: var(--soft-gray); }
+.block > :first-child { background-color: var(--deep-blue); }
+
+.exampleblock { background-color: var(--uab-light); }
+.exampleblock > :first-child { background-color: var(--uab-green); }
+
+.alertblock { background-color: var(--accent-orange-light); }
+.alertblock > :first-child { background-color: var(--accent-orange); }
+
+/* Abans un blau fora de paleta; ara un matís fosc de uab-green. */
+.solutionblock { background-color: var(--uab-light); }
+.solutionblock > :first-child { background-color: var(--uab-green-dark); }
+
+.reveal .solution-link {
+  display: inline-block;
+  margin-top: 0.6em;
+  font-weight: bold;
+  color: var(--accent-orange);
+}
+
+.reveal .important { color: var(--uab-green); font-weight: bold; }
+.reveal .exemple { color: var(--accent-orange); font-weight: bold; }
+
+.reveal section[data-visibility="hidden"] {
+  display: none;
+}
+
+.reveal .two-col { display: flex; gap: 1.5em; text-align: left; flex-wrap: wrap; }
+.reveal .two-col > div { flex: 1; min-width: 280px; }
+.reveal .three-col { display: flex; gap: 1em; text-align: left; flex-wrap: wrap; }
+.reveal .three-col > div { flex: 1; min-width: 220px; }
+
+.reveal small.source { color: #666; }
+
+.reveal table { font-size: 0.8em; }
+.reveal table th { background-color: var(--uab-light); }
+
+/* Xarxa de seguretat contra desbordaments: amb `scrollable: true` al YAML,
+   reveal.js afegeix desplaçament a les diapositives més altes que la
+   finestra; això assegura que el contingut (gràfics, codi llarg, text)
+   mai reclami més amplada que la diapositiva ni se superposi a la resta. */
+.reveal .slides section {
+  overflow-wrap: break-word;
+}
+.reveal img, .reveal svg, .reveal canvas {
+  max-width: 100%;
+  height: auto;
+}
+.reveal .cell-output-display {
+  overflow-x: auto;
+}

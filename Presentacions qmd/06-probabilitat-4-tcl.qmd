@@ -1,0 +1,215 @@
+---
+title: "Probabilitat IV"
+subtitle: "El Teorema Central del Límit"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Probabilitat IV — TCL"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+has_pkg <- function(p) requireNamespace(p, quietly = TRUE)
+set.seed(2026)
+```
+
+## Estadística computacional amb R, simulació i exemples d'enginyeria informàtica
+
+## Per què el TCL és central en estadística computacional? {.smaller}
+
+- La mitjana de moltes contribucions independents tendeix a comportar-se com una normal.
+- Això explica per què la normal apareix en errors de mesura, benchmarks repetits i estimadors.
+- Permet quantificar incertesa sense conèixer exactament la distribució original.
+
+::: {.block}
+#### Idea clau
+Encara que les dades originals no siguin normals, la mitjana mostral pot ser aproximadament normal quan $n$ és prou gran.
+:::
+
+## Objectius del tema {.smaller}
+
+1. Recordar independència, suma d'esperances i suma de variàncies.
+2. Formular el Teorema Central del Límit.
+3. Aplicar el TCL a sumes i mitjanes.
+4. Verificar-lo amb simulació Monte Carlo en R.
+5. Connectar-lo amb estimació, intervals de confiança i benchmarking.
+
+## Variables independents i agregació {.smaller}
+
+Si $X$ i $Y$ són independents:
+$$\mathbb E(X+Y)=\mathbb E(X)+\mathbb E(Y), \qquad \mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)$$
+
+Per constants $\lambda$: $\mathbb E(\lambda X)=\lambda\mathbb E(X)$, $\mathrm{Var}(\lambda X)=\lambda^2\mathrm{Var}(X)$.
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Exemple
+La durada total de 45 components independents és la suma de 45 durades individuals.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Atenció
+La independència no és només una qüestió tècnica: si hi ha dependència, la variància agregada pot canviar molt.
+:::
+
+</div>
+:::
+
+## Teorema Central del Límit {.smaller}
+
+::: {.block}
+#### TCL clàssic
+Si $X_1,\ldots,X_n$ són independents i idènticament distribuïdes amb $\mathbb E(X_i)=\mu$, $\mathrm{Var}(X_i)=\sigma^2$, aleshores, per $n$ prou gran,
+$$\bar X=\frac{X_1+\cdots+X_n}{n}\approx N\left(\mu,\frac{\sigma}{\sqrt n}\right)$$
+:::
+
+- La desviació típica de $\bar X$ és $\sigma/\sqrt n$.
+- Augmentar $n$ redueix la incertesa de la mitjana.
+
+## Interpretació per a benchmarks {.smaller}
+
+Quan mesurem moltes vegades el temps d'execució d'un algoritme:
+
+- cada execució té soroll: càrrega del sistema, memòria cau, processos concurrents;
+- la mitjana de moltes execucions és més estable;
+- el TCL justifica aproximar la distribució de la mitjana amb una normal.
+
+::: {.block}
+#### Regla pràctica
+No comparem algoritmes amb una sola execució. Repetim, resumim i quantifiquem incertesa.
+:::
+
+## Exemple: vida total de components {.smaller}
+
+45 components funcionen un darrere l'altre; cada un té vida mitjana 50 h i desviació típica 4 h. La durada total és $X=X_1+\cdots+X_{45}$.
+
+$$\mathbb E(X)=45\cdot 50=2250, \qquad \mathrm{sd}(X)=\sqrt{45\cdot 4^2}\approx 26.8$$
+
+Pel TCL, $X\approx N(2250,26.8)$.
+
+```{r vida-components}
+mu <- 45 * 50
+sigma <- sqrt(45 * 4^2)
+1 - pnorm(2300, mean = mu, sd = sigma)
+```
+
+## Simulació del TCL amb dades no normals {.smaller}
+
+```{r tcl-sim, fig.height=3.6}
+set.seed(123)
+B <- 10000
+n <- 40
+mitjanes <- replicate(B, mean(rexp(n, rate = 1)))
+
+tibble(mitjanes) |>
+  ggplot(aes(mitjanes)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40, fill = "#E0F1EC") +
+  geom_density(linewidth = 1, color = "#006747") +
+  theme_minimal()
+```
+
+::: {.block}
+#### Observació
+Tot i que l'exponencial és asimètrica, les mitjanes simulades són molt més semblants a una normal.
+:::
+
+## Com canvia la distribució de la mitjana? {.smaller}
+
+- Amb $n$ petit, la mitjana conserva part de la forma original.
+- Amb $n$ gran, la forma s'aproxima a la normal.
+- La variabilitat baixa com $1/\sqrt n$.
+
+```{r tcl-n}
+sim_mitjana <- function(n, B = 5000) replicate(B, mean(rexp(n, rate = 1)))
+
+sd(sim_mitjana(5))
+sd(sim_mitjana(50))
+```
+
+## Per practicar: comprovar la llei $1/\sqrt{n}$ {.smaller}
+
+::: {.block}
+#### Problema
+Repetiu la simulació anterior per $n=10,20,40,80$ i comproveu que la desviació típica simulada de la mitjana es comporta aproximadament com $1/\sqrt n$ (és a dir, que en duplicar $n$ la desviació típica baixa per un factor proper a $1/\sqrt2$).
+:::
+
+[Mostra la solució →](#sol-arrel-n){.solution-link}
+
+## Solució: comprovar la llei $1/\sqrt{n}$ {#sol-arrel-n visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r arrel-n-check, fig.height=3.6}
+set.seed(1)
+ns <- c(10, 20, 40, 80)
+sds <- sapply(ns, function(n) sd(sim_mitjana(n)))
+
+tibble(n = ns, sd_simulada = sds, sd_teorica = 1 / sqrt(ns))
+```
+
+La columna `sd_simulada` s'apropa força a `sd_teorica` = $1/\sqrt n$ (recordeu que $\sigma=1$ per a una exponencial de ràtio 1), confirmant la relació teòrica.
+
+## Aproximació normal de proporcions {.smaller}
+
+::: {.block}
+#### Connexió amb la binomial
+Si $X\sim B(n,p)$, aleshores $\hat p=X/n$ és la mitjana de $n$ Bernoulli. Pel TCL:
+$$\hat p \approx N\left(p,\sqrt{\frac{p(1-p)}{n}}\right)$$
+:::
+
+- Exemple: taxa d'errors en 10.000 peticions.
+- Base dels intervals de confiança i tests per proporcions (properament al bloc d'inferència).
+
+```{r prop-tcl-check, fig.height=3}
+set.seed(3)
+p <- 0.02; n <- 10000
+phat_sim <- replicate(3000, mean(rbinom(n, 1, p)))
+c(mitjana = mean(phat_sim), sd_simulada = sd(phat_sim), sd_teorica = sqrt(p * (1 - p) / n))
+```
+
+## Paral·lelitzar simulacions Monte Carlo {.smaller}
+
+```{r tcl-paral·lel}
+#| eval: !expr has_pkg("furrr")
+library(future)
+library(furrr)
+plan(multisession, workers = 4)
+
+simula <- function(n) mean(rexp(n, rate = 1))
+mitjanes <- future_map_dbl(1:10000, ~ simula(100))
+
+mean(mitjanes)
+sd(mitjanes)
+```
+
+::: {.alertblock}
+#### Per què té sentit paral·lelitzar?
+Cada repetició Monte Carlo és independent: és un cas natural de càlcul paral·lel.
+:::

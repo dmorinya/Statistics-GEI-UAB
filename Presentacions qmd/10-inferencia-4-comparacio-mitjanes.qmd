@@ -1,0 +1,191 @@
+---
+title: "Inferència IV"
+subtitle: "Comparació de mitjanes"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Inferència IV"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Estadística computacional amb R, simulació i exemples d'enginyeria informàtica
+
+## Per què comparar mitjanes? {.smaller}
+
+- Volem saber si dues configuracions tenen el mateix rendiment mitjà.
+- Comparar una versió nova amb una versió anterior és una situació habitual.
+- La pregunta estadística és si la diferència observada supera el soroll mostral.
+
+::: {.block}
+#### Exemples
+Latència abans/després, temps d'execució de dos algoritmes, consum de memòria amb dues configuracions.
+:::
+
+## Objectius {.smaller}
+
+1. Distingir dades aparellades i mostres independents.
+2. Formular tests de comparació de mitjanes.
+3. Aplicar tests t adequats amb R.
+4. Interpretar p-valors, intervals i diferències estimades.
+5. Relacionar-ho amb benchmarking i experiments A/B quantitatius.
+
+## Dades aparellades o independents? {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Aparellades
+Les dues mesures corresponen a la mateixa unitat.
+- mateix servidor abans/després,
+- mateix conjunt de tasques amb dos algoritmes,
+- mateix usuari en dues condicions.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Independents
+Les dues mostres provenen de grups diferents.
+- dos grups d'usuaris,
+- dues màquines diferents,
+- dues mostres de peticions no relacionades.
+:::
+
+</div>
+:::
+
+## Dades aparellades: reduir a un test simple {.smaller}
+
+::: {.block}
+#### Diferències
+Amb parelles $(X_i,Y_i)$, definim $D_i=Y_i-X_i$. El test sobre dues mitjanes es converteix en un test sobre una mitjana:
+$$H_0:\mu_D=0$$
+:::
+
+```{r test-aparellat}
+abans   <- c(120, 118, 130, 125, 119, 122, 121, 128)
+despres <- c(112, 116, 124, 120, 116, 119, 117, 121)
+t.test(despres, abans, paired = TRUE, alternative = "less")
+```
+
+## Mostres independents: test de Welch {.smaller}
+
+::: {.block}
+#### Opció recomanada per defecte
+El test t de Welch no exigeix variàncies iguals:
+$$H_0:\mu_1=\mu_2,\qquad H_1:\mu_1\ne\mu_2$$
+:::
+
+```{r test-welch}
+alg_A <- c(34, 31, 33, 36, 35, 32, 37, 34)
+alg_B <- c(29, 30, 31, 28, 32, 30, 29, 31)
+t.test(alg_A, alg_B, alternative = "greater")
+```
+
+- `greater`: la mitjana d'A és més gran que la de B.
+- En temps d'execució, "més gran" pot voler dir pitjor.
+
+## Mostres independents amb variàncies iguals {.smaller}
+
+Si assumim normalitat i variàncies iguals, es pot usar la versió amb variància combinada.
+
+```{r test-var-equal}
+t.test(alg_A, alg_B, alternative = "greater", var.equal = TRUE)
+```
+
+::: {.alertblock}
+#### Prudència
+En dades de rendiment, les variàncies sovint poden diferir entre configuracions. Welch és més robust.
+:::
+
+## Visualització abans del test {.smaller}
+
+```{r visualitzacio-algoritmes, fig.height=3.8}
+dades <- tibble(
+  temps = c(alg_A, alg_B),
+  algoritme = rep(c("A", "B"), each = length(alg_A))
+)
+
+ggplot(dades, aes(algoritme, temps)) +
+  geom_boxplot(fill = "#E0F1EC") +
+  geom_point(color = "#14416E", size = 2) +
+  theme_minimal()
+```
+
+::: {.block}
+#### Regla
+Abans d'un test, sempre visualitzem les dades.
+:::
+
+## Exemple: comparació d'algoritmes {.smaller}
+
+Tenim temps d'execució de dos algoritmes sobre problemes independents.
+
+- $H_0:\mu_A=\mu_B$.
+- $H_1:\mu_A>\mu_B$ si volem demostrar que A és més lent.
+- També podem plantejar $H_1:\mu_A<\mu_B$ si volem demostrar que A és més ràpid.
+
+::: {.block}
+#### Informe
+No direm només "p < 0.05". Cal indicar diferència estimada i interval de confiança.
+:::
+
+## Per practicar: test bilateral i decisió {.smaller}
+
+::: {.block}
+#### Problema
+Amb `alg_A` i `alg_B` d'abans, feu el test de Welch **bilateral** (`alternative = "two.sided"`, l'opció per defecte). Compareu el p-valor amb el del test unilateral (`greater`) fet abans. Per què el p-valor bilateral és més gran?
+:::
+
+[Mostra la solució →](#sol-bilateral){.solution-link}
+
+## Solució: test bilateral i decisió {#sol-bilateral visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r bilateral-check}
+t.test(alg_A, alg_B)$p.value
+t.test(alg_A, alg_B, alternative = "greater")$p.value
+```
+
+El p-valor bilateral és aproximadament el doble de l'unilateral (quan la diferència observada va en la direcció de $H_1$), perquè reparteix la probabilitat de cua entre les dues direccions possibles ($\mu_A\ne\mu_B$) en lloc de concentrar-la en una de sola.
+
+## Criteris pràctics de decisió {.smaller}
+
+- **Estadística**: p-valor i interval de confiança.
+- **Enginyeria**: diferència rellevant per a l'usuari o el sistema.
+- **Cost**: complexitat afegida, manteniment, estabilitat.
+- **Reproduïbilitat**: scripts, llavors, entorn i dades versionades.
+
+::: {.alertblock}
+#### Pregunta final
+La diferència és estadísticament detectable i pràcticament útil?
+:::

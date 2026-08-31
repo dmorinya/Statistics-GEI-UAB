@@ -1,0 +1,553 @@
+---
+title: "Probabilitat I"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Probabilitat I"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+has_pkg <- function(p) requireNamespace(p, quietly = TRUE)
+set.seed(2026)
+```
+
+## La probabilitat com a llenguatge per raonar amb dades, algoritmes i sistemes incerts
+
+## Per què probabilitat en Enginyeria Informàtica? {.smaller}
+
+- Molts sistemes informàtics no són deterministes a escala observable.
+- Treballem amb **errors, fallades, latències, mostres, classificadors, soroll i decisions sota incertesa**.
+- La probabilitat permet modelitzar: pèrdua de paquets, falsos positius en un detector, col·lisions en hashing, experiments A/B, filtres de spam, fiabilitat de sistemes distribuïts.
+
+::: {.block}
+#### Idea clau
+No n'hi ha prou amb dir "ha passat" o "no ha passat". Volem quantificar **com de probable** és i com canvia quan tenim nova informació.
+
+**Dades + model + simulació → decisió informada**
+:::
+
+## Objectius del tema {.smaller}
+
+1. Interpretar la probabilitat com a freqüència relativa a llarg termini i com a model.
+2. Definir espai mostral, esdeveniments, complementaris, unions i interseccions.
+3. Calcular probabilitats a partir de taules de freqüències.
+4. Entendre i aplicar la probabilitat condicionada.
+5. Identificar esdeveniments independents.
+6. Aplicar la fórmula de probabilitat total i el teorema de Bayes.
+7. Verificar resultats amb simulació en R.
+
+# Probabilitat i simulació
+
+## Un problema històric: de Méré i Fermat {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Joc 1
+Llancem un dau 4 vegades. Guanyem si surt almenys un 6.
+$$\mathbb P(\text{guanyar})=1-\left(\frac{5}{6}\right)^4=0.5177$$
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Joc 2
+Llancem dos daus 24 vegades. Guanyem si surt almenys un doble 6.
+$$\mathbb P(\text{guanyar})=1-\left(\frac{35}{36}\right)^{24}=0.4914$$
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Lliçó
+Una intuïció aparentment raonable pot fallar (els dos jocs *semblen* equivalents). La probabilitat ens dona una manera formal de comprovar-ho.
+:::
+
+## El mateix problema amb R {.smaller}
+
+```{r dos-jocs}
+p_joc1 <- 1 - (5/6)^4
+p_joc2 <- 1 - (35/36)^24
+c(p_joc1 = p_joc1, p_joc2 = p_joc2)
+```
+
+## Freqüència relativa i simulació Monte Carlo {.smaller}
+
+Per esdeveniments aleatoris independents repetits moltes vegades:
+$$\text{freqüència relativa} = \frac{\text{nombre d'èxits}}{\text{nombre de repeticions}} \approx \mathbb P(\text{èxit})$$
+
+- Amb poques repeticions pot variar força.
+- Amb moltes repeticions tendeix a estabilitzar-se.
+- Aquesta és la base de la simulació Monte Carlo.
+
+## Un patró de simulació reutilitzable {.smaller}
+
+```{r joc2-sim, fig.height=3.8}
+set.seed(2026)
+B <- 5000
+
+simula_joc <- function() {
+  daus1 <- sample(1:6, 24, replace = TRUE)
+  daus2 <- sample(1:6, 24, replace = TRUE)
+  any(daus1 == 6 & daus2 == 6)
+}
+
+resultats <- replicate(B, simula_joc())
+freq_acumulada <- cumsum(resultats) / seq_len(B)
+
+tibble(sim = 1:B, freq = freq_acumulada) |>
+  ggplot(aes(sim, freq)) +
+  geom_line(color = "#14416E") +
+  geom_hline(yintercept = p_joc2, color = "#E67E22", linetype = "dashed") +
+  labs(x = "Nombre de simulacions", y = "Freqüència relativa") +
+  theme_minimal()
+```
+
+::: {.block}
+#### Bones pràctiques
+Fixar una llavor amb `set.seed()`, escriure funcions petites, separar simulació, càlcul i visualització.
+:::
+
+# Probabilitat a partir de dades
+
+## Esdeveniments a partir d'una taula de dades {.smaller}
+
+Suposem un registre de 120 peticions a un sistema web:
+
+| | Error | No error | Total |
+|---|---|---|---|
+| Mòbil | 25 | 50 | 75 |
+| Escriptori | 20 | 25 | 45 |
+| Total | 45 | 75 | 120 |
+
+$E$: la petició acaba amb error. $M$: ve de mòbil. $D$: ve d'escriptori.
+
+```{r prob-taula}
+c(P_E = 45/120, P_M = 75/120, P_D_i_E = 20/120)
+```
+
+## Unions, interseccions i complementaris {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Regla de la unió
+$$\mathbb P(A\cup B)=\mathbb P(A)+\mathbb P(B)-\mathbb P(A\cap B)$$
+:::
+
+::: {.block}
+#### Complementari
+$$\mathbb P(\overline{A})=1-\mathbb P(A)$$
+:::
+
+</div>
+<div>
+
+::: {.exampleblock}
+#### Exemple
+$$\mathbb P(D\cup E)=0.375+0.375-0.1667=0.5833$$
+:::
+
+</div>
+:::
+
+## Taules de probabilitats amb R {.smaller}
+
+```{r taula-prob-r}
+peticions <- tibble::tribble(
+  ~dispositiu,   ~estat,      ~n,
+  "mobil",      "error",      25,
+  "mobil",      "no_error",   50,
+  "escriptori", "error",      20,
+  "escriptori", "no_error",   25
+)
+
+xt <- xtabs(n ~ dispositiu + estat, data = peticions)
+addmargins(xt)
+round(prop.table(xt, margin = 1), 4)
+```
+
+::: {.block}
+#### Connexió amb descriptiva bivariant
+Les taules de contingència també són una porta d'entrada natural a la probabilitat.
+:::
+
+# Definició formal
+
+## Definició formal de probabilitat {.smaller}
+
+::: {.two-col}
+<div>
+
+- **Espai mostral** $\Omega$: conjunt de tots els resultats possibles.
+- **Esdeveniments**: subconjunts de $\Omega$.
+- Una probabilitat és una funció $\mathbb P: \mathcal{E} \to [0,1]$ que assigna un nombre a cada esdeveniment.
+
+</div>
+<div>
+
+::: {.block}
+#### Axiomes bàsics
+1. $0\leq \mathbb P(A)\leq 1$.
+2. $\mathbb P(\Omega)=1$ i $\mathbb P(\emptyset)=0$.
+3. Si $A$ i $B$ són disjunts: $\mathbb P(A\cup B)=\mathbb P(A)+\mathbb P(B)$.
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Interpretació computacional
+Un esdeveniment pot ser: "temps de resposta > 1 segon", "paquet perdut", "classificador diu spam", "test automàtic falla".
+:::
+
+## Espai mostral en un sistema informàtic {.smaller}
+
+$\Omega$ (totes les peticions) es divideix en **peticions OK** i **peticions amb error**; dins de cada branca poden aparèixer subesdeveniments com **timeout** o **latència $<100$ ms**.
+
+::: {.block}
+#### Traducció estadística
+Cada filtre sobre les dades defineix un esdeveniment. Les probabilitats poden estimar-se com a freqüències relatives o modelitzar-se teòricament.
+:::
+
+# Probabilitat condicionada i independència
+
+## Probabilitat condicionada {.smaller}
+
+::: {.block}
+#### Definició
+$$\mathbb P(A\mid B)=\frac{\mathbb P(A\cap B)}{\mathbb P(B)}, \qquad \mathbb P(B)>0$$
+:::
+
+::: {.exampleblock}
+#### Exemple
+Probabilitat que una petició tingui error sabent que ve d'escriptori:
+$$\mathbb P(E\mid D)=\frac{20/120}{45/120}=0.4444$$
+:::
+
+::: {.alertblock}
+#### Interpretació
+Condicionar vol dir canviar la població de referència. Ja no mirem totes les peticions, només les que compleixen $D$.
+:::
+
+## Independència {.smaller}
+
+::: {.block}
+#### Definició
+Dos esdeveniments $A$ i $B$ són independents si $\mathbb P(A\cap B)=\mathbb P(A)\mathbb P(B)$, equivalentment (si $\mathbb P(B)>0$), $\mathbb P(A\mid B)=\mathbb P(A)$.
+:::
+
+- Si saber $B$ no canvia la probabilitat de $A$, no hi ha informació addicional.
+- En dades reals, la independència exacta és rara.
+
+::: {.alertblock}
+#### En informàtica
+No assumiu independència sense pensar-hi: errors de xarxa, caigudes de serveis i temps de resposta poden estar correlacionats.
+:::
+
+## Comprovar independència amb dades {.smaller}
+
+```{r independencia-check}
+p_error <- sum(xt[, "error"]) / sum(xt)
+p_error_cond <- prop.table(xt, margin = 1)[, "error"]
+
+p_error
+p_error_cond
+p_error_cond - p_error
+```
+
+::: {.block}
+#### Important
+Amb una mostra petita, diferències petites poden ser només soroll. La inferència estadística ajudarà a decidir si la diferència és compatible amb l'atzar.
+:::
+
+## El problema dels aniversaris {.smaller}
+
+Volem la probabilitat que, entre $k$ persones, almenys dues comparteixin aniversari — més fàcil pel complementari:
+$$\mathbb P(\text{cap repetit})=\frac{365\cdot 364\cdot \ldots \cdot (365-k+1)}{365^k}$$
+
+```{r aniversaris-exacte}
+p_rep <- function(k) 1 - prod((365 - 0:(k-1)) / 365)
+sapply(c(10, 20, 23, 30), p_rep)
+```
+
+::: {.alertblock}
+#### Sorprenent?
+Amb 23 persones ja superem el 50%.
+:::
+
+## Simular el problema dels aniversaris {.smaller}
+
+```{r aniversaris-sim}
+simula_aniversaris <- function(k) {
+  dies <- sample(1:365, size = k, replace = TRUE)
+  any(duplicated(dies))
+}
+
+set.seed(123)
+B <- 10000
+ks <- c(10, 20, 23, 30)
+
+prob_sim <- sapply(ks, function(k) mean(replicate(B, simula_aniversaris(k))))
+tibble::tibble(k = ks, prob_simulada = prob_sim)
+```
+
+## Per practicar: aniversaris amb 50 persones {.smaller}
+
+::: {.block}
+#### Problema
+Calculeu, exactament i per simulació, la probabilitat que almenys dues persones comparteixin aniversari en un grup de 50.
+:::
+
+[Mostra la solució →](#sol-aniv50){.solution-link}
+
+## Solució: aniversaris amb 50 persones {#sol-aniv50 visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r aniv50-check}
+p_rep(50)
+set.seed(1)
+mean(replicate(10000, simula_aniversaris(50)))
+```
+
+Amb 50 persones, la probabilitat ja supera el 97%.
+
+# Probabilitat total i Bayes
+
+## Particions de l'espai mostral {.smaller}
+
+Una partició divideix $\Omega$ en esdeveniments disjunts: $\Omega=H_1\cup H_2\cup\cdots\cup H_n$, $H_i\cap H_j=\emptyset$.
+
+Qualsevol esdeveniment $A$ es pot descompondre com $A=(A\cap H_1)\cup\cdots\cup(A\cap H_n)$.
+
+## Fórmula de probabilitat total {.smaller}
+
+Si $H_1,\ldots,H_n$ formen una partició:
+$$\mathbb P(A)=\mathbb P(A\cap H_1)+\cdots+\mathbb P(A\cap H_n)$$
+
+Com que $\mathbb P(A\cap H_i)=\mathbb P(A\mid H_i)\mathbb P(H_i)$:
+$$\boxed{\mathbb P(A)=\sum_{i=1}^n \mathbb P(A\mid H_i)\mathbb P(H_i)}$$
+
+::: {.block}
+#### Interpretació
+La probabilitat global de $A$ és una mitjana ponderada de les probabilitats condicionades de $A$ dins de cada grup.
+:::
+
+## Teorema de Bayes {.smaller}
+
+::: {.block}
+#### Fórmula
+$$\boxed{\mathbb P(H_j\mid A)=\frac{\mathbb P(A\mid H_j)\mathbb P(H_j)}{\sum_{i=1}^n \mathbb P(A\mid H_i)\mathbb P(H_i)}}$$
+:::
+
+- $\mathbb P(H_j)$: probabilitat abans d'observar $A$ (*prior*).
+- $\mathbb P(A\mid H_j)$: versemblança de l'evidència.
+- $\mathbb P(H_j\mid A)$: probabilitat després d'observar $A$ (*posterior*).
+
+::: {.alertblock}
+#### Lectura informàtica
+Bayes és el nucli de molts raonaments de diagnòstic: spam, alertes, tests automàtics, detecció d'intrusions i classificadors probabilístics.
+:::
+
+## Exemple: filtre de correu brossa {.smaller}
+
+Un compte de correu rep missatges: $30\%$ són spam ($\mathbb P(S)=0.3$); si és spam, el $30\%$ conté una paraula sospitosa $V$ ($\mathbb P(V\mid S)=0.3$); si no és spam, l'1% conté $V$ ($\mathbb P(V\mid \overline{S})=0.01$).
+
+```{r spam-bayes}
+prior_spam <- 0.30
+p_v_spam <- 0.30
+p_v_no_spam <- 0.01
+
+p_v <- p_v_spam * prior_spam + p_v_no_spam * (1 - prior_spam)
+posterior_spam <- p_v_spam * prior_spam / p_v
+c(p_v = p_v, posterior_spam = posterior_spam)
+```
+
+::: {.block}
+#### Conclusió
+La paraula $V$ és molt informativa, però no perfecta.
+:::
+
+## Exemple: alarma d'un sistema {.smaller}
+
+Un sistema de monitoratge: $\mathbb P(I)=0.01$ (incidència real), $\mathbb P(A\mid I)=0.97$ (l'alarma es dispara si hi ha incidència), $\mathbb P(A\mid \overline I)=0.02$ (falsa alarma).
+
+```{r alarma-bayes}
+p_i <- 0.01; p_a_i <- 0.97; p_a_noi <- 0.02
+p_i_a <- (p_a_i * p_i) / (p_a_i * p_i + p_a_noi * (1 - p_i))
+p_i_a
+```
+
+::: {.alertblock}
+#### Lliçó
+Una alarma molt bona pot tenir una probabilitat posterior moderada si l'esdeveniment real és molt rar.
+:::
+
+## *Base rate fallacy*: el risc d'oblidar la prevalença {.smaller}
+
+- L'alarma té sensibilitat alta: $\mathbb P(A\mid I)=0.97$.
+- Però la incidència és molt rara: $\mathbb P(I)=0.01$.
+- Moltes alarmes provenen de casos sense incidència, perquè són molt més nombrosos.
+
+::: {.block}
+#### Traducció informàtica
+En detecció d'intrusions, frau o anomalies, no podem mirar només la taxa d'encert. Cal tenir en compte la freqüència real de l'esdeveniment.
+:::
+
+## Per practicar: canviar la prevalença {.smaller}
+
+::: {.block}
+#### Problema
+Amb la mateixa alarma ($\mathbb P(A\mid I)=0.97$, $\mathbb P(A\mid \overline I)=0.02$), com canvia $\mathbb P(I\mid A)$ si la incidència fos deu vegades més freqüent, $\mathbb P(I)=0.10$?
+:::
+
+[Mostra la solució →](#sol-prevalenca){.solution-link}
+
+## Solució: canviar la prevalença {#sol-prevalenca visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r prevalenca-check}
+p_i2 <- 0.10
+(p_a_i * p_i2) / (p_a_i * p_i2 + p_a_noi * (1 - p_i2))
+```
+
+Amb una prevalença deu vegades més gran, la probabilitat posterior puja d'un 33% a més d'un 84% — la mateixa alarma es torna molt més fiable quan l'esdeveniment que detecta és menys rar.
+
+## Exemple: qualitat de software o hardware {.smaller}
+
+Tres proveïdors fabriquen components:
+
+| Proveïdor | Quota | Defectuosos |
+|---|---|---|
+| A | 70% | 4% |
+| B | 24% | 3% |
+| C | 6% | 1% |
+
+```{r proveidors-bayes}
+proveidors <- tibble::tribble(
+  ~proveidor, ~quota, ~prob_defecte_cond,
+  "A",        0.70,    0.04,
+  "B",        0.24,    0.03,
+  "C",        0.06,    0.01
+)
+
+prob_defecte_total <- sum(proveidors$quota * proveidors$prob_defecte_cond)
+
+proveidors <- proveidors |>
+  dplyr::mutate(prob_proveidor_si_defecte = quota * prob_defecte_cond / prob_defecte_total)
+
+prob_defecte_total
+proveidors
+```
+
+::: {.block}
+#### Programar estadística també és programar bé
+Noms clars, funcions petites i informes reproduïbles redueixen errors matemàtics i errors de codi.
+:::
+
+# Simulació i paral·lelització
+
+## Quan la probabilitat exacta és difícil {.smaller}
+
+En problemes reals, el càlcul exacte pot ser difícil: molts components, dependències entre fallades, regles complexes, grans volums de dades, probabilitats rares.
+
+::: {.block}
+#### Estratègia
+Simular moltes vegades el sistema i estimar la probabilitat com a freqüència relativa: **model → simular $B$ vegades → comptar esdeveniments → estimar probabilitat**.
+:::
+
+## Exemple: fiabilitat d'un sistema amb rèpliques {.smaller}
+
+Un servei funciona si almenys 2 de 3 servidors estan actius. Cada servidor falla amb probabilitat 0.05.
+
+```{r fiabilitat-sim}
+set.seed(123)
+B <- 100000
+
+simula_sistema <- function() {
+  actiu <- rbinom(n = 3, size = 1, prob = 0.95)
+  sum(actiu) >= 2
+}
+
+funciona <- replicate(B, simula_sistema())
+mean(funciona)
+```
+
+::: {.block}
+#### Lectura
+Aquest tipus de simulació connecta probabilitat, arquitectura de sistemes i presa de decisions sobre redundància.
+:::
+
+## Per practicar: fiabilitat exacta vs. simulada {.smaller}
+
+::: {.block}
+#### Problema
+Calculeu exactament $\mathbb P(\text{almenys 2 de 3 actius})$ amb la fórmula binomial i compareu-ho amb la simulació anterior.
+:::
+
+[Mostra la solució →](#sol-fiabilitat){.solution-link}
+
+## Solució: fiabilitat exacta vs. simulada {#sol-fiabilitat visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+$$\mathbb P(X\ge 2)=\binom{3}{2}0.95^2\cdot0.05+\binom{3}{3}0.95^3$$
+:::
+
+```{r fiabilitat-exacta}
+1 - pbinom(1, size = 3, prob = 0.95)
+```
+
+## Accelerar simulacions amb paral·lelització {.smaller}
+
+```{r paral·lel-fiabilitat}
+#| eval: !expr has_pkg("furrr")
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+B <- 10000
+resultats <- future_map_dbl(1:B, function(i) {
+  actiu <- rbinom(n = 3, size = 1, prob = 0.95)
+  as.numeric(sum(actiu) >= 2)
+})
+
+mean(resultats)
+```
+
+::: {.alertblock}
+#### Important
+La paral·lelització és útil quan cada simulació és prou costosa. Per problemes petits, el cost de coordinar processos pot no compensar.
+:::

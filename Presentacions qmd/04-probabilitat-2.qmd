@@ -1,0 +1,480 @@
+---
+title: "Probabilitat II"
+subtitle: "Variables aleatòries discretes"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Probabilitat II"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+has_pkg <- function(p) requireNamespace(p, quietly = TRUE)
+set.seed(2026)
+```
+
+## De comptar esdeveniments a simular sistemes: errors, intents, connexions i càrrega
+
+## Per què variables aleatòries discretes en informàtica? {.smaller}
+
+::: {.block}
+Molts fenòmens informàtics són **comptatges**: nombre de paquets perduts, nombre d'errors en una bateria de tests, nombre d'intents fins al primer èxit, nombre de connexions per segon, nombre de bugs detectats, nombre de col·lisions en una taula hash.
+:::
+
+::: {.exampleblock}
+#### Idea clau
+Una variable aleatòria transforma un fenomen incert en un nombre que podem **calcular, simular i visualitzar**.
+
+**Sistema incert → variable aleatòria $X$ → distribució → decisió**
+:::
+
+## Objectius del tema {.smaller}
+
+1. Definir una variable aleatòria discreta i la seva distribució.
+2. Calcular i interpretar esperança i variància.
+3. Reconèixer models de Bernoulli, binomial, geomètric i Poisson.
+4. Traduir problemes d'informàtica a variables aleatòries.
+5. Calcular probabilitats exactes amb fórmules i amb R.
+6. Verificar resultats amb simulació Monte Carlo.
+
+# Variables aleatòries discretes
+
+## De l'espai mostral al nombre {.smaller}
+
+::: {.block}
+#### Definició
+Una **variable aleatòria** és una funció $X:\Omega\to\mathbb{R}$ que assigna un valor numèric a cada resultat possible d'un experiment aleatori.
+:::
+
+- Els esdeveniments es poden escriure com $\{X=a\}$, $\{X\leq a\}$, etc.
+- La distribució ens diu amb quina probabilitat pren cada valor.
+
+::: {.two-col}
+<div>
+
+::: {.exampleblock}
+#### Exemple clàssic
+Llancem dos daus i $X=$ suma dels resultats. $X$ pot valer $2,3,\ldots,12$.
+:::
+
+</div>
+<div>
+
+::: {.exampleblock}
+#### Exemple informàtic
+Enviem 100 paquets i $X=$ nombre de paquets perduts.
+:::
+
+</div>
+:::
+
+## Distribució d'una variable discreta {.smaller}
+
+Per a una variable discreta $X$: $0\leq \mathbb P(X=a)\leq 1$, $\sum_a \mathbb P(X=a)=1$.
+
+```{r suma-daus, fig.height=3.4}
+resultats <- expand.grid(dau1 = 1:6, dau2 = 1:6)
+resultats$suma <- resultats$dau1 + resultats$dau2
+
+taula <- prop.table(table(resultats$suma))
+round(taula, 4)
+
+tibble(x = as.integer(names(taula)), p = as.numeric(taula)) |>
+  ggplot(aes(x, p)) +
+  geom_col(fill = "#006747") +
+  labs(x = "x", y = "P(X = x)") +
+  theme_minimal()
+```
+
+## Distribucions discretes amb R {.smaller}
+
+```{r distribucions-r}
+resultats <- expand.grid(dau1 = 1:6, dau2 = 1:6)
+resultats$suma <- resultats$dau1 + resultats$dau2
+
+table(resultats$suma)
+```
+
+- Generem tot l'espai mostral amb `expand.grid()`.
+- Convertim resultats en valors de $X$.
+- Comptem freqüències i les transformem en probabilitats.
+
+## Esperança: valor mitjà esperat {.smaller}
+
+::: {.block}
+#### Definició
+$$\mathbb E(X)=\mu_X=\sum_a a\,\mathbb P(X=a)$$
+:::
+
+- És el valor mitjà que esperaríem si repetíssim l'experiment moltes vegades.
+- No ha de coincidir necessàriament amb un valor possible de $X$.
+
+::: {.alertblock}
+#### No és una predicció exacta
+Si $X$ és el nombre de tests que fallen en cada execució automàtica, $\mathbb E(X)$ és el nombre mitjà de fallades esperades per execució — és un resum del comportament mitjà a llarg termini.
+:::
+
+## Variància: quant fluctua el resultat? {.smaller}
+
+::: {.block}
+#### Definició
+$$\mathrm{Var}(X)=\sigma_X^2=\sum_a (a-\mu_X)^2\,\mathbb P(X=a)$$
+:::
+
+::: {.exampleblock}
+#### Exemple computacional
+Dos algoritmes poden tenir el mateix temps mitjà però variàncies diferents: un és estable, l'altre és ràpid sovint però molt lent en alguns casos.
+:::
+
+::: {.alertblock}
+#### Missatge
+La mitjana sola pot ser insuficient per a decidir.
+:::
+
+## Mateixa esperança, risc diferent {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Aposta A
+Guanyem $+1$ amb prob. $18/37$ i perdem $-1$ amb prob. $19/37$.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Aposta B
+Guanyem $+35$ amb prob. $1/37$ i perdem $-1$ amb prob. $36/37$.
+:::
+
+</div>
+:::
+
+```{r roulette}
+x <- c(1, -1); px <- c(18/37, 19/37)
+EX <- sum(x * px); VX <- sum((x - EX)^2 * px)
+
+y <- c(35, -1); py <- c(1/37, 36/37)
+EY <- sum(y * py); VY <- sum((y - EY)^2 * py)
+
+c(EX = EX, VarX = VX, EY = EY, VarY = VY)
+```
+
+::: {.alertblock}
+#### Conclusió
+Tenen (gairebé) la mateixa esperança, però no el mateix risc.
+:::
+
+# Bernoulli i binomial
+
+## Distribució de Bernoulli {.smaller}
+
+::: {.block}
+#### Model
+$X=1$ (èxit) amb $\mathbb P(X=1)=p$; $X=0$ (fracàs) amb $\mathbb P(X=0)=1-p=q$.
+$$\mathbb E(X)=p, \qquad \mathrm{Var}(X)=pq$$
+:::
+
+::: {.exampleblock}
+#### Exemples informàtics
+Un test passa o falla; un paquet arriba o es perd; un usuari clica o no; una petició HTTP retorna error o no.
+:::
+
+## Distribució binomial {.smaller}
+
+::: {.block}
+#### Model
+$n$ experiments Bernoulli independents amb probabilitat d'èxit $p$; $X=$ nombre d'èxits, $X\sim B(n,p)$.
+$$\mathbb P(X=k)=\binom{n}{k}p^k(1-p)^{n-k},\qquad k=0,1,\ldots,n$$
+$$\mathbb E(X)=np,\qquad \mathrm{Var}(X)=np(1-p)$$
+:::
+
+::: {.alertblock}
+#### Quan l'usem?
+Quan comptem quants èxits hi ha en un nombre fix d'intents independents.
+:::
+
+## Binomial en informàtica: paquets perduts {.smaller}
+
+Enviem $n=100$ paquets, cada un es perd amb probabilitat $p=0.02$, independentment. $X\sim B(100,0.02)$.
+
+```{r paquets-perduts}
+n <- 100; p <- 0.02
+c(esperanca = n * p, variancia = n * p * (1 - p))
+```
+
+::: {.block}
+#### Pregunta
+Quina és la probabilitat de perdre més de 5 paquets?
+:::
+
+## Binomial amb R: càlcul exacte i simulació {.smaller}
+
+```{r binomial-r}
+# Càlcul exacte
+1 - pbinom(5, size = n, prob = p)
+
+# Simulació Monte Carlo
+set.seed(123)
+B <- 100000
+x <- rbinom(B, size = n, prob = p)
+mean(x > 5)
+mean(x)
+var(x)
+```
+
+::: {.block}
+#### Dues maneres complementàries
+`pbinom()` dona el càlcul exacte del model; `rbinom()` simula molts sistemes possibles.
+:::
+
+## Forma de la distribució binomial {.smaller}
+
+```{r binomial-plot, fig.height=4}
+tibble(k = 0:15, p = dbinom(0:15, size = 100, prob = 0.02)) |>
+  ggplot(aes(k, p)) +
+  geom_col(fill = "#006747") +
+  labs(x = "k paquets perduts", y = "P(X = k)") +
+  theme_minimal()
+```
+
+::: {.alertblock}
+#### Lectura
+Encara que la mitjana sigui 2, poden aparèixer valors més grans. La distribució quantifica com de sorprenents són.
+:::
+
+# Variable geomètrica
+
+## Variable geomètrica {.smaller}
+
+::: {.block}
+#### Model
+Experiments Bernoulli independents fins obtenir el primer èxit. $X=$ nombre de fracassos abans del primer èxit:
+$$\mathbb P(X=k)=q^k p,\qquad k=0,1,2,\ldots \qquad \mathbb E(X)=\frac{q}{p},\qquad \mathrm{Var}(X)=\frac{q}{p^2}$$
+:::
+
+::: {.exampleblock}
+#### Exemples informàtics
+Nombre de reintents abans que una connexió funcioni; nombre de commits abans de detectar el primer test fallit; nombre de peticions fins que apareix el primer error 500.
+:::
+
+## Geomètrica: reintents de connexió {.smaller}
+
+Una petició té probabilitat d'èxit $p=0.8$. $X=$ nombre de fracassos abans del primer èxit, $X\sim\mathrm{Geom}(0.8)$.
+
+```{r geometrica-conn}
+p <- 0.8
+c(esperanca = (1 - p) / p)
+c(P_X0 = dgeom(0, p), P_X1 = dgeom(1, p), P_Xge3 = 1 - pgeom(2, p))
+```
+
+::: {.alertblock}
+#### Ús pràctic
+Serveix per raonar sobre polítiques de reintent, timeouts i degradació del servei.
+:::
+
+## Geomètrica amb R {.smaller}
+
+```{r geometrica-r}
+p <- 0.8
+
+# P(X = k), on X = fracassos abans del primer èxit
+dgeom(0:5, prob = p)
+
+# Simulació
+set.seed(123)
+x <- rgeom(100000, prob = p)
+mean(x)
+var(x)
+```
+
+::: {.block}
+#### Detall important
+En R, `rgeom()` compta el nombre de fracassos abans del primer èxit.
+:::
+
+# Variable de Poisson
+
+## Variable de Poisson {.smaller}
+
+::: {.block}
+#### Model
+Nombre d'esdeveniments en un interval de temps o espai: $X\sim \mathrm{Pois}(\lambda)$.
+$$\mathbb P(X=k)=\frac{\lambda^k e^{-\lambda}}{k!},\qquad k=0,1,2,\ldots \qquad \mathbb E(X)=\lambda,\qquad \mathrm{Var}(X)=\lambda$$
+:::
+
+::: {.exampleblock}
+#### Exemples informàtics
+Connexions per segon a un servidor; errors per minut en un log; incidències obertes per dia; missatges que arriben a una cua.
+:::
+
+## Poisson: connexions a un servidor {.smaller}
+
+Un servidor rep de mitjana $2.5$ connexions per segon. $X\sim\mathrm{Pois}(2.5)$.
+
+```{r poisson-conn}
+lambda <- 2.5
+dpois(0:2, lambda)
+```
+
+::: {.alertblock}
+#### Pregunta operativa
+Quina és la probabilitat de rebre 3 o més connexions en un segon? $\mathbb P(X\geq3)=1-\mathbb P(X\leq2)$.
+:::
+
+## Poisson amb R {.smaller}
+
+```{r poisson-r}
+lambda <- 2.5
+
+# Probabilitats puntuals
+round(dpois(0:8, lambda = lambda), 3)
+
+# Probabilitat de 3 o més connexions
+1 - ppois(2, lambda = lambda)
+
+# Si l'interval és de 2 segons, lambda es multiplica per 2
+1 - dpois(0, lambda = 2 * lambda)
+```
+
+::: {.block}
+#### Escalat temporal
+Si el ritme mitjà és $\lambda$ per segon, en $t$ segons el paràmetre és $t\lambda$.
+:::
+
+## Distribució de Poisson: forma {.smaller}
+
+```{r poisson-plot, fig.height=4}
+tibble(k = 0:10, p = dpois(0:10, lambda = 2.5)) |>
+  ggplot(aes(k, p)) +
+  geom_col(fill = "#006747") +
+  labs(x = "k connexions en un segon", y = "P(X = k)") +
+  theme_minimal()
+```
+
+## Poisson i monitoratge: un llindar d'alerta {.smaller}
+
+Amb $\lambda=2.5$ errors per minut en condicions normals, volem activar una alerta si observem un nombre molt alt d'errors.
+
+::: {.block}
+#### Amb R
+$$\mathbb P(X\geq 8)=1-\mathbb P(X\leq 7)$$
+:::
+
+```{r poisson-llindar}
+1 - ppois(7, 2.5)
+```
+
+::: {.alertblock}
+#### Idea estadística
+Un llindar d'alerta és una decisió basada en una probabilitat de cua. Si aquesta probabilitat és petita, observar 8 o més errors pot indicar una anomalia.
+:::
+
+## Per practicar: triar un llindar {.smaller}
+
+::: {.block}
+#### Problema
+Amb $\lambda=2.5$ errors per minut, trobeu el llindar $k$ més petit tal que $\mathbb P(X\geq k)<0.01$.
+:::
+
+[Mostra la solució →](#sol-llindar){.solution-link}
+
+## Solució: triar un llindar {#sol-llindar visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r llindar-check}
+lambda <- 2.5
+k <- 0
+while (1 - ppois(k, lambda) >= 0.01) k <- k + 1
+k
+1 - ppois(k, lambda)
+```
+
+Amb $k=8$, la probabilitat de superar-lo baixa per sota de l'1%.
+
+# Simulació i pràctica computacional
+
+## Simulació Monte Carlo {.smaller}
+
+```{r montecarlo-servidor}
+set.seed(123)
+B <- 100000
+
+# Simulem 100000 segons d'activitat d'un servidor
+connexions <- rpois(B, lambda = 2.5)
+
+mean(connexions >= 3)
+mean(connexions >= 8)
+mean(connexions)
+var(connexions)
+```
+
+::: {.block}
+#### Connexió amb el tema anterior
+Les freqüències relatives de la simulació s'aproximen a les probabilitats del model.
+:::
+
+## Paral·lelització bàsica de simulacions amb R {.smaller}
+
+```{r poisson-paral·lel}
+#| eval: !expr has_pkg("furrr")
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+simula_prob_cua <- function(i) {
+  x <- rpois(100000, lambda = 2.5)
+  mean(x >= 8)
+}
+
+set.seed(123)
+resultats <- future_map_dbl(1:100, simula_prob_cua)
+
+mean(resultats)
+sd(resultats)
+```
+
+::: {.alertblock}
+#### Per què és útil?
+Quan repetim moltes simulacions, bootstrap o experiments de rendiment, la computació paral·lela redueix el temps d'espera.
+:::
+
+## Quina distribució triem? {.smaller}
+
+| Distribució | Pregunta típica | Exemple informàtic |
+|---|---|---|
+| Bernoulli | Èxit o fracàs? | Un test passa o falla |
+| Binomial | Quants èxits en $n$ intents? | Paquets perduts en 100 enviaments |
+| Geomètrica | Quants fracassos abans del primer èxit? | Reintents abans d'una connexió exitosa |
+| Poisson | Quants esdeveniments en un interval? | Connexions per segon, errors per minut |
+
+::: {.alertblock}
+#### Estratègia
+Primer identifiquem què estem comptant; després escollim el model.
+:::

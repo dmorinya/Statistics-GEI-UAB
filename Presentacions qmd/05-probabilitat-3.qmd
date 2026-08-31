@@ -1,0 +1,237 @@
+---
+title: "Probabilitat III"
+subtitle: "Variables aleatòries contínues"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Probabilitat III"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Per què variables contínues en informàtica? {.smaller}
+
+::: {.block}
+Moltes magnituds computacionals són gairebé contínues: temps de resposta d'una API, latència de xarxa, temps fins a una fallada, soroll en sensors, ús de CPU o memòria en un interval.
+:::
+
+::: {.exampleblock}
+#### Pregunta guia
+Quina probabilitat hi ha que la latència sigui inferior a 100 ms? I que superi un llindar crític?
+:::
+
+## Objectius del tema {.smaller}
+
+1. Entendre el paper de la densitat $f$ i de la distribució acumulada $F$.
+2. Calcular probabilitats com àrees o diferències $F(b)-F(a)$.
+3. Reconèixer distribucions uniforme, exponencial i normal.
+4. Fer càlculs amb R: `p*`, `q*`, `d*`, `r*`.
+5. Simular dades contínues i comparar-les amb el model teòric.
+
+## Variables aleatòries contínues {.smaller}
+
+::: {.block}
+#### Densitat
+Una variable contínua pren valors reals i no assigna probabilitat a punts individuals, sinó a intervals:
+$$\mathbb P(a\le X\le b)=\int_a^b f(t)\,dt, \qquad \int_{-\infty}^{\infty} f(t)\,dt=1$$
+:::
+
+- $f(t)\ge 0$ és una funció de densitat.
+- $\mathbb P(X=a)=0$ per a qualsevol punt concret.
+
+```{r densitat-plot, fig.height=3}
+tibble(x = seq(-3, 3, length.out = 300), f = dnorm(x)) |>
+  ggplot(aes(x, f)) +
+  geom_line(color = "#14416E", linewidth = 1) +
+  geom_area(data = ~filter(.x, x >= -0.8, x <= 1.2), fill = "#006747", alpha = 0.4) +
+  annotate("text", x = 0.2, y = 0.18, label = "P(a<=X<=b)", size = 3) +
+  theme_minimal()
+```
+
+## Funció de distribució: càlcul computacional {.smaller}
+
+::: {.block}
+#### Definició
+$$F(b)=\mathbb P(X\le b)=\int_{-\infty}^{b} f(t)\,dt$$
+:::
+
+- Interval: $\mathbb P(a\le X\le b)=F(b)-F(a)$.
+- Cua dreta: $\mathbb P(X\ge a)=1-F(a)$.
+- Quantil: valor $q$ tal que $F(q)=p$.
+
+```{r F-normal}
+# En R, per a la normal estàndard:
+pnorm(1.96)          # F(1.96)
+pnorm(1.2) - pnorm(-0.8)
+1 - pnorm(2)
+qnorm(0.975)          # quantil 97.5%
+```
+
+## Uniforme: incertesa sense preferències dins d'un interval {.smaller}
+
+::: {.block}
+#### $X\sim U(a,b)$
+$$f(t)=\frac{1}{b-a},\quad a<t<b, \qquad \mathbb E(X)=\frac{a+b}{2},\quad \mathrm{Var}(X)=\frac{(b-a)^2}{12}$$
+:::
+
+- Model simple per temps d'arribada dins d'una finestra.
+- Útil per generar aleatorietat: `runif()`.
+
+```{r uniforme}
+set.seed(123)
+latencia <- runif(10000, min = 20, max = 80)
+mean(latencia)
+mean(latencia <= 50)
+```
+
+::: {.alertblock}
+#### Interpretació
+Si $X\sim U(20,80)$, $\mathbb P(X\le 50)=0.5$.
+:::
+
+## Exponencial: temps fins al proper esdeveniment {.smaller}
+
+::: {.block}
+#### $X\sim Exp(\lambda)$
+$$f(t)=\lambda e^{-\lambda t},\quad t\ge 0, \qquad F(t)=1-e^{-\lambda t}, \qquad \mathbb E(X)=\frac{1}{\lambda},\qquad \mathrm{Var}(X)=\frac{1}{\lambda^2}$$
+:::
+
+- Temps entre connexions si les arribades són Poisson.
+- Temps fins a una fallada en un sistema simple.
+
+```{r exponencial}
+# Mitjana de 0.4 segons entre peticions
+lambda <- 1 / 0.4
+pexp(1, rate = lambda)      # P(X <= 1)
+1 - pexp(1, rate = lambda)  # P(X > 1)
+```
+
+## Normal: variabilitat al voltant d'un valor mitjà {.smaller}
+
+::: {.block}
+#### $X\sim N(\mu,\sigma)$
+$$f(x)=\frac{1}{\sigma\sqrt{2\pi}}\exp\left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2\right]$$
+:::
+
+- Model aproximat per errors agregats, mesures i mitjanes.
+- Estandardització: $Z=\dfrac{X-\mu}{\sigma}\sim N(0,1)$.
+
+```{r normal}
+mu <- 120; sigma <- 15
+pnorm(100, mean = mu, sd = sigma)
+1 - pnorm(150, mean = mu, sd = sigma)
+qnorm(0.95, mean = mu, sd = sigma)
+```
+
+## Exemple informàtic: latència d'una API {.smaller}
+
+Suposem $X\sim N(120,20)$ (latència en ms). Volem:
+
+- $\mathbb P(X\le 100)$: resposta molt ràpida.
+- $\mathbb P(X>160)$: resposta lenta.
+- el percentil 95: llindar que només superen el 5% de peticions.
+
+```{r api-latencia}
+pnorm(100, 120, 20)
+1 - pnorm(160, 120, 20)
+qnorm(0.95, 120, 20)
+```
+
+::: {.block}
+#### Resultat aproximat
+$\mathbb P(X>160)\simeq 0.023$: uns 23 casos de cada 1000.
+:::
+
+## Visualitzar i simular amb R {.smaller}
+
+```{r visualitza-simula, fig.height=3.6}
+set.seed(123)
+dades <- tibble(latencia = rnorm(5000, mean = 120, sd = 20))
+
+ggplot(dades, aes(latencia)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 35, fill = "#E0F1EC") +
+  geom_density(linewidth = 1, color = "#006747") +
+  labs(x = "Latència (ms)", y = "Densitat") +
+  theme_minimal()
+```
+
+::: {.alertblock}
+#### Objectiu
+Comparar la forma empírica de les dades simulades amb la densitat teòrica.
+:::
+
+## Per practicar: percentil crític {.smaller}
+
+::: {.block}
+#### Problema
+Si la latència és $X\sim N(120,20)$ i el llindar de qualitat de servei és el percentil 99, quin és aquest llindar en ms? Quina és la probabilitat de superar-lo en un dia amb 10.000 peticions independents (nombre esperat de peticions que el superen)?
+:::
+
+[Mostra la solució →](#sol-p99){.solution-link}
+
+## Solució: percentil crític {#sol-p99 visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r p99-check}
+llindar_p99 <- qnorm(0.99, 120, 20)
+llindar_p99
+# per construcció, P(X > P99) = 0.01, de manera que
+10000 * 0.01
+```
+
+El llindar és aproximadament `r round(qnorm(0.99, 120, 20), 1)` ms, i s'espera que unes 100 de les 10.000 peticions el superin (per definició del percentil 99).
+
+## Quan el model normal pot fallar {.smaller}
+
+- La normal és simètrica: pot no ser adequada per temps positius amb cua llarga.
+- Les latències sovint tenen **asimetria** i valors extrems.
+- Per això convé mirar gràfics i no només fórmules.
+
+::: {.block}
+#### Alternatives
+Exponencial o Gamma per temps positius; log-normal per temps multiplicatius; simulació empírica si tenim dades reals.
+:::
+
+## Comparar una latència simulada amb i sense asimetria {.smaller}
+
+```{r comparacio-asimetrica, fig.height=4}
+set.seed(9)
+comparacio <- tibble(
+  normal = rnorm(5000, 120, 20),
+  lognormal = rlnorm(5000, meanlog = log(120) - 0.5 * log(1 + (60/120)^2), sdlog = sqrt(log(1 + (60/120)^2)))
+) |>
+  pivot_longer(everything(), names_to = "model", values_to = "latencia")
+
+ggplot(comparacio, aes(latencia, fill = model)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40, alpha = 0.6, position = "identity") +
+  labs(x = "Latència (ms)") +
+  theme_minimal()
+```
+
+La versió log-normal té una cua a la dreta molt més llarga, més realista per a moltes latències reals.

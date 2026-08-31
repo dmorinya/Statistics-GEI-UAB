@@ -1,0 +1,641 @@
+---
+title: "Tema 0. Eines per a una estadística computacional"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Estadística — Tema 0"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+has_pkg <- function(p) requireNamespace(p, quietly = TRUE)
+library(tibble)
+set.seed(2026)
+```
+
+<!--
+NOTA per a qui renderitzi aquest fitxer:
+- Poseu el logotip de la UAB a images/uab.png (única imatge no generada per R).
+- Tots els diagrames de flux originals (tikz) s'han convertit a llistes o taules
+  Markdown senzilles, ja que no aporten dades a graficar amb R.
+- Tots els exemples numèrics/gràfics es generen amb codi R real.
+-->
+
+## De les dades a una decisió {.smaller}
+
+::: {.exampleblock}
+De les dades al codi, del codi als resultats, dels resultats a una decisió.
+:::
+
+## Per què un tema 0? {.smaller}
+
+- En aquesta assignatura no només farem càlculs: també aprendrem a **treballar amb dades**.
+- L'objectiu és que cada resultat sigui: traçable, reproduïble, comunicable i fàcil de revisar.
+- Això és especialment important en informàtica: dades, scripts, versions i informes han de conviure.
+
+::: {.block}
+#### Idea central
+**Estadística = dades + probabilitat + codi + interpretació**
+:::
+
+::: {.alertblock}
+#### Missatge pràctic
+El codi que no es pot reproduir és difícil de validar.
+:::
+
+## Objectius de la sessió {.smaller}
+
+Al final d'aquest tema hauríeu de poder:
+
+1. Obrir un projecte d'RStudio de manera ordenada.
+2. Crear i executar un script senzill en R.
+3. Importar dades i generar una primera taula o gràfic.
+4. Preparar un informe breu amb Quarto.
+5. Fer servir Git i GitHub per lliurar una pràctica reproduïble.
+6. Entendre per què la simulació i la computació paral·lela apareixeran al llarg del curs.
+
+::: {.block}
+#### No és un curs de programació avançada
+És una introducció al **flux de treball computacional** que farem servir per aprendre estadística.
+:::
+
+## Les eines del curs {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Treball local
+- **R**: llenguatge per a càlcul estadístic.
+- **RStudio/Posit**: entorn de treball.
+- **Quarto**: informes amb text, codi i resultats.
+:::
+
+::: {.block}
+#### Treball amb versions
+- **Git**: historial de canvis.
+- **GitHub**: repositori remot i lliuraments.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Paquets d'R
+- `tidyverse`: manipulació i visualització.
+- `readr`: lectura de fitxers.
+- `ggplot2`: gràfics.
+- `future`, `furrr`: paral·lelització.
+:::
+
+::: {.alertblock}
+#### Durant el curs
+No cal memoritzar totes les funcions: cal aprendre a construir un procés net i verificable.
+:::
+
+</div>
+:::
+
+## Flux de treball recomanat {.smaller}
+
+**Dades → Codi → Resultats → Informe**, amb **Git/GitHub** connectat a cada pas (versiona el codi i acompanya l'informe final).
+
+::: {.block}
+#### Principi de reproduïbilitat
+Una altra persona hauria de poder obtenir els mateixos resultats executant el vostre codi en el mateix projecte.
+:::
+
+## R com a calculadora estadística {.smaller}
+
+```{r r-calc}
+# Operacions bàsiques
+2 + 3
+sqrt(16)
+log(100)
+
+# Objectes
+x <- c(12, 15, 13, 18, 20)
+mean(x)
+sd(x)
+summary(x)
+```
+
+- En R assignem valors amb `<-`.
+- Un vector és una col·lecció de valors.
+- Moltes funcions estadístiques bàsiques ja estan incorporades.
+
+::: {.alertblock}
+#### Bon hàbit
+Comenteu el codi amb `#`: ajuda a entendre què esteu fent.
+:::
+
+## Primer exemple: temps d'execució {.smaller}
+
+```{r temps-exec}
+set.seed(123)
+temps_ms <- c(31, 29, 34, 30, 35, 33, 32, 80)
+
+mean(temps_ms)
+median(temps_ms)
+sd(temps_ms)
+summary(temps_ms)
+```
+
+::: {.block}
+#### Pregunta estadística
+Quin és un temps típic d'execució? Hi ha algun valor sospitós?
+:::
+
+- La mitjana és sensible a valors extrems.
+- La mediana pot ser més robusta.
+- La desviació típica mesura variabilitat.
+
+## Per practicar: interpretar un resum {.smaller}
+
+::: {.block}
+#### Problema
+Amb les dades `temps_ms` de la diapositiva anterior, indiqueu: (a) quin valor sembla atípic, (b) si l'esperaríeu que la mitjana fos més gran o més petita que la mediana, i (c) per què.
+:::
+
+[Mostra la solució →](#sol-temps){.solution-link}
+
+## Solució: interpretar el resum {#sol-temps visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+(a) El valor 80 destaca clarament respecte als altres (tots entre 29 i 35).
+(b) La mitjana hauria de ser **més gran** que la mediana, perquè un valor extrem gran l'estira cap amunt.
+(c) La mediana només depèn de l'ordre dels valors centrals, no de la seva magnitud, mentre que la mitjana suma tots els valors i el 80 pesa molt en aquesta suma.
+:::
+
+```{r temps-check}
+c(mitjana = mean(temps_ms), mediana = median(temps_ms))
+```
+
+## Dades en format taula {.smaller}
+
+```{r bench-tibble}
+library(tidyverse)
+
+bench <- tibble(
+  algorisme = c("A", "A", "A", "B", "B", "B"),
+  mida = c(1000, 5000, 10000, 1000, 5000, 10000),
+  temps_ms = c(8, 40, 85, 6, 29, 62)
+)
+
+bench
+```
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Una fila = una observació
+Cada fila representa una execució o mesura.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Una columna = una variable
+Per exemple: algorisme, mida de l'entrada, temps d'execució.
+:::
+
+</div>
+:::
+
+## Una primera visualització {.smaller}
+
+```{r bench-plot, fig.height=4}
+ggplot(bench, aes(x = mida, y = temps_ms, color = algorisme)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(
+    x = "Mida de l'entrada",
+    y = "Temps d'execució (ms)",
+    color = "Algorisme"
+  ) +
+  theme_minimal()
+```
+
+::: {.alertblock}
+#### Connexió amb el curs
+La descriptiva bivariant començarà precisament amb relacions entre dues variables.
+:::
+
+## Projectes d'RStudio {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Què és un projecte?
+Una carpeta que conté tot el necessari per a una anàlisi: dades, scripts, informes, resultats i historial de versions.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Estructura recomanada
+```
+estadistica-ei/
+  data/
+  R/
+  reports/
+  figures/
+  README.md
+  practica0.qmd
+```
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Regla pràctica
+Eviteu rutes absolutes com `/home/usuari/Escriptori/...`. Feu servir camins relatius dins del projecte.
+:::
+
+## Llegir dades {.smaller}
+
+```r
+library(tidyverse)
+
+logs <- read_csv("data/logs_servidor.csv")
+
+glimpse(logs)
+summary(logs)
+```
+
+::: {.block}
+#### Exemples de dades del curs
+Logs de servidor, temps d'execució, resultats de simulacions, errors de transmissió, peticions per segon.
+:::
+
+::: {.alertblock}
+#### Important
+No modifiqueu manualment les dades originals: creeu scripts que facin la neteja.
+:::
+
+## Quarto: informes reproduïbles {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Un informe Quarto combina
+- text explicatiu,
+- codi en R,
+- taules,
+- gràfics,
+- conclusions.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Per què és útil?
+Si canvien les dades o el codi, l'informe es pot tornar a generar automàticament.
+:::
+
+::: {.block}
+#### Lliuraments
+Les pràctiques poden contenir el fitxer `.qmd`, el codi, les dades i el resultat en HTML o PDF.
+:::
+
+</div>
+:::
+
+## Un fragment mínim de Quarto {.smaller}
+
+````markdown
+---
+title: "Pràctica 0"
+author: "Nom Cognoms"
+format: html
+---
+
+## Objectiu
+Analitzem els temps d'execució d'un algoritme.
+
+```{{r}}
+temps <- c(31, 29, 34, 30, 35, 33, 32, 80)
+summary(temps)
+```
+
+## Comentari
+La mediana és menys sensible al valor extrem que la mitjana.
+````
+
+## Git: control de versions {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Què resol Git?
+- Guardar l'historial del projecte.
+- Recuperar versions anteriors.
+- Saber què ha canviat.
+- Treballar de forma ordenada.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Sense Git
+```
+practica.R
+practica_final.R
+practica_final_bona.R
+practica_final_bona2.R
+```
+:::
+
+::: {.block}
+#### Amb Git
+Un fitxer, amb historial de canvis.
+:::
+
+</div>
+:::
+
+## Cicle bàsic amb Git {.smaller}
+
+```bash
+git status
+
+git add practica0.qmd R/analisi.R
+
+git commit -m "Afegeix primera anàlisi descriptiva"
+
+git push
+```
+
+1. Miro l'estat del projecte.
+2. Marco els fitxers que vull guardar.
+3. Faig una fotografia del projecte.
+4. La pujo a GitHub.
+
+::: {.alertblock}
+#### Missatges de commit
+Han de descriure el canvi, no només dir "canvis".
+:::
+
+## Ordenar un cicle de Git {.smaller}
+
+::: {.block}
+#### Problema
+Ordeneu correctament aquestes quatre ordres perquè formin un cicle de treball vàlid: `git push`, `git commit -m "..."`, `git add fitxer.R`, `git status`.
+:::
+
+[Mostra la solució →](#sol-git){.solution-link}
+
+## Solució: cicle de Git {#sol-git visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+1. `git status` — comprovar què ha canviat.
+2. `git add fitxer.R` — marcar els canvis a desar.
+3. `git commit -m "..."` — fer la fotografia local amb un missatge descriptiu.
+4. `git push` — pujar-ho a GitHub.
+:::
+
+## GitHub: lliuraments i col·laboració {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Què aportarà GitHub al curs?
+- Repositoris per a pràctiques.
+- Historial de lliuraments.
+- README amb instruccions.
+- Possibilitat de revisar codi.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Un bon repositori conté
+- `README.md`: què fa el projecte.
+- `data/`: dades necessàries.
+- `R/`: scripts.
+- `reports/`: informe final.
+- commits clars i ordenats.
+:::
+
+</div>
+:::
+
+## Exemple de README {.smaller}
+
+```bash
+# Pràctica 0: temps d'execució
+
+Objectiu: analitzar descriptivament els temps d'execució
+simulats de dos algoritmes.
+
+## Fitxers
+- data/temps_algoritmes.csv: dades d'entrada
+- R/analisi.R: codi principal
+- reports/practica0.qmd: informe reproduïble
+
+## Com reproduir els resultats
+1. Obrir el projecte a RStudio.
+2. Executar reports/practica0.qmd.
+```
+
+## Simulació: una idea que apareixerà sovint {.smaller}
+
+```{r simulacio-temps}
+set.seed(2026)
+
+# Simulem 1000 temps de resposta en ms
+temps <- rnorm(n = 1000, mean = 120, sd = 15)
+
+mean(temps)
+quantile(temps, c(.05, .50, .95))
+```
+
+- La simulació ens ajuda a entendre fenòmens aleatoris.
+- Permet experimentar sense tenir encara dades reals.
+- Serà central en probabilitat, inferència i bootstrap.
+
+::: {.alertblock}
+#### Reproduïbilitat
+`set.seed()` fa que una simulació es pugui repetir.
+:::
+
+## Exemple: simular peticions a un servidor {.smaller}
+
+```{r peticions-servidor, fig.height=3.6}
+set.seed(123)
+
+# Nombre de peticions per segon
+peticions <- rpois(n = 60, lambda = 2.5)
+
+tibble(segon = 1:60, peticions = peticions) |>
+  ggplot(aes(x = segon, y = peticions)) +
+  geom_col() +
+  theme_minimal()
+```
+
+::: {.block}
+#### Pregunta
+Quina és la probabilitat de tenir més de 5 peticions en un segon?
+:::
+
+Aquest exemple connecta amb la distribució de Poisson, i també amb capacitat, rendiment i cues.
+
+[Mostra la solució →](#sol-poisson){.solution-link}
+
+## Solució: peticions per segon {#sol-poisson visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r poisson-check}
+1 - ppois(5, lambda = 2.5)
+mean(rpois(100000, lambda = 2.5) > 5)
+```
+
+Amb $\lambda=2.5$, la probabilitat de superar 5 peticions en un segon és petita (al voltant d'un 4%) — ho veurem amb detall al tema de Probabilitat II.
+
+## Per què parlar de computació paral·lela? {.smaller}
+
+::: {.block}
+#### Moltes tasques estadístiques són repetitives
+- 10.000 simulacions Monte Carlo.
+- 5.000 mostres bootstrap.
+- Comparar molts paràmetres.
+- Avaluar molts escenaris.
+:::
+
+::: {.alertblock}
+#### Idea
+Si les repeticions són independents, sovint podem repartir-les entre diversos nuclis del processador.
+:::
+
+## Primer tast de paral·lelització amb R {.smaller}
+
+```{r paral·lel}
+#| eval: !expr has_pkg("furrr")
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+simula_mitjana <- function(i) {
+  x <- rnorm(10000, mean = 0, sd = 1)
+  mean(x)
+}
+
+resultats <- future_map_dbl(1:1000, simula_mitjana)
+
+mean(resultats)
+sd(resultats)
+```
+
+::: {.block}
+#### Lectura del codi
+Fem 1000 simulacions independents i les distribuïm entre diversos processos.
+:::
+
+## Bones pràctiques des del primer dia {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Codi
+- Noms de variables clars.
+- Comentaris breus i útils.
+- Scripts ordenats per blocs.
+- Cap resultat copiat manualment.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Projecte
+- Carpeta estructurada.
+- Fitxers amb noms informatius.
+- README actualitzat.
+- Commits freqüents i descriptius.
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Objectiu
+Que una altra persona pugui entendre què heu fet sense preguntar-vos-ho.
+:::
+
+## Errors habituals {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.alertblock}
+#### Eviteu
+- Codi només a la consola.
+- Fitxers sense estructura.
+- Rutes absolutes.
+- Gràfics enganxats manualment.
+- No fer commits fins al final.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Feu
+- Scripts i informes reproduïbles.
+- Projectes d'RStudio.
+- Camins relatius.
+- Taules i gràfics generats amb codi.
+- Commits petits i freqüents.
+:::
+
+</div>
+:::
+
+## Per practicar {.smaller}
+
+::: {.block}
+#### Tasques
+1. Instal·lar o comprovar R, RStudio, Git i Quarto.
+2. Crear un repositori a GitHub per a l'assignatura.
+3. Crear un projecte d'RStudio connectat al repositori.
+4. Escriure un script que simuli o llegeixi dades de temps d'execució.
+5. Crear un informe `practica0.qmd` amb una taula, un gràfic i una interpretació breu.
+6. Fer alguns commits i pujar-los a GitHub.
+:::

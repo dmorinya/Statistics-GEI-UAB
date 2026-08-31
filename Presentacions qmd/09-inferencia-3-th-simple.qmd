@@ -1,0 +1,212 @@
+---
+title: "Inferència III"
+subtitle: "Tests d'hipòtesi simples"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Inferència III"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Estadística computacional amb R, simulació i exemples d'enginyeria informàtica
+
+## De l'estimació a la decisió {.smaller}
+
+- Els intervals de confiança responen: "quin rang és plausible?"
+- Els tests d'hipòtesi responen: "les dades són compatibles amb una afirmació concreta?"
+
+::: {.block}
+#### Exemple informàtic
+Una versió nova redueix la latència mitjana per sota de 100 ms? Una taxa d'error supera l'1%?
+:::
+
+## Objectius {.smaller}
+
+1. Formular hipòtesi nul·la i alternativa.
+2. Entendre error de tipus I, tipus II i significació.
+3. Calcular estadístics de contrast i p-valors.
+4. Distingir tests bilaterals i unilaterals.
+5. Aplicar tests simples per mitjana, proporció i variància amb R.
+
+## Hipòtesi nul·la i alternativa {.smaller}
+
+$$H_0: \theta=\theta_0 \qquad H_1: \theta\ne\theta_0,\quad \theta>\theta_0,\quad \theta<\theta_0$$
+
+- $H_0$ és el model de referència.
+- $H_1$ representa l'efecte que busquem evidenciar.
+
+::: {.block}
+#### Exemples
+$H_0: \mu=100$ ms, $H_1: \mu<100$ ms. $H_0: p=0.01$, $H_1: p>0.01$.
+:::
+
+## Errors i p-valor {.smaller}
+
+- **Error tipus I**: rebutjar $H_0$ quan és certa.
+- **Error tipus II**: no rebutjar $H_0$ quan $H_1$ és certa.
+- **Significació $\alpha$**: risc màxim tolerat d'error tipus I.
+
+::: {.block}
+#### p-valor
+Probabilitat d'obtenir un resultat igual o més extrem que l'observat, assumint que $H_0$ és certa.
+:::
+
+::: {.alertblock}
+#### Regla
+Si p-valor $<\alpha$, rebutgem $H_0$.
+:::
+
+## Cues del test {.smaller}
+
+::: {.three-col}
+<div>
+
+::: {.block}
+#### Cua dreta
+$H_1:\theta>\theta_0$
+
+Ex.: la taxa d'error és massa alta.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Cua esquerra
+$H_1:\theta<\theta_0$
+
+Ex.: la latència ha baixat.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Bilateral
+$H_1:\theta\ne\theta_0$
+
+Ex.: el rendiment ha canviat.
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Clau
+La hipòtesi alternativa es decideix abans de mirar el resultat.
+:::
+
+## Test simple per a la mitjana {.smaller}
+
+::: {.block}
+#### $\sigma$ coneguda o $n$ gran
+$$E=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1)\quad \text{sota }H_0$$
+:::
+
+```{r test-mitjana-z}
+xbar <- 96; mu0 <- 100; sigma <- 15; n <- 64
+Eobs <- (xbar - mu0)/(sigma/sqrt(n))
+pval_esq <- pnorm(Eobs)  # H1: mu < mu0
+Eobs; pval_esq
+```
+
+## Test simple per a la mitjana amb $\sigma$ desconeguda {.smaller}
+
+::: {.block}
+#### t-test
+$$T=\frac{\bar X-\mu_0}{S/\sqrt n}\sim t_{n-1}$$
+:::
+
+```{r test-mitjana-t}
+set.seed(1)
+lat <- rnorm(25, mean = 96, sd = 15)
+t.test(lat, mu = 100, alternative = "less")
+```
+
+- `alternative = "less"`: $H_1:\mu<100$.
+- `alternative = "greater"`: $H_1:\mu>100$.
+- Per defecte, `two.sided`.
+
+## Test per a una proporció {.smaller}
+
+Suposem que el sistema ha de tenir una taxa d'error màxima d'1%. En 5000 peticions observem 68 errors.
+$$H_0:p=0.01,\qquad H_1:p>0.01$$
+
+```{r test-proporcio}
+x <- 68; n <- 5000
+prop.test(x, n, p = 0.01, alternative = "greater", correct = FALSE)
+binom.test(x, n, p = 0.01, alternative = "greater")
+```
+
+## Test per a una variància {.smaller}
+
+Volem saber si la variabilitat supera un llindar. Si la població és normal:
+$$\chi^2=\frac{(n-1)S^2}{\sigma_0^2}\sim\chi^2_{n-1}\quad \text{sota }H_0$$
+
+```{r test-variancia}
+n <- 30; s <- 18; sigma0 <- 15
+Eobs <- (n-1)*s^2/sigma0^2
+pval <- 1 - pchisq(Eobs, df = n-1)  # H1: sigma^2 > sigma0^2
+Eobs; pval
+```
+
+## Per practicar: test unilateral per a la mitjana {.smaller}
+
+::: {.block}
+#### Problema
+Una nova versió d'un servei promet una latència mitjana inferior a 90 ms. En una mostra de 36 peticions s'observa $\bar x=85$ ms amb $s=18$ ms. Formuleu $H_0$ i $H_1$, i calculeu el p-valor amb un t-test manual (`T = (xbar - mu0)/(s/sqrt(n))`, i `pt()`).
+:::
+
+[Mostra la solució →](#sol-test-latencia){.solution-link}
+
+## Solució: test unilateral per a la mitjana {#sol-test-latencia visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+$H_0:\mu=90$, $H_1:\mu<90$.
+:::
+
+```{r test-latencia-check}
+xbar <- 85; mu0 <- 90; s <- 18; n <- 36
+Tobs <- (xbar - mu0) / (s / sqrt(n))
+pval <- pt(Tobs, df = n - 1)
+c(Tobs = Tobs, pval = pval)
+```
+
+Amb un p-valor d'aquesta magnitud, la decisió de rebutjar $H_0$ depèn de si és inferior al nivell de significació $\alpha$ triat (per exemple 0.05).
+
+## Resultat estadístic vs. decisió pràctica {.smaller}
+
+::: {.block}
+#### No n'hi ha prou amb el p-valor
+Cal mirar també: mida de l'efecte, interval de confiança, cost d'actuar o no actuar, qualitat i independència de les dades.
+:::
+
+::: {.alertblock}
+#### En enginyeria
+Una diferència estadísticament significativa pot ser irrellevant si només redueix 0.1 ms, i una diferència no significativa pot requerir més dades.
+:::

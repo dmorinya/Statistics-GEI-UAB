@@ -1,0 +1,183 @@
+---
+title: "Inferència V"
+subtitle: "Comparació de variàncies: la distribució F"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Inferència V"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Estadística computacional amb R, simulació i exemples d'enginyeria informàtica
+
+## Per què comparar variàncies? {.smaller}
+
+- En enginyeria, no només importa el valor mitjà: importa l'**estabilitat**.
+- Dos sistemes poden tenir la mateixa latència mitjana però variabilitat molt diferent.
+- La variància mesura fluctuació i risc de valors extrems.
+
+::: {.block}
+#### Exemple
+Comparar la variabilitat de potència de dos generadors làser o la variabilitat de latència de dues versions d'un servei.
+:::
+
+## Objectius {.smaller}
+
+1. Introduir la distribució F de Fisher-Snedecor.
+2. Formular tests per comparar dues variàncies.
+3. Fer càlculs amb `var.test()` en R.
+4. Interpretar resultats en termes d'estabilitat.
+5. Discutir condicions i alternatives robustes.
+
+## Hipòtesi sobre quocient de variàncies {.smaller}
+
+::: {.block}
+#### Plantejament
+$$H_0:\sigma_1^2=\sigma_2^2 \quad \Longleftrightarrow \quad H_0:\frac{\sigma_1^2}{\sigma_2^2}=1$$
+$$H_1:\frac{\sigma_1^2}{\sigma_2^2}>1, \quad <1, \quad \ne 1$$
+:::
+
+- No comparem variàncies restant-les, sinó fent-ne el quocient.
+- Sota normalitat, el quocient de variàncies mostrals segueix una F.
+
+## Distribució F {.smaller}
+
+::: {.block}
+#### Definició
+Si $U_1\sim\chi^2_{d_1}$ i $U_2\sim\chi^2_{d_2}$ independents, $\dfrac{U_1/d_1}{U_2/d_2}\sim F(d_1,d_2)$.
+:::
+
+- Només pren valors positius.
+- Té dos graus de llibertat: numerador i denominador.
+- És asimètrica.
+
+```{r F-quantils, fig.height=3}
+qf(.95, df1 = 10, df2 = 4)
+qf(.05, df1 = 10, df2 = 4)
+
+tibble(x = seq(0.01, 6, length.out = 300), d = df(x, 10, 4)) |>
+  ggplot(aes(x, d)) + geom_line(color = "#14416E", linewidth = 1) +
+  labs(y = "densitat F(10,4)") + theme_minimal()
+```
+
+## Test F per a dues variàncies {.smaller}
+
+::: {.block}
+#### Estadístic
+$$F_{obs}=\frac{S_1^2}{S_2^2}\sim F(n_1-1,n_2-1) \quad \text{sota }H_0$$
+:::
+
+```{r test-f}
+set.seed(1)
+x1 <- rnorm(31, mean = 0, sd = sqrt(0.020))
+x2 <- rnorm(16, mean = 0, sd = sqrt(0.012))
+var.test(x1, x2, alternative = "two.sided")
+```
+
+::: {.alertblock}
+#### Condició important
+Aquest test és sensible a la no-normalitat. Cal visualitzar dades i considerar alternatives robustes.
+:::
+
+## Exemple: dos generadors {.smaller}
+
+$n_1=31$, $s_1^2=0.020$; $n_2=16$, $s_2^2=0.012$. Volem contrastar si les variàncies són diferents.
+
+$$F_{obs}=\frac{0.020}{0.012}=1.667,\quad df_1=30,\quad df_2=15$$
+
+```{r exemple-generadors}
+Fobs <- 0.020 / 0.012
+pval <- 2 * min(pf(Fobs, 30, 15), 1 - pf(Fobs, 30, 15))
+Fobs; pval
+```
+
+## Exemple computacional: estabilitat de dues versions {.smaller}
+
+La versió B pot tenir la mateixa mitjana que A però més variabilitat. Els usuaris perceben pitjor els pics de latència, i comparar variàncies ajuda a detectar inestabilitat.
+
+```{r versions-estabilitat}
+set.seed(4)
+A <- rnorm(50, 120, 15)
+B <- rnorm(50, 120, 25)
+var.test(B, A, alternative = "greater")
+```
+
+## Visualitzar variabilitat {.smaller}
+
+```{r visualitzar-variabilitat, fig.height=3.8}
+dades <- tibble(
+  latencia = c(A, B),
+  versio = rep(c("A", "B"), each = 50)
+)
+
+ggplot(dades, aes(versio, latencia)) +
+  geom_boxplot(fill = "#E0F1EC") +
+  geom_point(color = "#14416E") +
+  theme_minimal()
+```
+
+::: {.block}
+#### Indicadors útils
+Desviació típica, rang interquartílic, percentils 90/95/99 i gràfics.
+:::
+
+## Alternatives i prudència {.smaller}
+
+- El test F exigeix normalitat aproximada.
+- Les latències solen ser asimètriques i amb cua llarga.
+- Alternatives: transformacions, bootstrap, Levene/Brown-Forsythe, comparació de quantils.
+
+```{r bootstrap-quocient}
+# Bootstrap simple del quocient de variàncies
+Bboot <- 2000
+ratio <- replicate(Bboot, {
+  var(sample(B, replace = TRUE)) / var(sample(A, replace = TRUE))
+})
+quantile(ratio, c(.025, .975))
+```
+
+## Per practicar: comparar test F i bootstrap {.smaller}
+
+::: {.block}
+#### Problema
+Amb les dades `A` i `B` d'abans, comproveu si l'IC bootstrap del quocient de variàncies (calculat a dalt) conté el valor 1. És coherent amb el resultat del `var.test(B, A)`?
+:::
+
+[Mostra la solució →](#sol-bootstrap-f){.solution-link}
+
+## Solució: comparar test F i bootstrap {#sol-bootstrap-f visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r bootstrap-f-check}
+quantile(ratio, c(.025, .975))
+var.test(B, A, alternative = "greater")$p.value
+```
+
+Si l'interval bootstrap no conté l'1 (i queda per sobre), és coherent amb rebutjar $H_0:\sigma_A^2=\sigma_B^2$ a favor de $\sigma_B^2>\sigma_A^2$, tal com indica el p-valor petit del `var.test()`.

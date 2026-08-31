@@ -1,0 +1,676 @@
+---
+title: "Estadística descriptiva univariant"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Descriptiva univariant"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+
+# Dades simulades de "logs" que fem servir en tota la presentació,
+# inspirades directament en els exemples del document original.
+logs <- tibble(
+  id = 1:1000,
+  navegador = sample(c("Chrome", "Firefox", "Safari", "Edge"),
+                      1000, replace = TRUE, prob = c(0.43, 0.26, 0.18, 0.13)),
+  estat = sample(c("OK", "ERROR"), 1000, replace = TRUE, prob = c(0.824, 0.176)),
+  temps_ms = c(rnorm(950, mean = 100, sd = 20), rnorm(50, mean = 500, sd = 80))
+)
+```
+
+## Dades, codi, visualització, simulació i reproduïbilitat
+
+## Per què començar per descriptiva univariant? {.smaller}
+
+- Abans de modelitzar, predir o programar un algoritme, cal **mirar les dades**.
+- La descriptiva univariant respon preguntes bàsiques: quins valors apareixen? quin és un valor típic? hi ha molta variabilitat? hi ha valors estranys o errors?
+- En informàtica això apareix en **logs**, **benchmarks**, **latència**, **errors**, **memòria** i **experiments A/B**.
+
+::: {.block}
+#### Idea clau
+Una variable no és només una columna: és una història sobre un sistema.
+
+**Dades → Resum → Gràfic → Interpretació → Decisió**
+:::
+
+## Objectius del tema {.smaller}
+
+Al final d'aquest tema hauríeu de poder:
+
+1. Reconèixer el tipus d'una variable i escollir el resum adequat.
+2. Construir taules de freqüències i gràfics amb R.
+3. Calcular i interpretar mitjana, mediana, moda, variància, desviació típica, quartils i percentils.
+4. Detectar asimetria, valors atípics i possibles errors de registre.
+5. Preparar un petit informe reproduïble amb RStudio, Quarto i GitHub.
+
+::: {.block}
+#### Enfocament computacional
+No farem només càlculs manuals: aprendrem a **automatitzar**, **visualitzar** i **documentar** l'anàlisi.
+:::
+
+## El flux de treball que farem servir {.smaller}
+
+**Dades → Codi R → Gràfics → Informe**
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Eines
+- R per calcular.
+- RStudio per treballar per projectes.
+- Quarto per fer informes.
+- GitHub per versionar i lliurar.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Bones pràctiques
+- Codi curt i llegible.
+- Dades separades del codi.
+- Resultats regenerables.
+- Commits amb missatges informatius.
+:::
+
+</div>
+:::
+
+# Variables i dades
+
+## Tipus de variables: exemples informàtics {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Qualitatives
+- **Nominals**: sistema operatiu, navegador, estat d'una petició `OK`/`ERROR`, tipus d'usuari.
+- **Ordinals**: prioritat baixa/mitjana/alta, severitat d'un bug, nivell de risc.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Quantitatives
+- **Discretes**: nombre d'errors, peticions per minut, commits per setmana.
+- **Contínues**: latència, temps d'execució, ús de memòria, temperatura d'un sensor.
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Pregunta recurrent
+El fet que una variable estigui codificada amb números no vol dir necessàriament que sigui quantitativa.
+:::
+
+## La matriu de dades {.smaller}
+
+- Les **files** són casos o observacions.
+- Les **columnes** són variables.
+- La mida mostral és el nombre de files: $n$.
+- Cada columna ha de tenir un significat i unes unitats clares.
+
+```{r matriu-dades}
+head(logs, 5)
+```
+
+## Llegir dades amb R {.smaller}
+
+```r
+library(tidyverse)
+
+logs <- read_csv("data/logs_api.csv")
+
+glimpse(logs)
+summary(logs$temps_ms)
+```
+
+::: {.block}
+#### Objectiu
+Passar d'un fitxer de dades a un objecte que podem explorar, resumir i representar gràficament.
+:::
+
+```{r glimpse-logs}
+glimpse(logs)
+```
+
+# Freqüències i gràfics
+
+## Freqüència absoluta i relativa {.smaller}
+
+Per una variable amb valors $x_1,\ldots,x_k$:
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Freqüència absoluta
+$$n_i = \text{nombre d'observacions amb valor } x_i, \qquad \sum_{i=1}^k n_i = n$$
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Freqüència relativa
+$$f_i = \frac{n_i}{n}, \qquad \sum_{i=1}^k f_i = 1$$
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Interpretació
+Les freqüències relatives permeten comparar mostres de mides diferents.
+:::
+
+## Taules de freqüències amb R {.smaller}
+
+```{r freq-taula}
+freq_abs <- table(logs$estat)
+freq_rel <- prop.table(freq_abs)
+
+freq_abs
+round(freq_rel, 3)
+```
+
+::: {.block}
+#### Pregunta
+És acceptable una taxa d'error com la que veieu aquí? Depèn del context i del sistema.
+:::
+
+## Representació de variables qualitatives {.smaller}
+
+- Per variables qualitatives fem servir sobretot **diagrames de barres**.
+- El diagrama de sectors pot ser útil amb poques categories, però sovint és menys informatiu.
+- En informàtica interessa veure ràpidament quina categoria domina.
+
+```{r barres-navegador, fig.height=3.6}
+ggplot(logs, aes(x = navegador)) +
+  geom_bar(fill = "#006747") +
+  labs(title = "Peticions per navegador", x = "Navegador", y = "Nombre de peticions") +
+  theme_minimal()
+```
+
+::: {.block}
+#### Missatge metodològic
+El codi del gràfic ha de formar part de l'informe. Això permet reproduir exactament el resultat.
+:::
+
+## Freqüències acumulades {.smaller}
+
+Per variables numèriques ordenables:
+$$N_i = n_1 + n_2 + \cdots + n_i, \qquad F_i = \frac{N_i}{n}.$$
+
+::: {.block}
+#### Aplicació informàtica
+Si $X$ és el temps de resposta d'una API, $F(200)$ pot interpretar-se com la proporció de peticions amb temps de resposta $\leq 200$ ms.
+:::
+
+```{r freq-acum}
+ecdf_temps <- ecdf(logs$temps_ms)
+ecdf_temps(200)
+```
+
+::: {.alertblock}
+#### Pregunta útil
+Quin percentatge de peticions compleix el llindar de qualitat del servei?
+:::
+
+## Histogrames: forma de la distribució {.smaller}
+
+- Per variables quantitatives contínues, l'histograma resumeix la distribució.
+- Cal escollir un nombre d'intervals o *bins*.
+- Massa pocs intervals amaguen informació; massa intervals afegeixen soroll.
+
+```{r histograma, fig.height=3.8}
+ggplot(logs, aes(x = temps_ms)) +
+  geom_histogram(bins = 30, fill = "#14416E") +
+  labs(title = "Distribució dels temps de resposta",
+       x = "Temps de resposta (ms)", y = "Nombre de peticions") +
+  theme_minimal()
+```
+
+## Experiment ràpid: canviar el nombre de bins {.smaller}
+
+::: {.block}
+#### Tasca
+Canvieu `bins = 10`, `bins = 30` i `bins = 80`. Canvia la història que explica el gràfic?
+:::
+
+```{r bins-comparacio, fig.height=4}
+p10 <- ggplot(logs, aes(temps_ms)) + geom_histogram(bins = 10) + theme_minimal() + labs(title="bins=10")
+p30 <- ggplot(logs, aes(temps_ms)) + geom_histogram(bins = 30) + theme_minimal() + labs(title="bins=30")
+p80 <- ggplot(logs, aes(temps_ms)) + geom_histogram(bins = 80) + theme_minimal() + labs(title="bins=80")
+if (requireNamespace("patchwork", quietly = TRUE)) {
+  library(patchwork); p10 + p30 + p80
+} else {
+  p30
+}
+```
+
+## Compte amb els intervals de diferent amplada {.smaller}
+
+- Si tots els intervals tenen la mateixa amplada, podem dibuixar alçades proporcionals a les freqüències.
+- Si els intervals tenen amplades diferents, l'àrea del rectangle ha de ser proporcional a la freqüència.
+- Altrament podem obtenir una representació visualment enganyosa.
+
+::: {.block}
+#### Regla pràctica
+En un histograma, el que importa és l'**àrea**, no només l'alçada.
+:::
+
+# Mesures de centre
+
+## Mesures de centre {.smaller}
+
+::: {.three-col}
+<div>
+
+::: {.block}
+#### Mitjana
+$$\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i$$
+Valor d'equilibri. Sensible a valors extrems.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Mediana
+Valor central un cop ordenades les dades. Robusta davant d'extrems.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Moda
+Valor més freqüent. Molt útil en variables qualitatives o discretes.
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### En dades computacionals
+Temps de resposta, mida de fitxers i ús de memòria poden tenir cues llargues. La mediana sovint és més informativa que la mitjana.
+:::
+
+## Mitjana i mediana amb valors extrems {.smaller}
+
+```{r extrems}
+temps_A <- c(98, 101, 99, 100, 102, 97, 103)
+temps_B <- c(98, 101, 99, 100, 102, 97, 620)
+
+c(mitjana_A = mean(temps_A), mediana_A = median(temps_A))
+c(mitjana_B = mean(temps_B), mediana_B = median(temps_B))
+```
+
+::: {.alertblock}
+#### Interpretació
+Un sol valor extrem pot canviar molt la mitjana, però no necessàriament la mediana.
+:::
+
+## Resums amb R {.smaller}
+
+```{r resums-r}
+logs |>
+  summarise(
+    n = n(),
+    mitjana = mean(temps_ms),
+    mediana = median(temps_ms),
+    minim = min(temps_ms),
+    maxim = max(temps_ms)
+  )
+```
+
+::: {.block}
+#### Bona pràctica
+No doneu només un número. Doneu també el context: unitats, mida mostral i possibles valors atípics.
+:::
+
+## Quan la mitjana pot enganyar {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Exemple clàssic: sous
+Quatre programadors cobren 1000€ i el propietari 6000€.
+$$\bar{x}=\frac{4\cdot 1000+6000}{5}=2000$$
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Exemple informàtic: latència
+Moltes peticions responen en 100 ms, però algunes fallen i triguen 2 s.
+$$\text{mitjana} > \text{mediana}$$
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Missatge
+Sempre que hi hagi asimetria o valors extrems, compareu mitjana i mediana.
+:::
+
+## Per practicar: la mitjana dels sous {.smaller}
+
+::: {.block}
+#### Problema
+Si el propietari cobrés 20.000€ en lloc de 6.000€ (i els quatre programadors seguissin cobrant 1.000€), quina seria la nova mitjana? Quina seguiria sent la mediana?
+:::
+
+[Mostra la solució →](#sol-sous){.solution-link}
+
+## Solució: la mitjana dels sous {#sol-sous visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+$$\bar{x}=\frac{4\cdot 1000+20000}{5}=4800$$
+La mediana amb els valors ordenats $1000,1000,1000,1000,20000$ segueix sent $1000$: només canvia el valor màxim, que no afecta la posició central.
+:::
+
+```{r sous-check}
+sous <- c(1000, 1000, 1000, 1000, 20000)
+c(mitjana = mean(sous), mediana = median(sous))
+```
+
+# Mesures de dispersió
+
+## Mesures de dispersió {.smaller}
+
+Les mesures de centre no són suficients: dos sistemes poden tenir la mateixa mitjana i variabilitat molt diferent.
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Variància corregida
+$$s^2=\frac{1}{n-1}\sum_{i=1}^n (x_i-\bar{x})^2$$
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Desviació típica
+$$s=\sqrt{s^2}$$
+Té les mateixes unitats que les dades.
+:::
+
+</div>
+:::
+
+## Mateixa mitjana, diferent estabilitat {.smaller}
+
+```{r estabilitat, fig.height=3.8}
+sistema_estable  <- c(98, 101, 99, 100, 102, 97, 103, 100)
+sistema_variable <- c(70, 130, 82, 145, 93, 121, 75, 144)
+c(mitjana_estable = mean(sistema_estable), mitjana_variable = mean(sistema_variable))
+
+tibble(execucio = rep(1:8, 2),
+       temps = c(sistema_estable, sistema_variable),
+       sistema = rep(c("Estable", "Variable"), each = 8)) |>
+  ggplot(aes(execucio, temps, color = sistema)) +
+  geom_line(linewidth = 1) + geom_point(size = 2) + theme_minimal()
+```
+
+::: {.block}
+#### Pregunta
+Quin sistema preferiríeu per a una aplicació en temps real?
+:::
+
+## Dispersió amb R {.smaller}
+
+```{r dispersio-r}
+logs |>
+  summarise(
+    mitjana = mean(temps_ms),
+    variancia = var(temps_ms),
+    desviacio = sd(temps_ms),
+    rang = max(temps_ms) - min(temps_ms),
+    cv = sd(temps_ms) / mean(temps_ms) * 100
+  )
+```
+
+::: {.block}
+#### Coeficient de variació
+$$CV = \frac{s}{\bar{x}}\times 100$$
+Serveix per comparar variabilitat relativa entre variables o sistemes amb escales diferents.
+:::
+
+# Percentils, quartils i boxplots
+
+## Percentils i quartils {.smaller}
+
+- El percentil $p$ és un valor que deixa aproximadament un $p\%$ de les observacions per sota.
+- La mediana és el percentil 50.
+- Els quartils divideixen les dades en quatre parts: $Q_1=P_{25}$, $Q_2=P_{50}=Md$, $Q_3=P_{75}$.
+- El rang interquartílic és $RI = Q_3-Q_1$.
+
+::: {.alertblock}
+#### En sistemes informàtics
+El percentil 95 o 99 de la latència pot ser més important que la mitjana.
+:::
+
+## Quantils amb R {.smaller}
+
+```{r quantils}
+quantile(logs$temps_ms, probs = c(0.25, 0.50, 0.75, 0.95, 0.99))
+```
+
+::: {.block}
+#### Lectura
+El 99% de les peticions responen amb una latència igual o inferior al P99 calculat. L'1% restant pot ser crític.
+:::
+
+## Diagrama de caixa: detectar valors atípics {.smaller}
+
+- Resumeix mediana, quartils, rang interquartílic i possibles valors atípics.
+- Barreres internes: $Q_1-1.5\,RI$, $Q_3+1.5\,RI$.
+- Els punts fora d'aquest interval són candidats a **outliers**.
+
+```{r boxplot, fig.height=3.6}
+ggplot(logs, aes(y = temps_ms)) +
+  geom_boxplot(fill = "#E0F1EC") +
+  labs(title = "Diagrama de caixa dels temps de resposta", y = "Temps de resposta (ms)") +
+  theme_minimal()
+```
+
+## Boxplot per grups {.smaller}
+
+```{r boxplot-grups, fig.height=4}
+ggplot(logs, aes(x = navegador, y = temps_ms)) +
+  geom_boxplot(fill = "#E67E22") +
+  theme_minimal()
+```
+
+## Per practicar: quartils a mà {.smaller}
+
+::: {.block}
+#### Problema
+Amb la mostra ordenada $12, 15, 18, 22, 25, 30, 40$ ($n=7$), calculeu la mediana i, aproximadament, $Q_1$ i $Q_3$ (podeu fer servir el mètode que preferiu, i comparar-lo després amb R).
+:::
+
+[Mostra la solució →](#sol-quartils){.solution-link}
+
+## Solució: quartils a mà {#sol-quartils visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+Amb $n=7$, la mediana és el 4t valor: $Md=22$. $Q_1$ correspon aproximadament a la mediana de la meitat inferior $\{12,15,18\}$, és a dir $Q_1=15$; $Q_3$ a la mediana de la meitat superior $\{25,30,40\}$, és a dir $Q_3=30$.
+:::
+
+```{r quartils-check}
+x <- c(12, 15, 18, 22, 25, 30, 40)
+quantile(x, c(0.25, 0.5, 0.75), type = 2)
+```
+
+*(R pot donar valors lleugerament diferents segons el `type` de quantil que faci servir; per això sempre val la pena indicar quin mètode s'ha utilitzat.)*
+
+# Forma de la distribució
+
+## Asimetria {.smaller}
+
+- Una distribució és simètrica si la seva forma és semblant a banda i banda del centre.
+- L'asimetria positiva és habitual en temps de resposta: moltes observacions petites i unes poques molt grans.
+- L'asimetria negativa és menys habitual en latències, però pot aparèixer en notes, puntuacions o percentatges limitats superiorment.
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Coeficient d'asimetria
+$$As=\frac{\frac{1}{n}\sum_{i=1}^n (x_i-\bar{x})^3}{s^3}$$
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Senyal pràctic
+Si $\bar{x} > Md$, sovint hi ha cua a la dreta.
+:::
+
+</div>
+:::
+
+## Distribució simètrica i asimètrica {.smaller}
+
+```{r asimetria-plot, fig.height=4.2}
+tibble(x = seq(-3, 7, length.out = 400)) |>
+  mutate(simetrica = dnorm(x), cua_dreta = ifelse(x > 0, 0.8 * exp(-x / 1.5), 0)) |>
+  pivot_longer(-x, names_to = "tipus", values_to = "densitat") |>
+  ggplot(aes(x, densitat, color = tipus)) +
+  geom_line(linewidth = 1) +
+  labs(x = "x", y = "densitat", color = NULL) +
+  theme_minimal()
+```
+
+::: {.block}
+#### Interpretació
+La forma de la distribució ajuda a decidir quines mesures resum són més informatives.
+:::
+
+# Simulació i reproduïbilitat
+
+## Simular per entendre {.smaller}
+
+```{r simular-entendre}
+set.seed(2026)
+
+# Temps de resposta artificials: molts valors petits i alguns grans
+temps <- c(rnorm(950, mean = 100, sd = 20),
+           rnorm(50, mean = 500, sd = 80))
+
+mean(temps)
+median(temps)
+sd(temps)
+quantile(temps, c(.50, .95, .99))
+```
+
+::: {.block}
+#### Per què simular?
+La simulació permet construir exemples controlats i veure com canvien els estadístics quan canvia el sistema.
+:::
+
+## Primer contacte amb càlcul repetit {.smaller}
+
+```{r calcul-repetit}
+set.seed(2026)
+
+resultats <- replicate(1000, {
+  x <- rnorm(100, mean = 100, sd = 20)
+  mean(x)
+})
+
+summary(resultats)
+sd(resultats)
+```
+
+::: {.alertblock}
+#### Idea per més endavant
+Quan repetim molts càlculs, podem plantejar-nos paral·lelitzar-los. La descriptiva és també una porta d'entrada a la simulació computacional.
+:::
+
+## Exemple: versió paral·lelitzable {.smaller}
+
+```{r paral·lelitzable}
+#| eval: !expr requireNamespace("furrr", quietly = TRUE)
+library(future)
+library(furrr)
+
+plan(multisession, workers = 4)
+
+resultats <- future_map_dbl(1:1000, function(i) {
+  x <- rnorm(100, mean = 100, sd = 20)
+  mean(x)
+})
+```
+
+::: {.block}
+#### Missatge
+La idea estadística és la mateixa; el que canvia és com repartim el càlcul entre nuclis o processos.
+:::
+
+## Reproduïbilitat amb GitHub {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Estructura recomanada
+| Carpeta/fitxer | Contingut |
+|---|---|
+| `data/` | dades originals |
+| `R/` | scripts auxiliars |
+| `figures/` | gràfics generats |
+| `informe.qmd` | informe reproduïble |
+| `README.md` | descripció del projecte |
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Commits útils
+- `afegeix lectura de dades`
+- `calcula taula de freqüències`
+- `afegeix histograma de latència`
+- `interpreta valors atípics`
+:::
+
+</div>
+:::

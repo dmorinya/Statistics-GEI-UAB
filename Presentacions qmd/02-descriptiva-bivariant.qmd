@@ -1,0 +1,580 @@
+---
+title: "Estadística descriptiva bivariant"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Descriptiva bivariant"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Dues variables, una pregunta: hi ha relació?
+
+## Per què descriptiva bivariant en informàtica? {.smaller}
+
+- Molts problemes computacionals no depenen d'una sola variable.
+- Volem entendre **relacions** entre variables: navegador i estat d'una petició, sistema operatiu i tipus d'error, mida de l'entrada i temps d'execució, càrrega del servidor i latència, nombre d'usuaris i consum de memòria.
+- La descriptiva bivariant és el pas previ a la inferència, la regressió i el machine learning.
+
+::: {.block}
+#### Idea clau
+Descriure dues variables és buscar patrons, dependències i anomalies en un sistema.
+
+**Variable A + Variable B → Relació → Interpretació → Decisió**
+:::
+
+## Objectius del tema {.smaller}
+
+Al final d'aquest tema hauríeu de poder:
+
+1. Construir i interpretar taules de contingència.
+2. Calcular freqüències marginals, relatives i condicionades amb R.
+3. Visualitzar relacions entre dues variables qualitatives.
+4. Construir i interpretar núvols de punts per a dues variables numèriques.
+5. Calcular covariància, correlació i recta de regressió.
+6. Interpretar prediccions i residus amb prudència.
+
+## Mapa del tema {.smaller}
+
+**Dues variables qualitatives** → taules de contingència → freqüències condicionades
+
+**Dues variables numèriques** → núvols de punts → correlació i regressió
+
+::: {.alertblock}
+#### Pregunta transversal
+Quan veiem una associació, és real, és rellevant, és lineal, és causal o és un artefacte de les dades?
+:::
+
+# Dues variables qualitatives
+
+## Taula de contingència {.smaller}
+
+Considerem dues variables qualitatives: $A$ amb modalitats $A_1,\ldots,A_k$ i $B$ amb modalitats $B_1,\ldots,B_\ell$.
+
+| | $B_1$ | $B_2$ | $\cdots$ | $B_\ell$ |
+|---|---|---|---|---|
+| $A_1$ | $n_{11}$ | $n_{12}$ | $\cdots$ | $n_{1\ell}$ |
+| $A_2$ | $n_{21}$ | $n_{22}$ | $\cdots$ | $n_{2\ell}$ |
+| $\vdots$ | $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ |
+| $A_k$ | $n_{k1}$ | $n_{k2}$ | $\cdots$ | $n_{k\ell}$ |
+
+::: {.exampleblock}
+#### Exemple informàtic
+$A =$ navegador, $B =$ estat de la petició: `OK`, `timeout`, `error 500`.
+:::
+
+## Exemple: peticions web per navegador i estat {.smaller}
+
+```{r taula-navegador}
+peticions <- tibble::tribble(
+  ~navegador,   ~estat,      ~n,
+  "Chrome",     "OK",        820,
+  "Chrome",     "Timeout",   25,
+  "Chrome",     "Error",     35,
+  "Firefox",    "OK",        430,
+  "Firefox",    "Timeout",   18,
+  "Firefox",    "Error",     22,
+  "Safari",     "OK",        260,
+  "Safari",     "Timeout",   12,
+  "Safari",     "Error",     28,
+  "Edge",       "OK",        210,
+  "Edge",       "Timeout",   15,
+  "Edge",       "Error",     25
+)
+xt <- xtabs(n ~ navegador + estat, data = peticions)
+addmargins(xt)
+```
+
+## Visualitzant la taula {.smaller}
+
+```{r taula-plot, fig.height=4}
+peticions |>
+  mutate(navegador = factor(navegador, levels = c("Chrome","Firefox","Safari","Edge"))) |>
+  ggplot(aes(navegador, n, fill = estat)) +
+  geom_col(position = "stack") +
+  labs(y = "Peticions", x = "Navegador", fill = NULL) +
+  scale_fill_manual(values = c(OK = "#006747", Timeout = "#E67E22", Error = "#14416E")) +
+  theme_minimal()
+```
+
+La major part de peticions són correctes, però la proporció d'errors no és igual en tots els navegadors.
+
+## Freqüències marginals {.smaller}
+
+Les freqüències marginals són els totals de files i columnes.
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Marge dret
+$$n_{i\cdot}=\sum_{j=1}^{\ell} n_{ij}$$
+Freqüència total de la modalitat $A_i$.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Marge inferior
+$$n_{\cdot j}=\sum_{i=1}^{k} n_{ij}$$
+Freqüència total de la modalitat $B_j$.
+:::
+
+</div>
+:::
+
+```{r marges}
+margin.table(xt, 1)  # marge per navegador
+margin.table(xt, 2)  # marge per estat
+sum(xt)               # n total
+```
+
+## Freqüències relatives {.smaller}
+
+$$f_{ij}=f(A_i\cap B_j)=\frac{n_{ij}}{n},\qquad f_{i\cdot}=\frac{n_{i\cdot}}{n},\qquad f_{\cdot j}=\frac{n_{\cdot j}}{n}$$
+
+- Permeten comparar mostres de mida diferent.
+- Es poden llegir com a percentatges.
+- Són la base de les probabilitats empíriques.
+
+```{r freq-rel-bivariant}
+round(prop.table(xt), 4)["Chrome", "Error"]
+```
+
+## Freqüències condicionades {.smaller}
+
+Quan volem comparar correctament, sovint hem de condicionar.
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Condicionar per columnes
+$$f(A_i\mid B_j)=\frac{n_{ij}}{n_{\cdot j}}$$
+Distribució de $A$ dins la subpoblació $B_j$.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Condicionar per files
+$$f(B_j\mid A_i)=\frac{n_{ij}}{n_{i\cdot}}$$
+Distribució de $B$ dins la subpoblació $A_i$.
+:::
+
+</div>
+:::
+
+::: {.alertblock}
+#### Missatge important
+No és el mateix $f(A_i\cap B_j)$ que $f(B_j\mid A_i)$. Una pregunta sobre risc, error o rendiment acostuma a ser una pregunta condicionada.
+:::
+
+## Exemple: percentatge d'error per navegador {.smaller}
+
+```{r percent-error, fig.height=3.4}
+round(prop.table(xt, margin = 1) * 100, 2)[, "Error"]
+
+tibble(navegador = c("Chrome","Firefox","Safari","Edge"),
+       error_pct = round(prop.table(xt, margin = 1)[, "Error"] * 100, 2)) |>
+  ggplot(aes(navegador, error_pct)) +
+  geom_col(fill = "#E67E22") +
+  labs(y = "Error (%)", x = NULL) +
+  theme_minimal()
+```
+
+La freqüència absoluta d'errors és més gran a Chrome, però el percentatge d'error és més alt a Safari i Edge.
+
+## Taules de contingència amb R {.smaller}
+
+```{r taules-r}
+# taula relativa global
+round(prop.table(xt), 3)
+
+# percentatges per fila: estat condicionat al navegador
+round(prop.table(xt, margin = 1), 3)
+
+# percentatges per columna: navegador condicionat a l'estat
+round(prop.table(xt, margin = 2), 3)
+```
+
+::: {.block}
+#### Objectiu pràctic
+Que la mateixa taula es pugui regenerar quan arriben nous logs o quan canviem el període d'anàlisi.
+:::
+
+## Per practicar: llegir la taula condicionada {.smaller}
+
+::: {.block}
+#### Problema
+Amb la taula de peticions anterior, calculeu $f(\text{Timeout}\mid\text{Safari})$ i interpreteu-la en una frase.
+:::
+
+[Mostra la solució →](#sol-cond){.solution-link}
+
+## Solució: llegir la taula condicionada {#sol-cond visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+$$f(\text{Timeout}\mid\text{Safari})=\frac{12}{300}=0.04$$
+Un 4% de totes les peticions de Safari acaben en timeout — és la proporció de timeouts **dins** del grup de peticions fetes amb Safari, no respecte al total de peticions del sistema.
+:::
+
+```{r cond-check}
+prop.table(xt, margin = 1)["Safari", "Timeout"]
+```
+
+## Associació entre dues variables qualitatives {.smaller}
+
+- Si la distribució de $B$ és semblant per a tots els nivells de $A$, direm que no hi ha un patró clar d'associació.
+- Si les freqüències condicionades canvien molt segons $A$, hi ha evidència descriptiva d'associació.
+- La inferència estadística permetrà decidir si aquesta diferència pot ser compatible amb l'atzar.
+
+::: {.alertblock}
+#### Prudència
+Una taula de contingència pot mostrar associació, però no demostra causalitat.
+:::
+
+# Dues variables numèriques
+
+## Preguntes bàsiques {.smaller}
+
+En l'estudi descriptiu de dues variables numèriques volem respondre:
+
+- Tenen aquestes variables alguna relació? És positiva, negativa o nul·la?
+- És aproximadament lineal o no lineal?
+- Hi ha observacions anòmales?
+- Podem predir una variable a partir de l'altra?
+
+::: {.exampleblock}
+#### Exemples informàtics
+Mida de l'entrada i temps d'execució; nombre d'usuaris concurrents i latència; mida d'un fitxer i temps de compressió; nombre de tests i temps de CI/CD.
+:::
+
+## La dada bivariant: parelles $(x_i,y_i)$ {.smaller}
+
+```{r bench-data}
+bench <- tibble(
+  mida = c(1000, 2000, 3000, 4000, 5000, 6000),
+  temps_ms = c(12.4, 19.8, 29.1, 38.7, 51.0, 61.8)
+)
+bench
+```
+
+Cada parella $(x_i,y_i)$ es representa com un punt en el pla.
+
+## Núvol de punts {.smaller}
+
+::: {.block}
+#### El núvol de punts
+Mostra tendències globals, detecta relacions no lineals, identifica valors atípics i evita confiar només en una única mesura numèrica.
+:::
+
+```{r nuvol-punts, fig.height=3.6}
+ggplot(bench, aes(mida, temps_ms)) +
+  geom_point(color = "#006747", size = 3) +
+  labs(x = "Mida de l'entrada", y = "Temps (ms)") +
+  theme_minimal()
+```
+
+## Patrons habituals en un núvol de punts {.smaller}
+
+```{r patrons, fig.height=4.4}
+set.seed(1)
+patrons <- bind_rows(
+  tibble(x = 1:7, y = c(2,3.1,3.6,5.2,5.7,6.5,8), tipus = "Relació positiva"),
+  tibble(x = 1:7, y = c(5,2,7,3.2,8,4,6), tipus = "Sense relació clara"),
+  tibble(x = 1:7, y = c(8,6.8,6,4.8,3.5,3,2), tipus = "Relació negativa"),
+  tibble(x = 1:7, y = c(7,4,2.5,2,2.5,4,7), tipus = "Relació no lineal")
+)
+ggplot(patrons, aes(x, y)) +
+  geom_point(color = "#14416E", size = 2) +
+  facet_wrap(~tipus, scales = "free_y") +
+  theme_minimal()
+```
+
+## Covariància {.smaller}
+
+Les mitjanes de les dues variables són $\bar{x}$ i $\bar{y}$. La covariància mostral és:
+$$S_{XY}=\frac{1}{n-1}\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})$$
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Interpretació
+- $S_{XY}>0$: tendència conjunta positiva.
+- $S_{XY}<0$: tendència conjunta negativa.
+- $S_{XY}\approx 0$: no hi ha tendència lineal clara.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Limitació
+La covariància depèn de les unitats de mesura i és difícil de comparar entre problemes.
+:::
+
+</div>
+:::
+
+## Correlació de Pearson {.smaller}
+
+La correlació de Pearson normalitza la covariància:
+$$r_{XY}=\frac{S_{XY}}{S_XS_Y},\qquad -1\leq r_{XY}\leq 1$$
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Lectura del signe
+- $r>0$: relació lineal positiva.
+- $r<0$: relació lineal negativa.
+- $r\approx 0$: no hi ha relació lineal clara.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Lectura de la magnitud
+- $|r|$ proper a 1: relació lineal forta.
+- $|r|$ proper a 0: relació lineal feble.
+- $r^2$: proporció descriptiva de variabilitat explicada per la recta.
+:::
+
+</div>
+:::
+
+## Correlació amb R {.smaller}
+
+```{r cor-r, fig.height=3.4}
+cov(bench$mida, bench$temps_ms)
+cor(bench$mida, bench$temps_ms)
+
+ggplot(bench, aes(x = mida, y = temps_ms)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "#E67E22") +
+  theme_minimal()
+```
+
+::: {.block}
+#### Bones pràctiques
+Mirar sempre el gràfic abans d'interpretar $r$; revisar valors atípics; no confondre correlació amb causalitat; informar unitats i context.
+:::
+
+## Correlació: advertiments importants {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.alertblock}
+#### 1. Correlació no implica causalitat
+Que dues variables es moguin juntes no vol dir que una causi l'altra.
+:::
+
+::: {.alertblock}
+#### 2. Pearson mesura relació lineal
+Una relació no lineal pot tenir $r\approx 0$.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### 3. Els outliers poden dominar
+Un sol valor anòmal pot canviar molt la correlació.
+:::
+
+::: {.alertblock}
+#### 4. Barrejar grups pot enganyar
+La relació global pot ser diferent de la relació dins de cada grup.
+:::
+
+</div>
+:::
+
+## Per practicar: outlier i correlació {.smaller}
+
+::: {.block}
+#### Problema
+Calculeu $r$ entre `mida` i `temps_ms` de `bench`. Després afegiu una observació atípica, per exemple $(6000, 5)$ (un temps absurdament baix per aquesta mida), i torneu a calcular $r$. Què passa?
+:::
+
+[Mostra la solució →](#sol-outlier-cor){.solution-link}
+
+## Solució: outlier i correlació {#sol-outlier-cor visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r outlier-cor-check}
+cor(bench$mida, bench$temps_ms)
+
+bench_outlier <- bind_rows(bench, tibble(mida = 6000, temps_ms = 5))
+cor(bench_outlier$mida, bench_outlier$temps_ms)
+```
+
+Un sol punt anòmal pot fer baixar (o pujar) substancialment la correlació, il·lustrant per què sempre cal mirar el gràfic abans de confiar només en $r$.
+
+# Recta de regressió
+
+## Primera idea {.smaller}
+
+La recta de regressió resumeix una relació lineal entre dues variables: $\widehat{y}=a+bx$.
+
+- $x$: variable explicativa o predictora.
+- $y$: variable resposta.
+- $b$: canvi mitjà en $y$ per una unitat més de $x$.
+- $a$: valor predit quan $x=0$.
+
+::: {.block}
+#### Criteri
+Triem la recta que minimitza la suma de quadrats dels residus:
+$$\sum_{i=1}^n \left[y_i-(a+bx_i)\right]^2$$
+:::
+
+## Coeficients de la recta {.smaller}
+
+$$b=\frac{S_{XY}}{S_X^2},\qquad a=\bar{y}-b\bar{x}$$
+
+::: {.block}
+#### Interpretació computacional
+Si $x$ és la mida de l'entrada i $y$ és el temps d'execució, $b$ estima l'increment mitjà de temps quan augmentem una unitat la mida d'entrada.
+:::
+
+::: {.alertblock}
+#### Atenció
+La recta és un resum descriptiu. No garanteix que el fenomen sigui realment lineal ni que pugui extrapolar-se fora del rang observat.
+:::
+
+## Regressió amb R {.smaller}
+
+```{r regressio-r}
+model <- lm(temps_ms ~ mida, data = bench)
+coef(model)
+
+bench <- bench |>
+  mutate(prediccio = predict(model), residu = residuals(model))
+bench
+```
+
+## Predicció i residus {.smaller}
+
+Per a un valor $x^*$, la predicció és $\widehat{y}^*=a+bx^*$. El residu d'una observació és $e_i=y_i-\widehat{y}_i$.
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Quan confiar més en una predicció?
+- $x^*$ és dins el rang observat.
+- El núvol de punts és aproximadament lineal.
+- No hi ha outliers dominants.
+- Els residus no mostren patrons evidents.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Quan desconfiar?
+- Extrapolem fora del rang.
+- La relació és clarament corba.
+- Hi ha canvis de règim.
+- Barrejar grups amaga diferències.
+:::
+
+</div>
+:::
+
+## Mirar residus: detectar el que la recta no explica {.smaller}
+
+```{r residus-plot, fig.height=3.8}
+ggplot(bench, aes(mida, residu)) +
+  geom_point(color = "#14416E", size = 2) +
+  geom_hline(yintercept = 0, color = "#E67E22", linewidth = 1) +
+  theme_minimal()
+```
+
+- Residus al voltant de zero: ajust raonable.
+- Patró corbat: la recta és massa simple.
+- Residus molt grans: possibles outliers.
+- Variabilitat creixent: la incertesa depèn de $x$.
+
+## Per practicar: predir a mà {.smaller}
+
+::: {.block}
+#### Problema
+Amb el model ajustat a `bench` (recordeu `coef(model)`), calculeu a mà la predicció de temps per a `mida = 4500`. Compareu-ho amb `predict()`.
+:::
+
+[Mostra la solució →](#sol-predir){.solution-link}
+
+## Solució: predir a mà {#sol-predir visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+Amb $\widehat{y}=a+bx$ i els coeficients obtinguts al model, substituïu $x=4500$ i sumeu.
+:::
+
+```{r predir-check}
+a <- coef(model)[1]; b <- coef(model)[2]
+a + b * 4500
+predict(model, newdata = tibble(mida = 4500))
+```
+
+## De la descriptiva bivariant al modelatge {.smaller}
+
+**Gràfic → Mesura → Model → Decisió**
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Qualitatives
+Taules, percentatges condicionats i comparació de perfils.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Numèriques
+Núvols de punts, correlació, regressió i residus.
+:::
+
+</div>
+:::
+
+::: {.exampleblock}
+#### Pont amb temes futurs
+Inferència, contrasts d'hipòtesis, regressió, classificació i avaluació de models.
+:::

@@ -1,0 +1,210 @@
+---
+title: "Inferència VI"
+subtitle: "Tests no paramètrics: χ² d'independència i d'ajustament"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Inferència VI"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Estadística computacional amb R, simulació i exemples d'enginyeria informàtica
+
+## Per què tests no paramètrics? {.smaller}
+
+- Fins ara hem contrastat paràmetres: mitjanes, proporcions i variàncies.
+- Ara contrastem estructures: independència o ajust a una distribució.
+- Són especialment útils amb variables categòriques i taules de contingència.
+
+::: {.block}
+#### Exemples informàtics
+Sistema operatiu i tipus d'error; navegador i conversió; distribució esperada de codis d'estat HTTP.
+:::
+
+## Objectius {.smaller}
+
+1. Formular tests $\chi^2$ d'independència i d'ajustament.
+2. Calcular valors observats i esperats.
+3. Interpretar residus i contribucions.
+4. Fer els tests amb `chisq.test()` en R.
+5. Relacionar resultats amb decisions sobre producte o sistema.
+
+## Dos tipus de tests $\chi^2$ {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Independència
+$$H_0:\text{dues variables són independents}$$
+Exemple: tipus de dispositiu i error.
+:::
+
+</div>
+<div>
+
+::: {.block}
+#### Ajustament
+$$H_0:\text{les dades segueixen una distribució donada}$$
+Exemple: freqüències de codis HTTP segons proporcions esperades.
+:::
+
+</div>
+:::
+
+En ambdós casos, l'estadístic és gran quan observat i esperat difereixen molt.
+
+## Test d'independència {.smaller}
+
+::: {.block}
+#### Taula de contingència
+Per cada cel·la $(i,j)$: observat $o_{ij}$ i esperat $e_{ij}=\dfrac{(\text{total fila }i)(\text{total columna }j)}{n}$.
+$$E=\sum_{i,j}\frac{(o_{ij}-e_{ij})^2}{e_{ij}} \sim \chi^2_{(f-1)(c-1)}$$
+:::
+
+::: {.alertblock}
+#### Condició pràctica
+Els esperats haurien de ser prou grans, habitualment $e_{ij}\ge 5$.
+:::
+
+## Exemple: dispositiu i error {.smaller}
+
+| | Error | Sense error |
+|---|---|---|
+| Mòbil | 48 | 952 |
+| Escriptori | 22 | 978 |
+
+$H_0$: dispositiu i error són independents.
+
+```{r chi2-independencia}
+taula <- matrix(c(48, 952, 22, 978), nrow = 2, byrow = TRUE)
+rownames(taula) <- c("mobil", "desktop")
+colnames(taula) <- c("error", "ok")
+chisq.test(taula, correct = FALSE)
+```
+
+## Mirar més enllà del p-valor {.smaller}
+
+```{r chi2-residus}
+res <- chisq.test(taula, correct = FALSE)
+res$expected      # valors esperats
+res$residuals     # residus de Pearson
+res$stdres        # residus estandarditzats
+```
+
+::: {.block}
+#### Interpretació
+Les cel·les amb residus grans expliquen la dependència. No només interessa si hi ha relació, sinó **on** apareix la diferència.
+:::
+
+## Test d'ajustament {.smaller}
+
+::: {.block}
+#### Una sola variable categòrica
+Freqüències observades $o_i$ i probabilitats esperades $p_i$:
+$$e_i=n p_i, \qquad E=\sum_i\frac{(o_i-e_i)^2}{e_i}$$
+:::
+
+$$H_0:\text{les dades segueixen les probabilitats }p_i$$
+
+```{r chi2-ajustament}
+observat <- c(200, 720, 80)
+esperat_p <- c(.2, .75, .05)
+chisq.test(observat, p = esperat_p)
+```
+
+## Exemple: codis HTTP {.smaller}
+
+En condicions normals esperem: 2xx 92%, 3xx 5%, 4xx 2%, 5xx 1%. Avui observem 10.000 respostes: 9000, 520, 260, 220.
+
+```{r chi2-http}
+obs <- c(9000, 520, 260, 220)
+p0 <- c(.92, .05, .02, .01)
+chisq.test(obs, p = p0)
+```
+
+::: {.alertblock}
+#### Pregunta
+El patró d'avui és compatible amb el funcionament normal?
+:::
+
+## Visualització de contribucions {.smaller}
+
+```{r chi2-contribucions, fig.height=3.6}
+res <- chisq.test(obs, p = p0)
+contrib <- (obs - res$expected)^2 / res$expected
+
+tibble(codi = c("2xx","3xx","4xx","5xx"), contrib) |>
+  ggplot(aes(codi, contrib)) +
+  geom_col(fill = "#E67E22") +
+  theme_minimal()
+```
+
+::: {.block}
+#### Idea
+Les contribucions indiquen quines categories expliquen el rebuig de $H_0$.
+:::
+
+## Per practicar: identificar la categoria responsable {.smaller}
+
+::: {.block}
+#### Problema
+Amb el resultat de `chisq.test(obs, p = p0)`, identifiqueu quina categoria de codi HTTP té la contribució més alta a l'estadístic, i relacioneu-ho amb la diferència entre observat i esperat en aquella categoria.
+:::
+
+[Mostra la solució →](#sol-contrib-http){.solution-link}
+
+## Solució: identificar la categoria responsable {#sol-contrib-http visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r contrib-http-check}
+tibble(codi = c("2xx","3xx","4xx","5xx"),
+       observat = obs, esperat = res$expected, contrib = contrib) |>
+  arrange(desc(contrib))
+```
+
+La categoria **5xx** té l'observat (220) molt més alt que l'esperat (100), i és la que més contribueix a l'estadístic $\chi^2$ — un senyal que avui hi ha hagut més errors de servidor del que s'esperaria en condicions normals.
+
+## Limitacions {.smaller}
+
+- Requereix freqüències esperades prou grans.
+- No mesura causalitat.
+- Amb mostres molt grans, diferències petites poden ser significatives.
+- Cal complementar amb mida de l'efecte i interpretació de domini.
+
+::: {.block}
+#### Opcional
+Per taules $2\times 2$, es pot mirar també l'*odds ratio* o la diferència de proporcions.
+:::
+
+```{r odds-ratio-opcional}
+# odds ratio per a la taula dispositiu x error
+(taula[1,1] * taula[2,2]) / (taula[1,2] * taula[2,1])
+```

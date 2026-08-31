@@ -1,0 +1,231 @@
+---
+title: "Inferència I"
+subtitle: "Intervals de confiança per a la mitjana"
+author: "Estadística — Grau en Enginyeria Informàtica"
+date: "Curs 2026–27"
+lang: ca
+format:
+  revealjs:
+    css: uab-theme-ca.css
+    theme: simple
+    scrollable: true
+    center: false
+    slide-number: c/t
+    transition: fade
+    logo: images/uab.png
+    footer: "Inferència I"
+    toc: false
+execute:
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    fig.align: "center"
+    fig.width: 7
+    fig.height: 4
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+set.seed(2026)
+```
+
+## Estadística computacional amb R, simulació i exemples d'enginyeria informàtica
+
+## De la mostra a la decisió {.smaller}
+
+::: {.two-col}
+<div>
+
+- En descriptiva resumim dades observades.
+- En inferència volem dir alguna cosa sobre una població o procés.
+- La mostra és només una finestra parcial i aleatòria.
+
+</div>
+<div>
+
+::: {.block}
+#### Exemples informàtics
+- Temps mitjà de resposta d'un servidor.
+- Proporció de builds que fallen.
+- Variabilitat de potència en dispositius.
+- Diferència de rendiment entre dues versions.
+:::
+
+</div>
+:::
+
+## Objectius del bloc d'inferència {.smaller}
+
+1. Distingir població, mostra, paràmetre i estadístic.
+2. Construir intervals de confiança per quantificar incertesa.
+3. Interpretar correctament el nivell de confiança.
+4. Connectar fórmules amb càlculs en R.
+5. Preparar el terreny per als tests d'hipòtesi.
+
+## Població, mostra i estimadors {.smaller}
+
+::: {.two-col}
+<div>
+
+::: {.block}
+#### Població
+Procés o conjunt complet que ens interessa: $\mu,\ \sigma^2,\ p$.
+:::
+
+::: {.block}
+#### Mostra
+Subconjunt observat o repeticions mesurades: $\bar X,\ S^2,\ \hat p$.
+:::
+
+</div>
+<div>
+
+::: {.alertblock}
+#### Exemple
+Volem estimar la latència mitjana real d'una API. Mesurem 200 peticions i obtenim $\bar X$ i $S$.
+:::
+
+</div>
+:::
+
+## Interval de confiança: idea {.smaller}
+
+::: {.block}
+#### Forma general
+$$\text{estimador} \pm \text{marge d'error}$$
+:::
+
+- El marge d'error depèn de la variabilitat, la mida mostral i el nivell de confiança.
+- Més dades $\Rightarrow$ interval més estret.
+- Més confiança $\Rightarrow$ interval més ample.
+
+::: {.alertblock}
+#### Interpretació correcta
+Un 95% de confiança vol dir que, si repetíssim el procediment moltes vegades, aproximadament el 95% dels intervals construïts contindrien el paràmetre real.
+:::
+
+## Visualitzant el nivell de confiança {.smaller}
+
+```{r cobertura-sim, fig.height=4}
+set.seed(1)
+mu <- 100; sigma <- 15; n <- 30; B <- 100
+z <- qnorm(0.975)
+
+ics <- map_dfr(1:B, function(i) {
+  x <- rnorm(n, mu, sigma)
+  xbar <- mean(x); e <- z * sigma / sqrt(n)
+  tibble(rep = i, lo = xbar - e, hi = xbar + e,
+         cobreix = mu >= xbar - e & mu <= xbar + e)
+})
+
+ggplot(ics, aes(x = rep, y = (lo+hi)/2, ymin = lo, ymax = hi, color = cobreix)) +
+  geom_pointrange() +
+  geom_hline(yintercept = mu, linetype = "dashed") +
+  scale_color_manual(values = c("TRUE" = "#006747", "FALSE" = "#E67E22")) +
+  labs(x = "Repetició", y = "IC per a mu", color = "Cobreix mu?") +
+  theme_minimal()
+
+mean(ics$cobreix)
+```
+
+De les 100 rèpliques, la proporció que cobreix la $\mu$ real hauria de rondar el 95%.
+
+## IC per a la mitjana amb $\sigma$ coneguda {.smaller}
+
+::: {.block}
+#### Condicions
+$X$ normal o bé mida mostral prou gran.
+:::
+
+$$Z=\frac{\bar X-\mu}{\sigma/\sqrt n}\sim N(0,1) \qquad IC_{1-\alpha}(\mu)=\bar X\pm z_{1-\alpha/2}\frac{\sigma}{\sqrt n}$$
+
+```{r ic-sigma-coneguda}
+xbar <- 27.2; sigma <- 10.65; n <- 50
+z <- qnorm(0.975)
+e <- z * sigma / sqrt(n)
+c(xbar - e, xbar + e)
+```
+
+## IC per a la mitjana amb $\sigma$ desconeguda {.smaller}
+
+::: {.block}
+#### Substituïm $\sigma$ per $S$
+$$T=\frac{\bar X-\mu}{S/\sqrt n}\sim t_{n-1} \qquad IC_{1-\alpha}(\mu)=\bar X\pm t_{n-1,1-\alpha/2}\frac{S}{\sqrt n}$$
+:::
+
+```{r ic-t}
+x <- c(115, 122, 119, 131, 125, 118, 121, 130)
+t.test(x, conf.level = 0.95)$conf.int
+```
+
+## Exemple computacional: latència mitjana {.smaller}
+
+Hem mesurat 80 peticions d'una API: mitjana mostral 118 ms, desviació típica mostral 22 ms. Volem un IC del 95% per a la latència mitjana real.
+
+```{r ic-latencia}
+xbar <- 118; s <- 22; n <- 80
+crit <- qt(0.975, df = n - 1)
+e <- crit * s / sqrt(n)
+c(xbar - e, xbar + e)
+```
+
+::: {.block}
+#### Lectura
+El resultat no és "la latència sempre estarà dins l'interval", sinó incertesa sobre la mitjana poblacional.
+:::
+
+## Disseny mostral: quantes observacions necessitem? {.smaller}
+
+::: {.block}
+#### Amb $\sigma$ aproximadament coneguda
+Per obtenir marge d'error màxim $e$:
+$$n\ge \left(\frac{z_{1-\alpha/2}\sigma}{e}\right)^2$$
+:::
+
+```{r disseny-mostral}
+sigma <- 20     # ms
+error <- 5      # marge màxim
+z <- qnorm(0.975)
+ceiling((z * sigma / error)^2)
+```
+
+En benchmarking, això ajuda a planificar quantes repeticions cal fer.
+
+## Per practicar: reduir el marge d'error {.smaller}
+
+::: {.block}
+#### Problema
+Amb $\sigma=20$ ms, quantes observacions calen per obtenir un marge d'error de només 2 ms (confiança 95%)? Comparativament amb l'exemple anterior (marge 5 ms), en quin factor ha augmentat $n$?
+:::
+
+[Mostra la solució →](#sol-mostreig){.solution-link}
+
+## Solució: reduir el marge d'error {#sol-mostreig visibility="hidden"}
+
+::: {.solutionblock}
+#### Solució
+:::
+
+```{r mostreig-check}
+sigma <- 20; z <- qnorm(0.975)
+n5 <- ceiling((z * sigma / 5)^2)
+n2 <- ceiling((z * sigma / 2)^2)
+c(n_marge5 = n5, n_marge2 = n2, factor = n2 / n5)
+```
+
+Com que $n$ creix amb l'invers del quadrat del marge d'error, reduir el marge per un factor 2.5 (de 5 a 2) multiplica $n$ per aproximadament $2.5^2=6.25$.
+
+## Flux de treball reproduïble {.smaller}
+
+::: {.block}
+#### Passos
+1. Definir la pregunta: què volem estimar?
+2. Recollir o simular dades de manera transparent.
+3. Calcular estimadors i interval.
+4. Visualitzar la mostra i discutir condicions.
+5. Escriure conclusions en un informe Quarto.
+6. Guardar codi i dades a GitHub.
+:::
