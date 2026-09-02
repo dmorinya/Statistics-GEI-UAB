@@ -1,0 +1,2330 @@
+\documentclass[10pt, handout]
+{beamer}
+\usepackage[latin1]{inputenc}
+% \usepackage[catalan]{babel}
+\usepackage{colortbl,enumerate}
+\definecolor{dblue}{rgb}{0.02 0.12  0.65}
+\newcommand{\blau}[1]{{\color{dblue} #1}}
+\newcommand{\vermell}[1]{{\color{red} #1}}
+
+
+\definecolor{dgreen}{HTML}{008F00}
+\definecolor{dgray}{HTML}{555555}
+\definecolor{dmagenta}{HTML}{8B008B}
+\definecolor{dblue}{rgb}{0.2,0.2,0.7}
+\definecolor{Cerulean}{rgb}{0.0, 0.48, 0.65}
+
+\newcommand{\green}{\color{green}}
+\newcommand{\red}{\color{red}}
+\newcommand{\black}{\color{black}}
+\newcommand{\blue}{\color{blue}}
+ \newcommand{\dblue}{\color{dblue}}
+ \newcommand{\cerulean}{\color{Cerulean}}
+ 
+\newcommand{\magenta}{\color{magenta}}
+\newcommand{\dmagenta}{\color{dmagenta}}
+\newcommand{\gray}{\color{gray}}
+\newcommand{\dgray}{\color{dgray}}
+\newcommand{\dgreen}{\color{dgreen}}
+
+
+\definecolor{MTB}{rgb}{0.0, 0.33, 0.71} %MediumTealBlue
+% \definecolor{Cerulean}{rgb}{0.0, 0.48, 0.65}
+
+\setbeamercolor*{structure}{fg=MTB}
+
+\setbeamertemplate{itemize item}[circle]
+\setbeamertemplate{itemize subitem}[default]
+
+
+
+
+% \newcommand{\Real}{\mathbb{R}}
+% \usetheme{default}
+
+% \usepackage{beamerthemesplit} // Activate for custom appearance
+
+\title{Estadística}
+\author{Grau en Enginyeria Informàtica}
+\date{Curs 2026-27}
+
+\begin{document}
+
+\frame{\titlepage}
+
+%\section[Outline]{}
+%\frame{\tableofcontents}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Introducció}
+%\subsection{Continguts de l'assignatura}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{\frametitle{Continguts de l'assignatura}
+  
+  \begin{itemize}
+  \item Estadística descriptiva 
+  
+ \begin{itemize}
+\item \footnotesize  {Univariant (una variable)}
+\item \footnotesize   Bivariant (dues variables)
+\end{itemize}
+ 
+ 
+    \medskip
+ 
+ \item  Probabilitat. 
+  
+  
+  \begin{itemize}
+ \item \footnotesize  Definici\'o de probabilitat, probabilitat condicionada. F\' ormula de probabilitat total. Teorema de Bayes.
+ 
+ \item \footnotesize Variables  aleat\`ories discretes. Distribucions (Binomial,  Poisson...)
+ 
+ \item Varianles aleat\`ories continues. Distribuci\'o  normal. 
+ 
+ \item Teorema central del L\'imit. Aproximaci\'o per la normal.
+    \end{itemize}
+   
+    \medskip
+  \item Inferència estadística.   
+  
+   \begin{itemize}
+ \item \footnotesize
+  Intervals de confian\c ca. Intervals per la mitjana, per la proporci\'o i per la vari\`ancia.
+  
+ \item \footnotesize
+ Test d'hip\`otesi. Test per a la  mitjana, per la proporci\'o i per la vari\`ancia. Comparaci\'o de poblacions.
+    \medskip
+  \end{itemize}
+  
+    \end{itemize}
+}
+
+\begin{frame}{ Per qu\`e probabilitat i estad\'\i stica en inform\`atica?}
+
+
+
+La probabilitat i estadística són claus a l'hora de gestionar dades i 
+dissenyar algoritmes.
+
+
+\bigskip
+
+Exemples:
+
+\begin{itemize}
+
+ \item Transmissi\'o de dades:  La teoria de la informaci\'o de Shanon est\`a basada en probabilitat.
+
+ 
+ \item En el disseny d'algoritmes intervenen  paràmetres de
+ probabilitat, teoria de la informació, etc..
+ 
+ 
+ \item ``Simulations (used to gain a greater understanding of a variety of systems) are truly a marriage of computing capability and statistics''
+ 
+\end{itemize}
+
+ 
+\end{frame}
+
+
+
+
+\frame{\frametitle{Bibliografia}
+\begin{itemize}
+%  \item<1-> Joan del Castillo. Estadística. Resum idees bàsiques. 2008. 
+%  http://ocw.uab.cat/ciencies-experimentals/estadistica/curs-complet 
+%\medskip 
+%
+\item Arnold O. Allen, Probability, Statistics, and Queueing Theory with Computer Science Applications, Academic Press, Inc. 1990
+\item  Jay L. Devore. Probabilidad y estadística para ingeniería y ciencias. Thomson. 2005
+\item Rosa Millones, Emma Barreno, Félix Vásquez y Carlos Castillo, Estadística aplicada a la ingeniería y
+los negocios. fondo Editorial, Universidad de Lima. 2015.
+\item Douglas C. Montgomery y George C. Runger, Probabilidad y estadística aplicadas a la ingeniería.
+Limusa Wiley. 2002
+\item Ronald E. Walpole, Raymond H. Myers y Sharon L. Myers. Probabilidad y estadística para ingenieros.
+Prentice Hall. 1999
+  \end{itemize}
+  
+  }
+
+
+
+
+\frame{\frametitle{Objectius i metodologia}
+
+\begin{itemize}
+\item Formació necessària per a enregistrar, analitzar i interpretar dades numèriques, fent servir com a instrument les matemàtiques, el càlcul de probabilitats i l'estadística.
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+ \item Metodologia
+
+
+\begin{enumerate}
+\item TEORIA: Classes cada divendres  
+
+
+% Estaran disponibles abans dels divendres.
+
+
+
+\item PROBLEMES: Cada dimarts %a partir del dia 20.
+% \begin{itemize}
+%  \item 
+% Els estudianls de matí (grup 41) s'han d'apuntar (a partir del dia 12) als grups de del PAUL 411, 412, 413, que tenen diferents horaris. 
+% 
+%  \item 
+% Els estudiants del grup de tarda (grup 45) s'assignen per cognoms i els grups són simultanis.
+% \end{itemize}
+
+
+
+\item PRÀCTIQUES:   
+Cal apuntar-se a grups (independents del grup de teoria). 
+%
+%Info
+
+\alert{ATENCIÓ:} Cal portar-la preparada pq els darrers minuts es dediquen a avaluar-la. 
+
+RECOMANACIÓ: comenceu a familiaritzar-vos amb \texttt{R} i \texttt{RStudio}
+
+
+
+\end{enumerate}
+ 
+% \item Canvis de l'horari:
+% \begin{itemize} 
+% \item Els dimarts 14 i 21 de setembre es farà teoria.
+% \item El divendres 29 d'octubre es farà classe de problemes.
+% 
+% \end{itemize}
+
+
+
+ 
+% 
+% %\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+%  {  \centering
+%    \includegraphics[width=1in]{Figures/Retall1} \quad \includegraphics[width=1in]{Figures/Retall2}\quad  \includegraphics[width=1in]{Figures/Retall3} 
+% %   \caption{example caption}
+% %   \label{fig:example}
+% %\end{figure}
+% }
+
+
+
+
+\end{itemize}
+  
+}
+ 
+
+
+
+
+
+\frame{\frametitle{Avaluació}
+
+
+ \begin{itemize}
+\item Per avaluar l'assignatura es tindrà en compte: 
+\begin{enumerate}
+\item 3 entregues de problemes en paper i durant el curs (10\%) al final de la sessió de problemes.
+les dates s'anunciaran amb antel·lació.
+
+Es farà la mitjana de les dues millors notes (i no s'acceptaran canvis de dates).
+
+ \item 
+Examen parcial: (verue calendari escola) (20\%)
+
+\item Examen final  (gener de 2026, segons programaci\'o escola)	(35\%).
+
+(\alert{Nota mínima del parcial i el final ponderats: 4 sobre 10})
+
+\item Pràctiques (25\%) ({Sense nota mínima 4 sobre 10}).
+
+\item Mini-projecte final reproduïble  (10\%)
+
+
+\alert{No es convalida} res de l'any anterior.
+\end{enumerate}
+
+
+
+\medskip 
+
+
+\item Examen de reavaluació dels \'\i tems 1, 2 i 3:  presencial (70\%)    (gener de 2026, segons programació escola)
+\alert{Nota mínima:  4 sobre 10.}
+
+
+
+\medskip 
+
+\item Als exàmens presencials  s'ha de portar calculadora científica (amb o sense estad\'\i stica).
+
+
+\end{itemize}
+
+ }
+
+ 
+ 
+ 
+
+\frame{\frametitle{Professorat i a qui adre\c car-se}
+
+\begin{itemize}
+ \item Teoria:
+ \begin{itemize}
+\item 41: Alan Morte
+ \item 43: David Moriña
+\item 45: Joan Porti  (responsable assignatura)
+\end{itemize}
+\item Problemes: 
+ \begin{itemize}
+\item  Juan José Rodríguez
+\item Joan Porti
+ \item  Iván Montero (tardes)
+\end{itemize}
+\item Pràctiques:
+\begin{itemize}
+\item  Juan José Rodríguez
+\item  Alan Morte (responsable pràctiques)
+\item
+\end{itemize}
+\end{itemize}
+
+
+\begin{itemize}
+ \item Professor responsable de l'assignatura:  
+ q\"uestions d'organitzaci\'o, qualificacions, etc... 
+ 
+ \item Professor responsable de les pr\`actiques:
+  q\"uestions d'organitzaci\'o de pràctiques, etc...
+ 
+ 
+\end{itemize}
+Les adreces electr\`oniques s'escriuen \emph{nom.cognom@uab.cat} sense accents (i ``n'' en comptes de ``ñ'')
+
+
+
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ \end{document}
+ 
+ 
+ 
+ 
+
+% % % % 
+% % % % 
+% % % % 
+% % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % \section{Estadística descriptiva}
+% % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % %%%%%%%%%%
+% % % % \frame{\frametitle{Estadística descriptiva}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Conjunt de tècniques per organitzar, simplificar i resumir la informació continguda en un conjunt de dades.
+% % % % \item Les dades poden provenir de variables quantitatives o de variables qualitatives o categòriques.
+% % % % \end{itemize}
+% % % % \medskip
+% % % % \pause
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \blau{Població:} conjunt o agrupació d'individus, objectes o 
+% % % % fets que són l'objecte del nostre estudi o interés (persones, animals, plantes,
+% % % % experiments de laboratori, etc.). 
+% % % % %Direm unitat estadística o individu a cadascún dels elements de la població.  \vspace{10pt}
+% % % % 
+% % % % \item\blau{Mostra:} %(de grandària $n$): 
+% % % % col·lecció d'elements de la població.
+% % % % L'investigador té accés a tota la informació necessària sobre la mostra.
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Estadística descriptiva}
+% % % % Dades quantitatives
+% % % % \begin{enumerate}[\rm (i)]
+% % % % \item \emph{Dades contínues:} les que varien de forma continua, com la temperatura, la resistència elèctrica, el nivell de radiació, etc. 
+% % % % 
+% % % % \item \emph{Dades discretes:} les que només poden prendre valors enters com per exemple el nombre d'accessos a una determinada pàgina web, etc.
+% % % % \end{enumerate}
+% % % % \medskip\pause
+% % % % 
+% % % % Dades qualitatives o categòriques
+% % % % \begin{enumerate}[\rm (i)]
+% % % % \item\emph{ Nominals:} són una simple etiqueta com per exemple la marca, l'estat d'un fusible (fos/no fos), etc.
+% % % % \item \emph{Ordinals:} en les que existeix una relació de ordre entre els possibles valors, per ex. el resultat d'una exploració qualitativa de la temperatura d'un aparell   (fred, tebi, calent).
+% % % % \end{enumerate}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Recollida d'informació: }
+% % % %   
+% % % % \begin{itemize}
+% % % % \item Matriu de dades
+% % % % \begin{itemize}
+% % % % \item Casos (files) i Variables (columnes).
+% % % % \item Grandària de la mostra = nombre de files = $n$.
+% % % % \end{itemize}
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Retall4}  
+% % % % \end{center}
+% % % %    
+% % % % 
+% % % % \alert{Quin tipus de variables apareixen a l'exemple?}
+% % % % }
+% % % % 
+% % % % %
+% % % % % 
+% % % % %%----------------------------------------------PAG     -------
+% % % % %
+% % % % %\frame{
+% % % % %\frametitle{Exemple}
+% % % % %  \begin{center}
+% % % % %\includegraphics[width=\textwidth]
+% % % % %{Figures/dades01.jpg}
+% % % % %\end{center}
+% % % % %  
+% % % % %
+% % % % %
+% % % % %
+% % % % %  }
+% % % % %  
+% % % % %  
+% % % % %%----------------------------------------------PAG     -------
+% % % % %\frame{
+% % % % %\frametitle{Exemple} 
+% % % % %  \begin{center}
+% % % % % \includegraphics[width=\textwidth]
+% % % % % {Figures/dades02.jpg} 
+% % % % %\end{center}
+% % % % %  
+% % % % %
+% % % % %
+% % % % %
+% % % % %  }
+% % % % %  
+% % % % %  
+% % % % %%----------------------------------------------PAG     -------
+% % % % %\frame{
+% % % % %\frametitle{Exemple} 
+% % % % %  \begin{center}
+% % % % % \includegraphics[width=\textwidth]
+% % % % % {Figures/dades03.jpg} 
+% % % % %\end{center}
+% % % % %  
+% % % % %
+% % % % %  }
+% % % % %  
+% % % % %  
+% % % % %%----------------------------------------------PAG     -------
+% % % % %\frame{
+% % % % %\frametitle{Exemple} \vspace*{-.5cm}
+% % % % %  \begin{center}
+% % % % % \includegraphics[width=.7\textwidth]
+% % % % % {Figures/dades04.pdf} \vspace{-.5cm}
+% % % % % 
+% % % % % $\ldots$ %\vspace{-.1cm}
+% % % % % 
+% % % % %  \includegraphics[width=.7\textwidth]
+% % % % % {Figures/dades05.pdf} 
+% % % % %\end{center}
+% % % % %  
+% % % % %
+% % % % %
+% % % % %
+% % % % %  }
+% % % % %  
+% % % % %%----------------------------------------------PAG     -------
+% % % % %\frame{
+% % % % %\frametitle{Exemple} 
+% % % % %
+% % % % %Considerem la primera de les variables: \emph{Gènere}. El que farem serà comptar el nombre de vegades que apareix la $m$
+% % % % %i el nombre de vegades que apareix la $f$. Els resultats els podem resumir en una taula o en un gràfic:  \vspace{-1cm}
+% % % % %  \begin{center}
+% % % % % \includegraphics[width=\textwidth]{Figures/dades06.pdf} \vspace{-4cm}
+% % % % %\end{center}
+% % % % %
+% % % % %\pause
+% % % % %  
+% % % % %  La taula s'anomena {\color{dblue} taula de freqüències} de la variable \emph{Gènere}. Al costat, la representació gràfica
+% % % % %  és un {\color{dblue} diagrama de sectors}, on l'angle d'un sector és proporcional al percentatge de la mostra que representa.  
+% % % % %
+% % % % %  }
+% % % % %  
+% % % % %  
+% % % % %%----------------------------------------------PAG     -------
+% % % % %
+% % % % %
+% % % % %\frame{\frametitle{Descripció de variables:}
+% % % % %\begin{itemize}
+% % % % %\item Variables quantitatives:
+% % % % %\begin{itemize}
+% % % % %\item Exemples: Temperatura, pes, alçada, glucosa,...
+% % % % %\item Descripció: mitjanes, variàncies i desviacions.
+% % % % %\end{itemize}
+% % % % %\medskip
+% % % % %
+% % % % %\item Variables qualitatives o categòriques:
+% % % % %\begin{itemize}
+% % % % %\item Exemples: Gènere, fallada d'un sistema, color, nombre de fills,...
+% % % % %\item Descripció: freqüències relatives.
+% % % % %
+% % % % %\end{itemize}
+% % % % %\end{itemize}
+% % % % %
+% % % % %
+% % % % %
+% % % % %}
+% % % % %
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables qualitatives}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Notació general
+% % % % \begin{itemize}
+% % % % \item $n$ = grandària de la mostra.
+% % % % \item $A$, $B$, ...  propietats, 
+% % % % \item $X$, $Y$, ...  variables.
+% % % % \end{itemize}
+% % % % \end{itemize}
+% % % % \bigskip \pause
+% % % % 
+% % % % Sovint ens interessen propietats definides per variables, per exemple: 
+% % % % \begin{align*}
+% % % %  & X=\text{gènere}, \\
+% % % %  & A=\{\text{individus amb gènere = m}\}
+% % % % \end{align*}
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables qualitatives}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Freqüències absolutes:
+% % % % $$F(A) = \text{Nombre de casos amb la propietat $A$}$$
+% % % % \medskip
+% % % % 
+% % % % \item Freqüències relatives: 
+% % % % $$f(A) = \frac{\text{Nombre de casos amb la propietat $A$}}{\text{Nombre total de casos.}} = \frac{F(A)}{n}$$
+% % % % \medskip
+% % % % 
+% % % % \item Taules de freqüències. Exemple:\smallskip
+% % % %  \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Retall5}  
+% % % % \end{center}
+% % % % \end{itemize}
+% % % % }
+% % % % 
+% % % % %-------------------------------------
+% % % % \frame{\frametitle{Descripció de variables qualitatives}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Taules de freqüències. \blau{Notació:}
+% % % % Considerem una població i un caràcter $C$ d'aquesta població
+% % % % amb modalitats $C_1,C_2,\dots, C_k$:
+% % % % \medskip
+% % % % 
+% % % % \begin{center}
+% % % % \begin{tabular}{ccc}
+% % % % \hline
+% % % % \multicolumn{3}{c}{Població/Caràcter $C$} \\
+% % % % \hline
+% % % % Modalitats     &  Freqüència & Freq. rel.  \\ \hline
+% % % % $C_1$     &  $n_1$   & $f_1$\\
+% % % % $C_2$     &  $n_2$   & $f_2$\\
+% % % %   $\vdots$ &    $\vdots$  &   $\vdots$  \\
+% % % %   $C_k$     &  $n_k$   & $f_k$\\\hline
+% % % %   Totals: & $n$ & $1$  \\
+% % % % \hline
+% % % % \end{tabular}
+% % % % \end{center}
+% % % % \medskip
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \begin{itemize}
+% % % % \item $n_i = $ freqüència (absoluta) de la modalitat $C_i$. 
+% % % % % nombre d'individus de la mostra que presenten  la modalitat $C_i$. 
+% % % % $\sum_{i=1}^kn_i=n$.
+% % % % \smallskip
+% % % % 
+% % % % \item $f_i =$ freqüència relativa de la modalitat $C_i$: 
+% % % % %proporció 
+% % % % $f_i=\frac{n_i}n$.
+% % % % 
+% % % % $0\leq f_i\leq 1$, $\sum_{i=1}^kf_i=1$.
+% % % % \end{itemize}
+% % % % \end{itemize}
+% % % %  }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % %-------------------------------------
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables qualitatives}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Representació gràfica: diagrames de sectors, diagrames de barres, pictogrames, etc.
+% % % % \end{itemize}
+% % % % \medskip
+% % % % 
+% % % % Exemple:
+% % % % \smallskip
+% % % %  \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Graf1}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % %\frame{\frametitle{Descripció de variables qualitatives}
+% % % % %
+% % % % %\begin{itemize}
+% % % % %\item Taules de freqüències de doble entrada
+% % % % %\end{itemize}
+% % % % %\medskip
+% % % % %
+% % % % %Exemple:
+% % % % %%\smallskip
+% % % % %% \begin{center}
+% % % % %%\includegraphics[width=3in]{Figures/Graf1}  
+% % % % %%\end{center}
+% % % % %
+% % % % %
+% % % % %}
+% % % % 
+% % % % %%%%%%%%%%
+% % % % %%%%%%%%%%
+% % % % \frame{\frametitle{Llenguatge de teoria de conjunts}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Enumeració dels elements: 
+% % % % \begin{itemize}
+% % % % \item $H=\{11,12,13,14,15\}$
+% % % % \item $NF=\{2,3,6,7,14,15\}$
+% % % % \end{itemize}
+% % % % Cardinal = Nombre d'elements en un conjunt. $\operatorname{Card}(H)=5$.
+% % % % \begin{itemize}
+% % % % \item Conjunt total: $\Omega=\{1,2,3, \ldots ,14,15\}$
+% % % % \item Conjunt buit: $\emptyset=\{\ \}$
+% % % % \end{itemize}
+% % % % 
+% % % % \medskip
+% % % % 
+% % % % 
+% % % % \item Unió i intersecció de conjunts
+% % % % \begin{itemize}
+% % % % \item Intersecció:
+% % % % \begin{itemize}
+% % % % \item Homes i fumadors:  $H\cap F =\{11,12,13\}$
+% % % % \item Dones i fumadores: $D\cap F =\{1,4,5,8,9,10\}$
+% % % % \end{itemize}
+% % % % 
+% % % % \item Unió:
+% % % % \begin{itemize}
+% % % % \item Homes o fumadors $H\cup F =\{1,4,5,8,9,10,11,12,13,14,15\}$
+% % % % \item Homes o no fumadors $H\cup NF = \{2,3,6,7,11,12,13,14,15\}$
+% % % % \end{itemize}
+% % % % \end{itemize}
+% % % % \medskip
+% % % % 
+% % % % \item Conjunt complementari: \begin{itemize}
+% % % % \item $\overline H = \{ \text{elements que no són a $H$}\}$\\
+% % % % Si $\Omega$ és el conjunt total, també escrivim $\overline H = \Omega \setminus H$.
+% % % % \item $H\setminus F = \{\text{elements de $H$ que no són a $F$}\} $  (= Homes que no fumen).
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % %%%%%%%%%%
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \emph{Variables discretes,} les que només poden prendre valors enters com per exemple el nombre d'accessos a una determinada pàgina web, etc.
+% % % % 
+% % % % 
+% % % % \item \emph{Variables contínues,} les que varien de forma continua, com la temperatura, la resistència elèctrica, el nivell de radiació, etc. 
+% % % % \medskip
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % }
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: freqüències}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \emph{Variables discretes:} Taules de freqüències, diagrames de barres.
+% % % % \medskip
+% % % % \begin{center}
+% % % % \includegraphics[width=2.2in]{Figures/Retall6}  
+% % % % \end{center}
+% % % % \begin{center}
+% % % % \includegraphics[width=2.2in]{Figures/Retall7}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % }
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: freqüències}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \emph{Variables discretes:} Taules de freqüències acumulades:
+% % % % \medskip
+% % % % \begin{center}
+% % % % \includegraphics[width=2.2in]{Figures/Retall8}  
+% % % % \end{center}
+% % % % \begin{center}
+% % % % \includegraphics[width=2.2in]{Figures/Retall9}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % }
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: histogrames}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \emph{Variables contínues:} Taules de freqüències i histogrames
+% % % % \medskip
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Per representar dades contínues va bé agrupar-les en classes o intervals: %   i representar les freqüències.
+% % % % \end{itemize}
+% % % % \medskip
+% % % % \begin{center}
+% % % % \includegraphics[width=1.5in]{Figures/Retall10}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: histogrames}
+% % % % \begin{itemize}
+% % % % \item[]% Histograma:
+% % % % %\medskip
+% % % % \begin{itemize}
+% % % % \item i representar-les gràficament
+% % % % \medskip
+% % % % \begin{center} 	
+% % % % \includegraphics[width=2.5in]{Figures/Retall11}  
+% % % % \end{center}
+% % % % 
+% % % % \end{itemize}
+% % % % \end{itemize}
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: histogrames}
+% % % % 
+% % % % \begin{enumerate}[(1)]
+% % % % \item Trobem el màxim, el mínim i el rang. Dividim el rang en intervals o classes.
+% % % % \begin{itemize}
+% % % % \item\blau{Classes:} Cadascun dels subintervals en que subdividim el 
+% % % % rang o recorregut de la variable estadística.
+% % % % 
+% % % % \begin{picture}(300,80)(0,-40)
+% % % % \put(0,0){\line(1,0){280}}
+% % % % \put(290,-3){$\Real$}
+% % % % \put(5,0){\line(0,-1){2}}
+% % % % \put(3,-10){$\scriptstyle L_0$}
+% % % % \put(25,0){\line(0,-1){2}}
+% % % % \put(23,-10){$\scriptstyle L_1$}
+% % % % \put(45,0){\line(0,-1){2}}
+% % % % \put(65,-3){$\ldots$}
+% % % % \put(105,5){$\overbrace{}$}
+% % % % \put(110,15){\small\sl $i$-èsim interval de classe}
+% % % % \put(105,0){\line(0,-1){2}}
+% % % % \put(125,0){\line(0,-1){2}}
+% % % % \put(96,-10){$\scriptstyle L_{i-1}$}
+% % % % \put(125,-10){$\scriptstyle L_i$}
+% % % % \put(112.5,-2.5){$\bullet$}
+% % % % \put(128,-25){\vector(-1,2){11}}
+% % % % \put(130,-28){\small \sl$ x_i$: marca de classe}
+% % % % \put(155,-3){$\ldots$}
+% % % % \end{picture}
+% % % % 
+% % % % \item \blau{Marques de classe:} $x_i$ la marca de classe de l'$i$-èsim interval, és el 
+% % % % punt mitjà de l'interval.
+% % % % \end{itemize}
+% % % % 
+% % % % \end{enumerate}
+% % % % 
+% % % % }
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: histogrames}
+% % % % 
+% % % % 
+% % % % \begin{enumerate}[(1)]\setcounter{enumi}{1}
+% % % % \item  Com escollim els intervals de classe? 
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \emph{Orientativament,} escollim en nombre de classes $k$ en funció del nombre de dades $n$:
+% % % % $$k\approx 1+\log_2(n)$$
+% % % % \begin{center}
+% % % % \begin{tabular}{cc}
+% % % % \hline \sl Grandària de la mostra & \sl Nombre de classes \\ \hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    Menys de 16  &  Dades insuficients \\
+% % % %   16--31  & 5  \\
+% % % %    32--63 &  6  \\
+% % % %    64--127    &   7  \\
+% % % %  128--255  & 8    \\
+% % % %    256--511     &  9    \\ 
+% % % %    512--1023      &  10   \\
+% % % %     1024--2047    &  11   \\ 
+% % % %    \hline
+% % % % \end{tabular}
+% % % % \end{center}
+% % % % \end{itemize}
+% % % % 
+% % % % \end{enumerate}
+% % % % }
+% % % % 
+% % % % \frame{\frametitle{Descripció de variables quantitatives: histogrames}
+% % % % 
+% % % % 
+% % % % \begin{enumerate}[(1)]\setcounter{enumi}{2}
+% % % % \item Taula de freqüències 
+% % % % \medskip
+% % % % 
+% % % % \begin{center}
+% % % % \begin{tabular}{cccc}
+% % % % \hline
+% % % % \multicolumn{4}{c}{Població/Variable $X$} \\
+% % % % \hline
+% % % % Int.classe    & Marca classe    &  Freqüència & Freq. rel.  \\ \hline
+% % % % $[L_0,L_1)$     & $x_1$     &    $n_1$   & $f_1$\\
+% % % % $[L_1,L_2)$     & $x_2$     &   $n_2$   & $f_2$\\
+% % % %   $\vdots$ &   $\vdots$ &    $\vdots$  &   $\vdots$  \\
+% % % %   $[L_{k-1},L_k]$     &   $x_k$     & $n_k$   & $f_k$\\\hline
+% % % % & Totals: & $n$ & $1$  \\
+% % % % \hline
+% % % % \end{tabular}
+% % % % \end{center}
+% % % % \medskip
+% % % % 
+% % % % \item Histograma: representació gràfica. 
+% % % % \begin{itemize}
+% % % % \item A sobre de cada interval dibuixem un rectangle 
+% % % % d'àrea proporcional a la freqüència de la classe corresponent.
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % \end{enumerate}
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % %  Distribució de 50.000 famílies els EUA el 1973, en
+% % % % funció de la renda. els interval de classe inclouen el límit esquerra i excloent
+% % % % el dret.
+% % % % \begin{center}\small
+% % % % \begin{tabular}{rr}
+% % % % \hline
+% % % % \multicolumn{1}{c}{\sl Nivell d'ingressos} & \multicolumn{1}{c}{\sl Percentatge} \\
+% % % % \hline
+% % % %   0 -- 1.000 \$ & 1   \\
+% % % % 1.000 -- 2.000 \$   & 2    \\
+% % % %   2.000 -- 3.000 \$    &  3 \\
+% % % %   3.000 -- 4.000 \$    &  4 \\
+% % % %   4.000 -- 5.000 \$    &  5 \\
+% % % %   5.000 -- 6.000 \$    &  5 \\
+% % % %   6.000 -- 7.000 \$    &  5 \\
+% % % %   7.000 -- 10.000 \$    &  15 \\
+% % % %   10.000 -- 15.000 \$    &  26 \\
+% % % %   15.000 -- 25.000 \$    &  26 \\
+% % % %   25.000 -- 50.000 \$    &  8 \\
+% % % %   50.000  \$ o més   &  1 \\
+% % % % \hline
+% % % % \end{tabular}
+% % % % \end{center} 
+% % % % 
+% % % % %\textsl{Nota:} els percentatges no sumen 100 degut a l'arrodoniment.
+% % % % 
+% % % % %\textsl{Font:} \emph{Money Income in 1973 of families and Persons in the United States.}
+% % % % %Current Population Reports, sèries P-60, número 97 (Gener 1975) U.S. Department of Commerce.
+% % % %  }
+% % % %   
+% % % %   
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % % Histograma incorrecte degut a que els rectangles tenen l'alçària dels percentatges. Pot donar lloc
+% % % % a interpretacions errònies: 
+% % % % 
+% % % % \includegraphics[width=\textwidth]{Figures/graf2.jpg}
+% % % %  }
+% % % %   
+% % % %   
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % % Aquesta és la versió correcte. Els rectangles tenen àrea proporcional als
+% % % % percentatges:
+% % % % 
+% % % % 
+% % % %   \includegraphics[width=\textwidth]{Figures/graf3.jpg}
+% % % % 
+% % % %  }
+% % % %   
+% % % %   
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{\frametitle{Descripció quantitativa}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Mesures de tendència central i localització
+% % % % \begin{itemize}
+% % % % \item Mitjana i mediana.
+% % % % \item Quantils.
+% % % % \end{itemize}
+% % % % \medskip
+% % % % 
+% % % % \item Mesures de dispersió. Quantifiquen el grau de separació, 
+% % % % proximitat o dispersió de les dades.
+% % % % \begin{itemize}
+% % % % \item Desviació estàndard. Variància. 
+% % % % \item Rang. Rang interquartílic
+% % % % \end{itemize}
+% % % % \medskip
+% % % %  
+% % % % \item Mesures de forma. 
+% % % % \begin{itemize}
+% % % % \item Biaix
+% % % % \item Curtosi.
+% % % % \end{itemize}
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció quantitativa}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Mediana: valor $M$ que divideix les observacions en dues parts iguals, 
+% % % % un 50\% més petites o iguals i un altre 50\% més grans o iguals.  
+% % % % \medskip
+% % % % \pause
+% % % % 
+% % % % Com es calcula:
+% % % % \begin{itemize}
+% % % % \item  Ordenar les dades de més petit a més gran.
+% % % % \item Si el nombre de dades és senar, la mediana és la dada que està en el mig.
+% % % % \item Si el nombre és parell, és la mitjana dels dos valors centrals.
+% % % % \end{itemize}
+% % % % \medskip
+% % % % \pause
+% % % % 
+% % % % \begin{itemize}
+% % % % \item La mediana és \emph{robusta} davant la presència de outliers.
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % }
+% % % % 
+% % % % \frame{\frametitle{Descripció quantitativa}
+% % % % Mediana. Exemples:
+% % % % \begin{itemize}
+% % % % \item 
+% % % % Observacions:
+% % % % \begin{center}
+% % % %  \vermell{$13.5$, $17.8$, \fbox{$19.6$}, $21.1$, $27.2$}
+% % % % \end{center}
+% % % %  Mediana: $M= 19.6$
+% % % %  
+% % % % \item  Observacions:
+% % % % \begin{center}
+% % % %  \vermell{$13.5$, $17.8$, \fbox{$19.6$, $21.1$}, $27.2$, $29.5$}
+% % % % \end{center}
+% % % %   Mediana: $M= \dfrac{19.6+21.1}2=20.35$
+% % % % 
+% % % %  \item Observacions: 
+% % % % \begin{center}
+% % % %  \vermell{$13.5$, $17.8$, \fbox{$19.6$}, $21.1$, $272$}
+% % % % \end{center}
+% % % %  Aquestes dades presenten un \emph{outlier}. Observem $M= 19.6$ però $\bar x = 68.8$.
+% % % %  
+% % % %  \end{itemize}
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció quantitativa}
+% % % % \begin{itemize}
+% % % % \item Quartils
+% % % % \medskip
+% % % % 
+% % % % Els quartils divideixen en quatre parts a les observacions. 
+% % % % \smallskip
+% % % % 
+% % % % \begin{itemize}
+% % % % \item El primer quartil $Q_1$ és el valor que deixa per sota al 25\% de les observacions i per sobre el 75\%. 
+% % % % \item El segon quartil $Q_2=M$  és la mediana (divideix la distribució en 50\% - 50\%) i 
+% % % % \item $Q_3$ deixa per sota al 75\% de les observacions i per sobre el 25\%.
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=6cm]{Figures/quartils.pdf}
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{\frametitle{Descripció quantitativa}
+% % % % \begin{itemize}
+% % % % \item 
+% % % % Rang
+% % % % \begin{itemize}
+% % % % \item  És la diferència entre els valors observats
+% % % % més gran i més petit: $R = x_{\text{màx}}-x_{\text{mín}}$.
+% % % % \item conserva les unitats de mesura de les dades
+% % % % originals.
+% % % % 
+% % % % \item  es veu extraordinàriament afectada pels valors extrems (outliers).
+% % % % \end{itemize}
+% % % % \medskip
+% % % % 
+% % % % \item Rang interquartílic: $RI = Q_3 - Q_1$
+% % % % \begin{itemize}
+% % % % \item A diferència del rang, es tracta d'un estadístic robust.
+% % % % \end{itemize}
+% % % % \end{itemize}
+% % % % \medskip
+% % % % 
+% % % % 
+% % % % Valors petits de $R$ i $RI$ indiquen una menor dispersió.
+% % % % \medskip
+% % % % 
+% % % % $R$ i $RI$ són molt útils per detectar valors extrems.
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Diagrames de caixa.}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Barreres internes inferior: $b_{inf}=Q_1-1.5RI$, i superior: $b_{sup}=Q_3+1.5RI$.
+% % % % \item Barreres externes inferior: $B_{inf}=Q_1-3RI$, i superior: $B_{sup}=Q_3+3RI$.
+% % % % \item Valors adjacents: extrems de la distribució dintre de les barreres internes:
+% % % % $a_{inf}=\textrm{mín}\{x|x\geq b_{inf}\}$, $a_{sup}=\textrm{màx}\{x|x\leq b_{sup}\}$.
+% % % % \item Valors anòmals (\emph{Outliers}): valors per fora de les barreres internes. Anòmals severs: valors 
+% % % % per fora de les barreres externes.
+% % % % \end{itemize}
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Diagrames de caixa.}
+% % % % \vspace*{-1cm}
+% % % % \begin{center}\setlength{\unitlength}{.9pt}
+% % % % \begin{picture}(340,300)(-175,-40)
+% % % % \put(0,-30){\line(0,1){270}}
+% % % % \put(-2,100){\line(1,0){4}}\put(10,98){\footnotesize $Md$ (Mediana)}
+% % % % \put(-2,90){\line(1,0){4}}\put(10,85){\footnotesize $Q_1$ (Primer quartil)}
+% % % % \put(-2,120){\line(1,0){4}}\put(10,118){\footnotesize $Q_3$ (Tercer quartil)}
+% % % % \put(-2,165){\line(1,0){4}}\put(10,163){\footnotesize $b_{sup}$ (Barrera interna superior)}
+% % % % \put(-2,45){\line(1,0){4}}\put(10,43){\footnotesize $b_{inf}$ (Barrera interna inferior)}
+% % % % \put(-2,210){\line(1,0){4}}\put(10,208){\footnotesize $B_{sup}$ (Barrera externa superior)}
+% % % % \put(-2,0){\line(1,0){4}}\put(10,-2){\footnotesize $B_{inf}$ (Barrera externa inferior)}
+% % % % 
+% % % % \put(-30,100){\line(1,0){15}}
+% % % % \put(-30,90){\line(1,0){15}}
+% % % % \put(-30,90){\line(0,1){30}}\put(-15,90){\line(0,1){30}}
+% % % % \put(-30,120){\line(1,0){15}}
+% % % % 
+% % % % \put(-22.5,120){\line(0,1){35}}\put(-20,155){\line(-1,0){5}}
+% % % %        \put(-185,153){\footnotesize (Valor adjacent superior) $a_{sup}$}
+% % % % \put(-22.5,90){\line(0,-1){25}}\put(-20,65){\line(-1,0){5}}
+% % % %       \put(-180,63){\footnotesize (Valor adjacent inferior) $a_{inf}$}
+% % % %       
+% % % % \put(-25,40){\footnotesize$\circ$}   \put(-100,30){\footnotesize Anòmals}    
+% % % % \put(-25,170){\footnotesize$\circ$}   \put(-100,180){\footnotesize Anòmals}    
+% % % % \put(-25,185){\footnotesize$\circ$}   
+% % % % \put(-25,220){\footnotesize$\bullet$}   \put(-120,220){\footnotesize Anòmals severs}    
+% % % % \end{picture}
+% % % % \end{center}
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Diagrames de caixa.}
+% % % % \vspace*{-1cm}
+% % % % 
+% % % % \begin{center}\setlength{\unitlength}{.9pt}
+% % % % \begin{picture}(340,300)(-175,-40)
+% % % % 
+% % % % \put(-30,100){\line(1,0){15}}
+% % % % \put(-30,90){\line(1,0){15}}
+% % % % \put(-30,90){\line(0,1){30}}\put(-15,90){\line(0,1){30}}
+% % % % \put(-30,120){\line(1,0){15}}
+% % % % 
+% % % % \put(-22.5,120){\line(0,1){35}}\put(-20,155){\line(-1,0){5}}
+% % % %      
+% % % % \put(-22.5,90){\line(0,-1){25}}\put(-20,65){\line(-1,0){5}}
+% % % %      
+% % % % \put(-25,40){\footnotesize$\circ$}    
+% % % % \put(-25,170){\footnotesize$\circ$}      
+% % % % \put(-25,185){\footnotesize$\circ$}   
+% % % % \put(-25,220){\footnotesize$\bullet$}   
+% % % % \end{picture}
+% % % % \end{center}\vglue-2cm
+% % % % 
+% % % % \centerline{Aquest és el resultat final.}
+% % % % }
+% % % %    
+% % % %    
+% % % %  
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Diagrames de caixa: comparaci\'o.}
+% % % % 
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=8cm]{Figures/A-box-plot-of-gender-and-salary.pdf}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % } 
+% % % %    
+% % % %    
+% % % %   
+% % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Mitjana i variància}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \textbf {Mitjana} (tendència central) 
+% % % % \medskip
+% % % % 
+% % % % Sigui $X$ una variable estadística quantitativa.
+% % % % $\{x_1,x_2,\dots,x_n\}$ els valors observats en una mostra de $n$ individus.
+% % % % $$\displaystyle\bar x=\frac1n\sum_{i=1}^nx_i=\frac{x_1+x_2+\dots+x_n}n$$
+% % % % 
+% % % % \item  \textbf{Variància} (mostral) (mesura de dispersió)
+% % % % $$S^2=\frac{\sum_{i=1}^n(x_i-\bar x)^2}{n-1}=
+% % % % \frac{n(\sum_{i=1}^nx_i^2)-(\sum_{i=1}^nx_i)^2}{n(n-1)}$$
+% % % % 
+% % % % \item \textbf{Desviació típica} o estàndard: 
+% % % % $S = +\sqrt{ S^2}$.
+% % % % 
+% % % % $S$ conserva les unitats 
+% % % % de mesura de les dades originals (no així $S^2$).
+% % % % 
+% % % % \item \textbf{Coeficient de variació} $CV = S/\bar x$.  
+% % % % 
+% % % % És una mesura de dispersió adimensional (sense unitats).
+% % % % 
+% % % % \'Es una mesura de dispersi\'o relativa
+% % % %  
+% % % % Permet comparar mostres diferents.
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Mitjana i variància}
+% % % % \begin{center}
+% % % %    \includegraphics[width=\textwidth]{Figures/Exercici1} 
+% % % % \end{center}
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu. Mitjana i variància}
+% % % % 
+% % % % Observem que sota condicions \emph{normals} els histogrames de variables contínues  tenen forma acampanada. 
+% % % % Empíricament, aquests histogrames presenten aproximadament les proporcions
+% % % % \begin{center}
+% % % % \begin{tabular}{|c|c|}\hline Interval & proporció d'observacions \\\hline\hline 
+% % % % de $(\bar x-s)$ fins $(\bar x +s)$ & $\sim 68\%$ \\\hline 
+% % % % de $(\bar x-2s)$ fins $(\bar x +2s)$ & $\sim 95\%$ \\\hline 
+% % % % de $(\bar x-3s)$ fins $(\bar x +3s)$ & $\sim 99.7\%$  \\\hline \end{tabular}
+% % % % \end{center}
+% % % % 
+% % % % \begin{center}
+% % % %    \includegraphics[width=3in]{Figures/emprule} 
+% % % % \end{center}
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % %\frame{
+% % % % %\frametitle{Distribució normal}
+% % % % %\begin{center}
+% % % % %   \includegraphics[width=4in]{Figures/Campana1} 
+% % % % %\end{center}
+% % % % %}
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Distribució normal: La campana de Gauss}
+% % % % \begin{center}
+% % % % 
+% % % %  \includegraphics[width=1.5in]{Figures/homecampana} 	\hspace{.4in}
+% % % %    \raisebox{0.75in}{\includegraphics[width=1.75in]{Figures/Histogram}} 
+% % % % \end{center}
+% % % % 
+% % % % Carl Friedrich Gauss va descobrir la distribució normal en 1809 com una 
+% % % % manera de racionalitzar el mètode de mínims quadrats.
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % %\frame{
+% % % % %\frametitle{Distribució normal}
+% % % % %
+% % % % %Distribució normal estàndard de probabilitats (campana de Gauss):
+% % % % %$$f(x) = \dfrac1{\sqrt{2\pi}}\exp\Bigl(-\dfrac{x^2}2\Bigr)$$
+% % % % %
+% % % % %
+% % % % %
+% % % % %}
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Distribució normal}
+% % % % 
+% % % % $\bullet$ Distribucions normals $N(\mu,\sigma^2)$.
+% % % % Són les que tenen funció de densitat 
+% % % % $$f(x) = \dfrac1{\sqrt{2\pi} \sigma}\exp\left(-\dfrac{1}2\Bigl(\frac{x-\mu}{\sigma}\Bigr)^2\right)$$
+% % % % El paràmetre $\mu$ es relaciona amb  $\bar x$ mentre que $\sigma$ correspond a $S$.
+% % % % %(Si $\mu =0$ i $\sigma = 1$, aleshores $N(0,1)$ és normal estàndard).
+% % % % 
+% % % % \bigskip
+% % % % 
+% % % % L'àrea sota la corba en un interval (integral definida) ens diu la proporció d'observacions esperades en aquest interval.
+% % % % 
+% % % % \bigskip
+% % % % 
+% % % % $\bullet$ Distribució normal estàndard de probabilitats (campana de Gauss), 
+% % % % és el cas $\mu=0$ i $\sigma=1$, és a dir la distribució   $N(0,1)$:
+% % % % $$f(x) = \dfrac1{\sqrt{2\pi}}\exp\Bigl(-\dfrac{x^2}2\Bigr)$$
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % %%%%%%%%%%%%%% BIAIX I CURTOSI             %%%%%%%%%%%%%%%%%%%
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu}
+% % % % 
+% % % % {\color{dblue} Característiques de forma:} Asimetria. Classifiquem les distribucions en tres classes segons el tipus d'asimetria:
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=7cm]{Figures/Grafica1.pdf}\\
+% % % % %\epsgraphic{8cm}{Grafica1b}{Grafica1}\\
+% % % % \tiny Histograma \emph{simètric}: mitjana, mediana i moda coincideixen. 
+% % % % Coeficient d'asimetria $=0$.
+% % % % \end{center}
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu}
+% % % % \begin{center}
+% % % % \includegraphics[width=7cm]{Figures/Grafica2.pdf}\\
+% % % % %\epsgraphic{8cm}{Grafica2b}{Grafica2}\\
+% % % % \tiny Histograma amb \emph{asimetria positiva} (cua llarga per la dreta): moda $<$ mediana $<$ mitjana. 
+% % % % Coeficient d'asimetria positiu.
+% % % % \end{center}
+% % % % }
+% % % %  
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu}
+% % % % \begin{center}
+% % % % \includegraphics[width=7cm]{Figures/Grafica3.pdf}\\
+% % % % %\epsgraphic{8cm}{Grafica3b}{Grafica3}\\
+% % % % \tiny Histograma amb \emph{asimetria negativa} (cua llarga per l'esquerra): mitjana $<$ mediana $<$ moda. 
+% % % % Coeficient d'asimetria negatiu.
+% % % % \end{center}
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi quantitatiu}
+% % % % {\color{dblue} Característiques de forma:} Curtosi. Hi ha també un coeficient de curtosi 
+% % % % que mesura el \emph{grau d'apuntament} de la campana:
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=7cm]{Figures/Grafica4.pdf}
+% % % % %\epsgraphic{8cm}{Grafica4b}{Grafica4}\vskip-4cm\hspace*{7cm}
+% % % % \parbox{4cm}{\tiny comparació de corbes amb curtosi negativa (corba més plana), nul·la (corba normal) i positiva (corba més apuntada)}
+% % % % \end{center}
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables}
+% % % % 
+% % % % En l'estudi descriptiu de dues variables s'intenta respondre 
+% % % % a preguntes com:
+% % % % \begin{itemize}
+% % % % \item Tenen aquestes variables alguna relació?
+% % % % \item Quina mena de relació suggereixen les dades?
+% % % % \item Pot quantificar-se aquesta relació?
+% % % % \item Podem predir una variable a partir de l'altra?
+% % % % \end{itemize}
+% % % % 
+% % % % \pause
+% % % % 
+% % % % Exemples
+% % % % \begin{itemize}
+% % % % \item Pes/alçada de persones.
+% % % % \item Condició mèdica/multes de tràfic.
+% % % % \item Taxa de natalitat/renda per capita , de diferents països.
+% % % % \end{itemize}
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % 
+% % % % %%%%%%%%%%%     CAS DE DUES VARIABLES QUANTITATIVES   %%%%%%%%%%%%%%%%%%%
+% % % % 
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables}
+% % % % Considerem dues variables quantitatives $X$ i $Y$ corresponents a dos caràcters
+% % % % d'una determinada població. Una mostra de grandària $n$ donaria lloc a una 
+% % % % llista de dades:\vskip-5pt 
+% % % % $$
+% % % % \begin{array}{|c|cccc|c|}
+% % % % \hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    & 1  & 2 & \dots & n & \text{Total} \\\hline
+% % % %  X  & x_1 & x_2 & \dots & x_n & \sum x_i \\
+% % % %  Y    & y_1 & y_2 & \dots & y_n & \sum y_i  \\\hline
+% % % % \end{array}
+% % % % $$%\vskip-5pt
+% % % % 
+% % % % Així, a l'individu "$i$"  \ de la mostra li corresponen els valors 
+% % % % $x_i$ i $y_i$ de les variables
+% % % % $X$ i $Y$ respectivament. Aquest parell de valors es pot representar pel punt 
+% % % % de coordenades $(x_i,y_i)$  del pla:\vspace{18pt}
+% % % % 
+% % % % \pause
+% % % % 
+% % % % \begin{center}
+% % % % {\color{dblue}
+% % % % \begin{picture}(200,70)(0,-35)
+% % % % \put(0,0){\line(1,0){180}}
+% % % % \put(50,-35){\line(0,1){90}}
+% % % % \put(190,-3){$X$}
+% % % % \put(40,45){$Y$}
+% % % % 
+% % % % \put(48,20){\line(1,0){2}}
+% % % % \put(37,18){$\scriptstyle y_i$}
+% % % % 
+% % % % \put(104,20){\line(1,0){2}}
+% % % % \put(105,19){\line(0,1){2}}
+% % % % \put(110,22){$\scriptstyle (x_i,y_i)$}
+% % % % 
+% % % % \put(105,0){\line(0,-1){2}}
+% % % % \put(103,-10){$\scriptstyle x_i$}
+% % % % \end{picture}
+% % % % }
+% % % % \end{center}
+% % % % }
+% % % %   %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % El diagrama de punts o núvol de punts consisteix en la col·lecció de tots
+% % % % els punts representats sobre el pla. \bigskip
+% % % % \pause
+% % % % 
+% % % % Veiem la representació  d'una llista de dades, o núvol de punts:
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=7cm]{Figures/nuvol.pdf}\\
+% % % % \begin{footnotesize}Dades de Pes i Alçada obtingudes per un grup d'alumnes.\end{footnotesize}
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % Amb el núvol de punts observem visualment la tendència o 
+% % % % relació entre les dues variables:
+% % % % 
+% % % % \pause
+% % % % 
+% % % % \begin{center}
+% % % % \parbox{3cm}{\footnotesize Relació lineal \\ directa o positiva.}\hspace{1cm}
+% % % % \parbox{5cm}{\includegraphics[width=4.5cm]{Figures/nuvol2.pdf}}
+% % % % \end{center}
+% % % % 
+% % % % \pause
+% % % % 
+% % % % \begin{center}
+% % % % \parbox{5cm}{\includegraphics[width=4.5cm]{Figures/nuvol3.pdf}}
+% % % % \hspace{1cm}
+% % % % \parbox{4cm}{\footnotesize Relació lineal \\ inversa o negativa.}
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \parbox{5cm}{\includegraphics[width=5cm]{Figures/nuvol4.pdf}}
+% % % % \hspace{1cm}
+% % % % \parbox{4cm}{\footnotesize Sense relació}
+% % % % \end{center}
+% % % % 
+% % % % \bigskip
+% % % % 
+% % % % \begin{center}
+% % % % \parbox{4cm}{\footnotesize Tendència no lineal}\hspace{1cm}
+% % % % \parbox{5cm}{\includegraphics[width=5cm]{Figures/nuvol5.pdf}}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % %
+% % % % %------------------------------------------------PAG  35  -------
+% % % % %\overlays{4}{
+% % % % %\begin{slide}{Estudi descriptiu de dues variables quantitatives}
+% % % % %\begin{minipage}{11.5cm}
+% % % % %Podem observar valors anòmals.
+% % % % 
+% % % % %\fromSlide{2}{
+% % % % %Tornem al cas \emph{Pes/Alçària} del principi:
+% % % % %}
+% % % % %\onlySlide*{2}{
+% % % % %\begin{center}
+% % % % %\parbox{4cm}{\footnotesize\raggedright Observem un punt aïllat del reste de punts,
+% % % % % que formen un 
+% % % % %núvol més compacte}\hspace{1cm}
+% % % % %\parbox{5cm}{\includegraphics[width=5cm]{Figures/nuvol1.eps}}
+% % % % %\end{center}
+% % % % 
+% % % % %\begin{center}
+% % % % %\parbox{4cm}{\footnotesize\raggedright Si prescindim del valor anòmal  obtenim aquest nou diagrama}\hspace{1cm}
+% % % % %\parbox{5cm}{\includegraphics[width=5cm]{Figures/nuvol6.eps}}
+% % % % %\end{center}
+% % % % 
+% % % % %
+% % % % 
+% % % % %En general un valor pot ser considerat  anòmal si:
+% % % % %\begin{itemize}
+% % % % %\item Són anòmales una o totes dues components respecte les variables corresponents. 
+% % % % %Això pot detectar-se en construir els diagrames de caixes de $X$ i de $Y$, per separat.
+% % % % %\item Per apartar-se d'una tendència funcional concreta de tot el reste de punts.
+% % % % %\end{itemize}
+% % % % 
+% % % % %}
+% % % % %-----------------------------PAG 36,37   -------NO FEM LA COVARIANCIA------
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % %  {\color{dblue} Covariància}  
+% % % %  
+% % % %  \begin{itemize}
+% % % % \item Mitjanes: $\bar x = \displaystyle\frac 1n \sum_{i=1}^nx_i$, \    \    \    \
+% % % % $\bar y =  \displaystyle\frac 1n \sum_{i=1}^ny_i$
+% % % % \item Variàncies: 
+% % % % $$S_X^2 = \frac1{n-1}\sum(\bar x-x_i)^2\,,\qquad S_Y^2 = \frac1{n-1}\sum(\bar y-y_i)^2$$
+% % % % \item Covariància
+% % % % $$S_{XY} =\frac1{n-1}\sum_{i=1}^n(\bar x-x_i)(\bar y-y_i)$$
+% % % % \end{itemize}
+% % % % 
+% % % % Interpretació: 
+% % % % Si les variables $X$ i $Y$ no tenen relació, són independents, aleshores la 
+% % % % covariància aproximarà el zero. 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % Recordem que per calcular pot ser més pràctic: 
+% % % % 
+% % % % \begin{itemize}
+% % % % \item
+% % % %  $S_X^2=\displaystyle
+% % % % \frac{n(\sum_{i=1}^nx_i^2)-(\sum_{i=1}^nx_i)^2}{n(n-1)}$
+% % % % 
+% % % % \item $ S_{XY}= \displaystyle 
+% % % % \frac{n(\sum_{i=1}^nx_iy_i)-(\sum_{i=1}^nx_i)(\sum_{i=1}^ny_i)}{n(n-1)}$
+% % % % \end{itemize}
+% % % % 
+% % % % Per exemple podem organitzar els càlculs: 
+% % % % $$\begin{array}{|c|c|c|c|c|c|}
+% % % % \hline\hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % % Mostra   &  X   &  Y  & X^2 & Y^2 &  XY \\ \hline
+% % % % 1   & x_1 & y_{1} & x_1^2 & y_1^2  & x_1y_1 \\
+% % % % 2   & x_{2} & y_{2} & x_2^2 & y_2^2  & x_2y_2 \\
+% % % % \vdots   & \vdots &  & \ddots&\vdots & \vdots \\
+% % % % n   & x_{n} & y_n &x_n^2 & y_n^2 & x_ny_n \\
+% % % % \hline
+% % % % Total   & \sum x_i & \sum y_i &\sum x_i^2 & \sum y_i^2 & \sum x_iy_i \\
+% % % % \hline\hline
+% % % % \end{array}$$
+% % % % 
+% % % % 
+% % % % }
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % %  {\color{dblue} Coeficient de correlació (de Pearson).}  El coeficient de correlació de Pearson és  un indicador del grau de dependència lineal entre  $X$ i $Y$:
+% % % %  \begin{footnotesize}
+% % % % \begin{equation*}
+% % % % r_{XY}=\frac{S_{XY}}{S_XS_Y} 
+% % % %         =  \frac{n\sum_{i=1}^nx_iy_i-\sum_{i=1}^nx_i\sum_{i=1}^ny_i}{\sqrt{\Bigl[n\sum_{i=1}^nx_i^2-\left(\sum_{i=1}^nx_i\right)^2\Bigr]\Bigl[n\sum_{i=1}^ny_i^2-\left(\sum_{i=1}^ny_i\right)^2\Bigr]}}\,.
+% % % %  \end{equation*}\end{footnotesize}%
+% % % % %Està dissenyat de manera que sigui independent de les unitats de mesura de les variables.
+% % % % 
+% % % % \pause
+% % % % 
+% % % % Interpretació: 
+% % % % \begin{itemize}
+% % % % \item $0.9<|r|<1$ correlació lineal forta (de signe igual al de $r$),
+% % % % \item $0.5<|r|<0.9$ correlació lineal moderada,
+% % % % \item $0<|r|<0.5$ correlació lineal feble, 
+% % % % \item $r\approx 0$ no hi ha relació o és una relació no lineal.
+% % % % \end{itemize}
+% % % % \pause
+% % % % 
+% % % % {\color{dblue} Coeficient de determinació:} 
+% % % % $R_{XY}=r_{XY}^2$
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % % Calculem el coeficient de correlació 
+% % % % de les variables \emph{Pes/Alçada} segons les 
+% % % % dades obtingudes per un grup d'estudiants de pràctiques:	\vspace{1\baselineskip}
+% % % % \begin{center}
+% % % % \hspace*{-.5cm}\includegraphics[scale=.55]{Figures/calcul_recta_1.pdf}
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % En els gràfics d'il·lustracions anteriors teniem:\bigskip
+% % % % 
+% % % % \begin{center}
+% % % % \parbox{4cm}{\includegraphics[width=4cm]{Figures/nuvol2.pdf}\\
+% % % % \centerline{\footnotesize $r=0,98$}}
+% % % % \hspace{1cm}
+% % % % \parbox{4cm}{\includegraphics[width=4cm]{Figures/nuvol3.pdf}\\
+% % % % \centerline{\footnotesize $r=-0,94$}}\bigskip
+% % % % 
+% % % % \parbox{4cm}{\includegraphics[width=4cm]{Figures/nuvol4.pdf}\\
+% % % % \centerline{\footnotesize $r=-0,1$}}
+% % % % \hspace{1cm}
+% % % % \parbox{4cm}{\includegraphics[width=4cm]{Figures/nuvol5.pdf}\\
+% % % % \centerline{\footnotesize $r=0,36$}}
+% % % % \end{center}
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % {\color{dblue} Recta de regressió.} Donada una sèrie de punts del pla $(x_1,y_1),
+% % % % (x_2,y_2),\dots (x_n,y_n)$ la recta de regressió és la recta que millor aproxima
+% % % % aquests punts en el sentit que minimitza les distàncies entre aquests punts i la
+% % % % recta.\bigskip
+% % % %  
+% % % % \pause
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=6cm]{Figures/recta1.pdf}\\
+% % % % \footnotesize Minimitzem la suma de quadrats de les distàncies $d_i=y_i-(a+bx_i)$
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % 
+% % % % Aquest càlcul proporciona la recta $y=a+b x$, on els coeficients
+% % % % $a$, $b$ es calculen com:
+% % % % \begin{align*}
+% % % % b& = \frac{S_{XY}}{S_X^2}=\frac{n\sum_{i=1}^nx_iy_i-\sum_{i=1}^nx_i\sum_{i=1}^ny_i}{n\sum_{i=1}^nx_i^2-\left(\sum_{i=1}^nx_i\right)^2}\,,
+% % % %    \\[10pt]
+% % % %  a& =\bar y -b\bar x     \,.
+% % % % \end{align*}
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % % Calculem ara la recta de regressió les variables \emph{Pes/Alçada} segons les 
+% % % % dades anteriors:	\vspace{-.25\baselineskip}
+% % % % \begin{center}
+% % % % \includegraphics[scale=.48]{Figures/calcul_recta_2.pdf}
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % % Cas de les dades \emph{Distància/Temps} recollides a classe:	
+% % % % %\vspace{-2\baselineskip}
+% % % % 
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=1.1\textwidth]{Figures/RectaDT.pdf}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple}
+% % % % 
+% % % % Cas de les dades \emph{Distància/Temps} recollides a classe.
+% % % % %\vspace{-2\baselineskip}
+% % % % 
+% % % % Repetim el càlcul després de treure els casos anòmals severs identificats en 
+% % % % el diagrama de caixa.: 
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=1.2\textwidth]{Figures/RectaDT3.pdf}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables quantitatives}
+% % % % 
+% % % % Predicció: Valor de $Y$ o bé mitjana de $Y$ condicionada per un valor $x_*$ calculats
+% % % % per mitjà de la recta de regressió:
+% % % % $$\hat y_*=a +bx_*\,.$$
+% % % % 
+% % % % \pause
+% % % % 
+% % % % Residu: Donat un element $(x_i,y_i)$ anomenem \emph{residu} a la diferencia entre
+% % % % el valor observat $y_i$ i el valor de predicció: $\hat y_i = a + b x_i$:
+% % % % $$e_i=y_i - \hat y_i\,.$$
+% % % % 
+% % % % }
+% % % % 
+% % % % %%%%%%%%%%%%%%% Cas qualitatiu   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % \blau{Taules de contingència.} 
+% % % % \begin{itemize}
+% % % % \item \blau{Freqüències}
+% % % % \item \blau{Freqüències marginals}
+% % % % \item \blau{Freqüències relatives}
+% % % % \end{itemize}
+% % % %   \vskip5pt
+% % % % 
+% % % % Considerem una població i dos caràcters (qualitatius) de la mateixa $A$ i $B$, que
+% % % % presenten modalitats $A_1,A_2, \dots,A_k$ i $B_1,B_2,\dots,B_\ell$, respectivament.
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \parbox{5cm}{La taula de contingència és una taula de doble entrada que 
+% % % % distribueix les freqüències d'individus segons ambdós caràcters}\hspace{1cm}
+% % % % $\begin{array}{c|cccc}
+% % % % \hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    &  B_1& B_2 & \dots & B_\ell \\ \hline
+% % % % A_1   & n_{11} &n_{12} &\dots &   \\
+% % % % A_2   & n_{21} & n_{22} & & \\
+% % % % \vdots   & \vdots &  & \ddots& \\
+% % % % A_k   &  &  & & \\
+% % % % \hline
+% % % % \end{array}$
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % \pause
+% % % % 
+% % % % Les \blau{freqüències absolutes} són:
+% % % % \medskip
+% % % % 
+% % % % $n_{ij} = $ nombre d'individus que presenten les modalitats $A_i$ i $B_j$.
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % %    }
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % Les \blau{freqüències marginals} són els \emph{totals} que obtenim en els marges
+% % % % dret i inferior de la taula de contingència:
+% % % % \medskip
+% % % % 
+% % % % $$\begin{array}{|c|cccc|c|}
+% % % % \hline\hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    &  B_1& B_2 & \dots & B_\ell & \text{Total} \\ \hline
+% % % % A_1   & n_{11} &n_{12} &\dots &n_{1\ell}  & n_{1\cdot} \\
+% % % % A_2   & n_{21} & n_{22} & & & \\
+% % % % \vdots   & \vdots &  & \ddots&\vdots & \vdots \\
+% % % % A_k   & n_{k1} &  &\dots &n_{k\ell} & n_{k\cdot} \\
+% % % % \hline
+% % % % \text{Total}    & n_{\cdot 1}  &  &\dots  &n_{\cdot\ell} & n_{\cdot\cdot}= n\\ \hline\hline
+% % % % \end{array}$$
+% % % % 
+% % % % \medskip
+% % % % 
+% % % % \begin{itemize}
+% % % % \item 
+% % % % Les freqüències en el {\color{dblue} marge dret} 
+% % % % són les freqüències del caràcter $A$:
+% % % % \smallskip
+% % % % 
+% % % % $\bullet$ Freqüència d'individus amb modalitat $A_i$ és 
+% % % % $n_{i\cdot}=\sum_{j=1}^\ell n_{ij}$.
+% % % % 
+% % % % \medskip
+% % % % \pause
+% % % % 
+% % % % \item Les freqüències en el {\color{dblue} marge inferior} són les  del caràcter $B$:
+% % % % \smallskip
+% % % % 
+% % % % $\bullet$ Freqüència d'individus amb modalitat $B_j$ és 
+% % % % $n_{\cdot j}=\sum_{i=1}^k n_{ij}$.
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % %       
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple: Dades censals de l'Idescat sobre l'ús d'internet}
+% % % % 
+% % % % 
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Taula de freqüències absolutes i representació gràfica
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % %  \includegraphics[width=0.8\textwidth]{Fig/internet-taula}\\
+% % % %  \includegraphics[width=0.9\textwidth]{Fig/internet}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % 
+% % % %    }
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple: Dades censals de l'Idescat sobre l'ús d'internet}
+% % % % \begin{itemize}
+% % % % \item Freqüències absolutes marginals
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % \begin{tabular}{cc}
+% % % %   \includegraphics[width=4cm]{Fig/margedret1}   & 
+% % % %  \raisebox{2cm}{\parbox{5cm}{Les freqüències en el {\color{dblue} marge dret}
+% % % % són les freqüències de la variable \emph{Edat}}}\\
+% % % % \end{tabular}
+% % % % \end{center}
+% % % % 
+% % % % \vfill
+% % % % 
+% % % % \begin{center}
+% % % %  \includegraphics[width=10cm]{Fig/margeinf1} \\[2ex]
+% % % % \parbox{8cm}{\centering Les freqüències en el {\color{dblue} marge inferior} són les freqüències de la variable 
+% % % % \emph{Ús de connexió a internet.}}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % %    
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % Obtenim les \blau{freqüències relatives} i \blau{freqüències relatives marginals}, 
+% % % % com sempre, dividint les freqüències absolutes $n_{ij}$ per la grandària
+% % % % de la mostra $n$:
+% % % % \medskip
+% % % % 
+% % % % \begin{itemize}
+% % % % \item Freqüència relativa de $A_i$ i $B_j$. $f(A_i\cap B_j)=f_{ij}=\dfrac{n_{ij}}{n}$
+% % % % 
+% % % % \item Freqüència relativa marginal de $A_i$:  $f(A_i)=f_{i\cdot}=\dfrac{n_{i\cdot}}{n}$,
+% % % % o de $B_j$:  $f(B_j)=f_{\cdot j}=\dfrac{n_{\cdot j}}{n}$.
+% % % % 
+% % % % 
+% % % % \end{itemize}
+% % % % $$\begin{array}{|c|cccc|c|}
+% % % % \hline\hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    &  B_1& B_2 & \dots & B_\ell & \text{Total} \\ \hline
+% % % % A_1   & f_{11} &f_{12} &\dots &f_{1\ell}  & f_{1\cdot} \\
+% % % % A_2   & f_{21} & f_{22} & & & \\
+% % % % \vdots   & \vdots &  & \ddots&\vdots & \vdots \\
+% % % % A_k   & f_{k1} &  &\dots &f_{k\ell} & f_{k\cdot} \\
+% % % % \hline
+% % % % \text{Total}    & f_{\cdot 1}  &  &\dots  &f_{\cdot\ell} & f_{\cdot\cdot}= 1\\ \hline\hline
+% % % % \end{array}$$
+% % % % }
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple: Dades censals de l'Idescat sobre l'ús d'internet}
+% % % % 
+% % % % \begin{itemize}
+% % % % \item La taula de freqüències relatives queda: 
+% % % % \end{itemize}
+% % % % \begin{center}
+% % % %  \includegraphics[width=0.7\textwidth]{Fig/internet-taula-f}
+% % % % \end{center}
+% % % % 
+% % % % Observem que la represetnació gràfica d'aquesta taula només varia de l'anterior en l'escala de l'eix vertical:
+% % % % \begin{center}
+% % % %  \includegraphics[width=0.6\textwidth]{Fig/internet-graf-f}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Exemple: Dades censals de l'Idescat sobre l'ús d'internet}
+% % % % Podem llegir les freqüències marginals, que ens donen les taules de freqüències 
+% % % % per separat de les variables:
+% % % % 
+% % % % \begin{itemize}
+% % % % \item \emph{Ús de connexió a internet}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=8cm]{Fig/margeinf2} 
+% % % % \end{center}
+% % % % 
+% % % % \medskip
+% % % % 
+% % % % \pause
+% % % % 
+% % % % \item \emph{Edat}
+% % % % 
+% % % % \begin{center}
+% % % %  \includegraphics[width=4cm]{Fig/margedret2} 
+% % % % \end{center}
+% % % % \end{itemize}
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % %    
+% % % % %%----------------------------------------------PAG     -------
+% % % % %
+% % % % %\frame{
+% % % % %\frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % %Observem que les freqüències marginals ens proporcionen les distribucions
+% % % % %de freqüències de casdacuna de les dues variables, per separat, tot ignorant 
+% % % % %l'efecte de l'altra. \medskip
+% % % % %
+% % % % %
+% % % % %\parbox{4cm}{\raggedright Així de les taules anteriors podem extreure les distribucions 
+% % % % %de freqüències del caràcter $A$: }\hspace{1cm}
+% % % % %$\begin{array}{|c|c|c|}
+% % % % %\hline\hline
+% % % % %% after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % % %   & \text{Freq.} & \text{Freq.rel.} \\ \hline
+% % % % %A_1   & n_{1\cdot}   & f_{1\cdot} \\
+% % % % %A_2   & n_{2\cdot }  &f_{2\cdot }  \\
+% % % % %\vdots   & \vdots & \vdots \\
+% % % % %A_k   & n_{k\cdot} &f_{k\cdot} \\
+% % % % %\hline
+% % % % %\text{Total}    & n & 1\\ \hline\hline
+% % % % %\end{array}$\medskip
+% % % % %
+% % % % %\pause
+% % % % %
+% % % % %\parbox{4cm}{\raggedright i del caràcter $B$: }%\hspace{cm}
+% % % % %$\begin{array}{|c|cccc|c|}
+% % % % %\hline\hline
+% % % % %% after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % % %   &  B_1& B_2 & \dots & B_\ell & \text{Total} \\ \hline
+% % % % %\text{Freq.}  & n_{\cdot 1} &n_{\cdot 2} &\dots &n_{\cdot \ell}  & n\\
+% % % % %\hline
+% % % % %\text{Freq.rel.}  & f_{\cdot 1}  & f_{\cdot 2} &\dots  &f_{\cdot\ell} & 1\\ \hline\hline
+% % % % %\end{array}$
+% % % % %
+% % % % %}
+% % % % %   
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % \blau{Freqüències relatives condicionades.}  \vskip5pt
+% % % % 
+% % % % $\bullet$ Quina és la interpretació si el que mirem aïlladament és 
+% % % % una de les columnes (o files) centrals de la taula, per ex.: la columna $j$-èsima?
+% % % % 
+% % % % 
+% % % % 
+% % % % \begin{center}
+% % % % $\begin{array}{|c|c|}
+% % % % \hline\hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    & B_j  \\ \hline
+% % % % A_1   & n_{1 j}  \\
+% % % % A_2   & n_{2 j }   \\
+% % % % \vdots   & \vdots \\
+% % % % A_k   & n_{k j} \\
+% % % % \hline
+% % % % \text{Total}    & n_{\cdot j} \\ \hline\hline
+% % % % \end{array}$
+% % % % \hspace{1cm}
+% % % % \parbox{6cm}{\raggedright En aquesta taula el que tenim és la distribució 
+% % % % de freqüències (absolutes) del caràcter $A$ si restringim la problació només 
+% % % % a aquells individus que presenten la modalitat $B_j$ del caràcter $B$.}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % \pause
+% % % % 
+% % % % $\bullet$ Si ara calculem les freqüències relatives a aquesta taula, obtindrem 
+% % % % les anomenades \emph{freqüències relatives de $A_i$ condicionades
+% % % % per $B_j$.}
+% % % % }
+% % % % 
+% % % %      
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % 
+% % % % 
+% % % % Definim: \medskip
+% % % % 
+% % % % $\bullet$ Freqüència de $A_i$ condicionada per $B_j$:
+% % % % $$f(A_i|B_j) = f_{A_i|B_j} = \dfrac{n_{ij}}{n_{\cdot j}}\,.$$
+% % % % \bigskip
+% % % % 
+% % % % I al revés, si fixem la fila $i$-èsima:\medskip
+% % % % 
+% % % % 
+% % % % $\bullet$ Freqüència de $B_j$ condicionada per $A_i$:
+% % % % $$f(B_j|A_i) = f_{B_j|A_i} = \frac{n_{ij}}{n_{i\cdot}}\,.$$\bigskip
+% % % % 
+% % % % }
+% % % %    
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % 
+% % % % \parbox{4cm}{$\begin{array}{|c|c|c|}
+% % % % \hline\hline
+% % % % \multicolumn{3}{c}{ \text{Població $B_j$} }\\
+% % % % \hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %  & \text{Freq.} & \text{Freq.rel.} \\ \hline
+% % % % A_1   & n_{1j}   & f(A_1|B_j) \\
+% % % % A_2   & n_{2j }  &f(A_2|B_j)  \\
+% % % % \vdots   & \vdots & \vdots \\
+% % % % A_k   & n_{kj} &f(A_k|B_j) \\
+% % % % \hline
+% % % % \text{Total}    & n_{\cdot j} & 1\\ \hline\hline
+% % % % \end{array}$}
+% % % % \parbox{6cm}{\raggedright Les freqüències relatives condicionades $f(A_i|B_j)$, $i=1,\dots,k$,
+% % % % proporcionen doncs
+% % % % les taules de 
+% % % % distribució de freqüències de $A$ restringides a la població 
+% % % % d'individus $B_j$:}
+% % % % \vfill
+% % % % 
+% % % % \pause
+% % % % 
+% % % % %}
+% % % % %
+% % % % %
+% % % % %%----------------------------------------------PAG     -------
+% % % % %
+% % % % %\frame{
+% % % % %\frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % 
+% % % % O bé, al revés, freqüències relatives condicionades $f_{B_j|A_i}$
+% % % % conformen la taula de freqüències de $B$ restringides a la població d'individus $A_i$:
+% % % % $$
+% % % % \begin{array}{|cc|}\hline
+% % % % \parbox{2cm}{\centering Població $A_i$}\rule[-23pt]{0pt}{52pt} &
+% % % % \begin{array}{|c|cccc|c|}
+% % % % \hline
+% % % % % after \\ : \hline or \cline{col1-col2} \cline{col3-col4} ...
+% % % %    &  B_1& B_2 & \dots & B_\ell & \text{Total} \\ \hline
+% % % % \text{Freq.}  & n_{i 1} &n_{i 2} &\dots &n_{i \ell}  & n_{i\cdot}\\
+% % % % \hline
+% % % % \text{Freq.rel.}  & f_{B_1|A_i}  & f_{B_2|A_i} &\dots  &f_{B_\ell|A_i} & 1\\ \hline
+% % % % \end{array}\hspace*{-3pt}\\
+% % % % \hline
+% % % % \end{array}$$
+% % % % }
+% % % %    
+% % % % 
+% % % %      
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Exemple: Dades censals de l'Idescat sobre l'ús d'internet}
+% % % % Podem també llegir freqüències condicionades a una fila o  columna. 
+% % % % \medskip
+% % % % 
+% % % % P.\  ex.,
+% % % % la taula les freqüències de l'\emph{Ús de connexió a internet}, ens podem fixar en la primera fila i ignorar la resta: 
+% % % % \begin{center}
+% % % %  \includegraphics[width=.6\textwidth]{Fig/relatives1}
+% % % % \end{center}
+% % % % 
+% % % % \pause
+% % % % Així ens queda la taula de freqüències relatives de l'\emph{Ús de connexió a internet}
+% % % % condicionada per \emph{Edat  =  16 a 24}:
+% % % % 
+% % % % \begin{center}%\vspace{-.5cm}
+% % % %  \includegraphics[width=.6\textwidth]{Fig/relatives2}
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % %----------------------------------------------PAG     -------
+% % % % \frame{
+% % % % \frametitle{Exemple: Dades censals de l'Idescat sobre l'ús d'internet}
+% % % % Comparem les freqüències amb les freqüències condicionades:
+% % % % \medskip
+% % % % 
+% % % % \begin{center}
+% % % %      \includegraphics[width=.6\textwidth]{Fig/internet-taula-p}
+% % % % \end{center}
+% % % % 
+% % % % \medskip
+% % % % 
+% % % % \begin{center}
+% % % %      \includegraphics[width=.6\textwidth]{Fig/relatives2}
+% % % % \end{center}
+% % % % 
+% % % % }
+% % % % 
+% % % % %----------------------------------------------PAG     -------
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Estudi descriptiu de dues variables qualitatives}
+% % % % 
+% % % % {\color{dblue} Relació entre freqüències relatives i }
+% % % % 
+% % % % {\color{dblue} freqüències relatives condicionades}\bigskip
+% % % % 
+% % % % 
+% % % % $\bullet$ $f(A_i|B_j)=\dfrac{f(A_i\cap B_j)}{f(B_j)}$, o bé: $f(A_i\cap B_j)=f(B_j)\cdot f(A_i|B_j)$
+% % % % 
+% % % % \vermell{Observem: $f(A_i|B_j)=\dfrac{n_{ij}}{n_{\cdot j}}= 
+% % % %        \dfrac{n_{ij}/n}{n_{\cdot j}/n} = \dfrac{f_{ij}}{f_{\cdot j}} 
+% % % %        $.
+% % % % }\bigskip
+% % % % 
+% % % % \pause
+% % % % 
+% % % % $\bullet$ $f(A_i)= \displaystyle\sum_{j=1}^\ell f(B_j)\cdot f(A_i|B_j)$
+% % % % 
+% % % % \vermell{Observem: $f(A_i)= \displaystyle\sum_{j=1}^\ell f(A_i\cap B_j) = \sum_{j=1}^\ell f(B_j)\cdot f(A_i|B_j)$}
+% % % % }
+% % % % 
+% % % %    
+% % % % \iffalse     %----------------------------------------------PAG     -------
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % Recordem l'exemple
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Retall4}  
+% % % % \end{center}
+% % % % i construïm la taula de contingència per Gènere/Tabac.
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % Omplim la taula: 
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Cont1}  
+% % % % \end{center}
+% % % % 
+% % % % \begin{align*}
+% % % %  & F(H\cap F) = 3    & & F(D\cap F) = 6   & & F(H) = 5 \\
+% % % %  & F(H \cap \bar F ) = 2  & & F(D\cap\bar F) = 4  & & F(D)= 10
+% % % % \end{align*}
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % Les freqüències relatives es calculen
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Cont2}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % 
+% % % % \blau{Propietat del complementari}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Cont3}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Cont4}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3.8in]{Figures/Cont5}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3.8in]{Figures/Cont6}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3.2in]{Figures/Cont7}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % 
+% % % % \frame{
+% % % % \frametitle{Propietats de les freqüències}
+% % % % 
+% % % % \begin{center}
+% % % % \includegraphics[width=3in]{Figures/Cont8}  
+% % % % \end{center}
+% % % % 
+% % % % 
+% % % % }
+% % % % 
+% % % % 
+% % % % \fi   %----------------------------------------------PAG     -------
+% % % % 
+% % % % 
+% % % % \end{document}

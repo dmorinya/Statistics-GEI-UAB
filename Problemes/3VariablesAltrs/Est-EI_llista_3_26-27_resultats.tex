@@ -1,0 +1,1013 @@
+% !TEX spellcheck = ca-general
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumerate}
+\usepackage{icomma}
+
+\usepackage[dvips]{graphicx}
+\usepackage{color}
+
+% \usepackage[catalan]{babel}
+\usepackage[latin1]{inputenc}
+
+\definecolor{titol}{rgb}{0.2, 0.7, 0.8}
+
+
+
+\pagestyle{empty}
+\setlength{\textwidth}{16.5 cm}
+\addtolength{\oddsidemargin}{-2.1 cm}
+\addtolength{\topmargin}{-3 cm}
+\setlength{\textheight}{26 cm}
+\nofiles
+
+\newcounter{probl}
+\newcounter{cs}
+\stepcounter{cs}
+
+
+
+
+
+\newenvironment{pr}{\stepcounter{probl}\noindent{\llap{\bf\theprobl .\hspace{.1cm}}}}%
+                   {\vspace{.5cm}}
+\newcommand{\Sol}{\noindent \underline{\bf Resultat del problema \theprobl}: }
+%%% Carles: Afegit \Sol, mogut "\stepcounter{probl}" al savant de l'entorn "pr" de manera que
+%%%           podem començar sense donor el valor 1 probl.
+
+\newcommand{\p}{\begin{pr}}
+\newcommand{\fp}{\end{pr}}
+
+\newcommand{\casos}{\begin{itemize}}
+\newcommand{\fcasos}{\end{itemize}\setcounter{cs}{1}}
+\newcommand{\cas}{\item[(\alph{cs})]\stepcounter{cs}}
+
+\newif\ifsolucions
+%% Descomentar això per veure solucions
+\solucionstrue
+
+\newcommand{\newpagewithsolutions}{\ifsolucions\newpage\fi} %%% Added Carles 18/09/2012
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+
+
+\begin{document}
+
+%%%%%%%% capçalera original %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hrule\smallskip \medskip \noindent\textbf{Estad\'{i}stica
+\hfill\textbf{Enginyeria Informàtica}}\par\par
+                    \medskip\noindent\textsl{\bf Curs 2026 - 2027}
+\hfill\textbf{UAB}
+                     \medskip\hrule\vspace{0.5cm} % CAP\c{C}ALERA
+%\vspace{0.2cm}
+%\noindent Professors: Jaume Aguad\'{e}, Jaume Coll i Imma G\`{a}lvez.
+\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\centerline{\bf Llista 3. Variables aleatòries}
+
+\bigskip
+
+%%--------------------------------------------
+
+\p
+Un canal de comunicació transmet missatges amb els dígits 0 i 1. Per diverses causes es
+produeixen distorsions amb una probabilitat de 0.01 en cada un dels dígits. Suposant que les
+distorsions es produeixen de manera independent, calculeu la probabilitat que una comunicació
+amb 5 signes tingui 0, 1 o 2 distorsions.
+\fp
+
+\ifsolucions \Sol $0.999990149$
+
+\bigskip
+\fi
+
+\p Els CD's produ\"{\i}ts per una determinada empresa són
+defectuosos amb una probabilitat de 0.02. L'empresa ven els CD's en
+paquets de 10 i es compromet a retornar els diners si el paquet
+cont\'e 2 o m\'es CD's defectuosos. Si una persona compra 4 paquets,
+quina \'es la probabilitat que li tornin els diners de, com a
+mínim, un dels paquets? \fp 
+
+\ifsolucions
+\Sol $0.06315713
+$
+
+\bigskip
+\fi
+%\p
+%Un servei d'atenció al públic A consta de quatre empleats i es considera que \'es operatiu si dos
+%d'aquests empletats, com a mínim, estàn en actiu. Un altre servei B consta de nom\'es dos
+%empleats i es considera que està operatiu si algun d'aquests dos empleats està en actiu. Hi ha
+%una certa probabilitat p que els empleats de qualsevol d'aquests serveis estigui de baixa. Determineu,
+%en funció de p, quin dels dos serveis A o B està operatiu m\'es dies en promig.
+%\fp
+
+%\p
+%En una rifa s'ofereix un premi de 10.000 euros, dos de 5.000 euros i vins de 2.000 euros.
+%Si es posen a la venda 10.000 bitllets al preu de 6 euros el bitllet.
+%\casos
+%\cas quin \'es el guany esperat si comprem un bitllet?
+%\cas  quin \'es la variància de la variable aleato`ria que descriu el guany?
+%\fcasos
+%\fp
+
+%\p
+%Una urna cont\'e una bola vermella i tres de blanques. S'extreuen boles a l'atzar amb
+%reemplaçcament.
+%Quina \'es la probabilitat que:
+%\casos
+%\cas la segona bola vermella s'obtingui en la quarta extracció.
+%\cas  siguin necessàries 4 extraccions, com a mínim, per a obtenir la primera bola
+%vermella.
+%\fcasos
+%\fp
+
+
+%\p Una dona t\'e quatre fills. Suposant que la probabilitat que neixi un nen o una nena \'es la mateixa, contesteu les preguntes seg\"uents:
+%\casos
+%\cas Quina \'es la probabilitat que el primer i el segon siguin tots dos nens?
+%\cas Quina \'es la probabilitat que tingui m\'es nenes que nens?
+%\cas Quina \'es la probabilitat que tingui dos fills consecutius del mateix gènere?
+%\fcasos
+%\fp
+%
+%\ifsolucions
+%\Sol\\\\
+%\noindent Tenim una distibució binomial $Bin(4,\frac{1}{2})$\\\\
+%\noindent Sigui $H=$nen, $D=$nena, $X=$nen o nena.
+%\casos
+%\cas $$P(HHXX)=\dfrac{1}{2}\cdot\dfrac{1}{2}\cdot\dfrac{2}{2}\cdot\dfrac{2}{2}=\dfrac{1}{4}=0.25=25\%$$
+%\cas $$P(\textrm{nenes}>\textrm{nens})=P(\{4 \textrm{ nenes}\} \cup \{3 \textrm{ nenes}\})=P(DDDD)+4P(DDDH)=P(D)^4+4P(D)^3P(H)=$$
+%$$\left(\dfrac{1}{2}\right)^4+4\left(\dfrac{1}{2}\right)^3\dfrac{1}{2}=5\left(\dfrac{1}{2}\right)^4=\dfrac{5}{16}=0.3125=31.25\%$$
+%\cas $$P(\textrm{2 fills cons. mateix gènere})=1-P(\textrm{fills gènere alternat})=1-P(HDHD)-P(DHDH)=$$
+%$$1-2\left(\dfrac{1}{2}\right)^4=1-\dfrac{1}{8}=\dfrac{7}{8}=0.875=87.5\%$$
+%\fcasos
+%
+%$$\begin{array}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+%H & H & H & H & H & H & H & H & D & D & D & D & D & D & D & D \\
+%H & H & H & H & D & D & D & D & H & H & H & H & D & D & D & D \\
+%H & H & D & D & H & H & D & D & H & H & D & D & H & H & D & D \\
+%H & D & H & D & H & D & H & D & H & D & H & D & H & D & H & D \\
+%\end{array}$$
+%\fi
+%
+%\newpagewithsolutions
+
+%\p
+%Una capsa t\'e quatre bombetes de 40W, cinc de 60W i sis de 75W.
+%\casos
+%\cas Si es trien a l'atzar tres bombetes, quina \'es la probabilitat que exactament dues siguin de 75W?
+%\cas Es treuen les bombetes una per una aleat\`oriament. Quina \'es la probabilitat que s'hagi de treure dues bombetes abans d'obtenir-ne una de 75W?
+%\cas Si s'escolleix a l'atzar 2 bombetes i almenys una de les bombetes no \'es de 75W, quina \'es la probabilitat que les dues tinguin la mateixa potència?
+%\fcasos
+%\fp
+%
+%\ifsolucions
+%\Sol
+%$$\begin{array}{|c|c|c|} \hline
+%40W & 60W & 75W \\ \hline &  & \\
+%4 & 5 & 6 \\ & & \\ \hline
+%\end{array}$$
+%
+%\casos
+%\cas \underline{primera solució}:
+%$$p_1=\dfrac{\left(\begin{array}{c} 6 \\ 2 \end{array}\right)\left(\begin{array}{c} 9 \\ 1 \end{array} \right)}
+%{\left(\begin{array}{c} 15 \\ 3\end{array}\right)}=\dfrac{\dfrac{6\cdot 5}{2}\cdot 9}{\dfrac{15\cdot14\cdot13}{3\cdot2 \cdot 1}}=
+%\dfrac{3\cdot 5 \cdot 9}{5\cdot 7 \cdot 13}=\dfrac{3\cdot 9}{7\cdot 13}=\dfrac{27}{91}=0.2967=29.67\%$$
+%\underline{segona solució}:
+%$$p_1=\left(\begin{array}{c} 3 \\ 1 \end{array}\right)\dfrac{6}{15}\cdot\dfrac{5}{14}\cdot\dfrac{9}{13}=
+%\dfrac{27}{91}=0.2967=29.67\%$$
+%\cas $$p_2=\dfrac{9}{15}\cdot\dfrac{8}{14}\cdot\dfrac{6}{13}=\dfrac{3}{5}\cdot\dfrac{4}{7}\cdot\dfrac{6}{13}=
+%\dfrac{72}{455}=0.1582=15.82\%$$
+%\cas \underline{primera solució}:
+%$$p_3=P(\{\textrm{2 bombetes mateix potència}\} \,|\, \{\textrm{almenys 1 no \'es de 75W}\}=$$
+%$$\dfrac{P(\{2 \textrm{ de 40W}\}\cup\{2 \textrm{ de 60W}\})}{1-P(\{2 \textrm{ de 75W}\})}=
+%\dfrac{P(\{2 \textrm{ de 40W}\})+P(\{2 \textrm{ de 60W}\})}{1-P(\{2 \textrm{ de 75W}\})}=$$
+%$$\dfrac{\left[\left(\begin{array}{c} 4 \\ 2\end{array}\right)+\left(\begin{array}{c} 5 \\ 2\end{array}\right)\right]/\left(\begin{array}{c} 15 \\ 2\end{array}\right)}
+%{1-\left(\begin{array}{c} 6 \\ 2\end{array}\right)/\left(\begin{array}{c} 15 \\ 2\end{array}\right)}=
+%\dfrac{6+10}{105-15}=\dfrac{16}{90}=\dfrac{8}{45}=0.177777=17.78\%$$
+%\underline{segona solució}:
+%$$p_3=P(\{\textrm{2 bombetes mateix potència}\} \,|\, \{\textrm{almenys 1 no \'es de 75W}\}=$$
+%$$\dfrac{P(\{2 \textrm{ de 40W}\}\cup\{2 \textrm{ de 60W}\})}{1-P(\{2 \textrm{ de 75W}\})}=
+%\dfrac{P(\{2 \textrm{ de 40W}\})+P(\{2 \textrm{ de 60W}\})}{1-P(\{2 \textrm{ de 75W}\})}=$$
+%$$=\dfrac{\dfrac{4}{15}\cdot\dfrac{3}{14}+\dfrac{5}{15}\cdot\dfrac{4}{14}}{1-\dfrac{6}{15}\cdot\dfrac{5}{14}}=
+%\dfrac{12+20}{210-30}=\dfrac{32}{180}=\dfrac{8}{45}=0.177777=17.78\%$$
+%\fcasos
+%\fi
+%
+
+
+\p Es fa un examen tipus test amb 10 preguntes i 3 opcions de resposta cada pregunta. Per aprovar l'examen cal respondre correctament set o m\'{e}s preguntes. Quina \'es la probabilitat d'aprovar l'examen si es contesten les preguntes a l'atzar?
+\fp
+
+\ifsolucions
+\Sol $0.01966$
+
+\bigskip
+\fi
+
+
+\p Un dau mal equilibrat té les següents probabilitats:
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+1 & 2 & 3 & 4 & 5 & 6 \tabularnewline
+\hline
+0,2 & 0,2 & 0,1 & 0,3 & 0,1 & 0,1\tabularnewline
+\hline
+\end{tabular}
+\par
+\end{center}
+\casos
+\cas Calculeu el valor esperat i la desviació
+típica del dau.
+\cas Si llanceu el dau dos cops, quina és la probabilitat que la suma sigui
+igual a 4?
+\cas Si ja sabem que el primer llançament dóna com a molt 2, quina és la
+probabilitat que la suma dels dos llançaments sigui igual a 4?
+\fcasos
+\fp
+
+\ifsolucions
+\Sol (a)
+$E(X)= 3.2$, $
+\sigma = 1.6$.
+(b) $0.08$,
+(c) $0.15$.
+\fi
+
+\bigskip
+
+
+\p
+El nombre de sobrec\`arregues el\`ectriques que arriben a una determinada SAI segueix una distribuxi\'o de Poisson i t\'e una mitjana de 
+{2.4} sobrec\`arregues per hora.
+
+\casos
+\cas Posem en marxa la SAI. Calculeu la probabilitat que hi hagi al menys una sobrec\`arrega en {10}
+minuts.
+
+\cas Si acaba d'haver-hi una sobrec\`arrega, quina \'es la probabilitat de que hi torni a haver alguna 
+sobrec\`arrega en els propers {10} minuts?
+\fcasos
+\fp
+
+
+\ifsolucions  
+\Sol (a) $ 1-e^{-0.4}\approx 0.32968$, (b) La mateixa
+
+\bigskip
+
+\fi
+
+\bigskip
+
+% \p  En una autopista de la comarca del Vinadés,  la distància mitjana entre dos vehicles consecutius en un carril 
+% és de 250 metres. Suposant que el nombre de vehicles en un tram d'1 km de l'esmentat carril  segueix una 
+% distribució de Poisson, quina es la probabilitat que hagi exactament 5 vehicles en un km?
+% %En una autopista de la comarca del Vinadés,  la distància $D$ entre dos vehicles consecutius en un carril 
+% %segueix una distribució exponencial amb mitjana 200 metres. Quina és la probabilitat que en un tram 
+% %d'1 km de l'esmentat carril hagi exactament 5 vehicles?
+% \fp
+% 
+% \ifsolucions  
+% \Sol \\
+% 
+% Sigui $X=\text{Nombre de vehicles en un tram  d'un km.}$
+% 
+% Si hi ha un vehicle cada 250 metres, en mitjana hi ha 4 vehicles en 1 km. Per la tant la distribució de $X$ 
+%  és Poisson amb $\lambda = 4$. Aleshores
+% $$
+%     P(X = 5) = p_\lambda(5) = \frac{4^5e^{-4}}{5!}\approx 0,1653\,.
+% $$
+% 
+% \medskip
+% 
+% \fi
+
+
+
+\p
+El servidor d'una web rep una mitjana de 12 accessos a l'hora. 
+Se suposa que els usuaris que accedeixen a aquest servidor ho fan de forma independent uns dels altres. 
+Quina és la probabilitat  que ningú accedeixi en mitja hora? i que accedeixin  3 persones o m\'es?
+
+
+
+\fp
+
+\ifsolucions  
+\Sol (a) $e^{-6}\approx 0.002478752$  (b) $ 0.9380312$
+
+\bigskip
+
+\fi
+
+\bigskip
+
+\p
+La web d'una empresa de vendes \emph{on-line} rep una mitjana de 10 accessos per minut. Podem considerar que els accessos són independents.
+\begin{enumerate}[\rm (a)]
+\item Quina és la probabilitat que hi hagi exactament 10 accessos en un minut?
+\item Quin temps mitjà esperem entre dos accessos consecutius?
+\item Amb quina probabilitat passarà menys d'un segon entre dos accessos consecutius?  
+\end{enumerate}
+
+
+
+\fp
+
+\ifsolucions  
+\Sol (a) $\frac{10^{10}e^{-10}}{10!} \approx  0.1251$ (b) $\frac{1}{10}$ (c) 
+$ 1- e^{- 0.1667} \approx 0.1535$
+
+\bigskip
+
+\fi
+
+
+\bigskip
+
+%
+%\p  
+%L'exèrcit d'un determinat país, en una de les seves ``guerres d'alliberament"
+%(amb l'objectiu, \'es clar, de dur la llibertat i la democràcia arreu del planeta) utilitza
+%paracaigudes per a llançar, des d'avions de transport, material logístic. Aquests paracaigudes
+%tenen un sistema automàtic d'obertura, que ha d'actuar a una alçada de 200 metres.
+%Tanmateix, l'alçada real d'obertura del paracaigudes \'es una variable aleatòria de mitjana 200
+%metres i desviació típica de 58 metres. Si l'obertura del paracaigudes es produeix per sota
+%dels 100 metres, el material sofreix danys importants que el fan inservible. Quin percentatge
+%d'aquest material quedarà inservible?
+%\fp
+%
+
+
+
+
+
+
+
+\p
+  Suposem que el temps de connexi\'o dels visitants d'una determinada web segueix una
+distribuci\'o exponencial amb una mitjana de 12 minuts.  Calculeu:
+\begin{enumerate}[\rm (a)]
+\item La probabilitat de que un visitant s'estigui menys de 10 minuts connectat.  
+\item La probabilitat de que un visitant s'estigui m\'es de 20 minuts connectat.
+\item El temps $T$ tal que el 95\% de les connexions  siguin de menys de $T$ minuts.
+\end{enumerate}
+
+
+
+\fp
+
+\ifsolucions  
+\Sol  (a) $0.5654018$,  (b) 
+$  0.1889$,
+%
+(c) $  35.94879$ minuts
+
+\bigskip
+\fi
+
+
+\bigskip
+
+
+
+\p
+%La vida útil d'un cert tipus de filtre segueix una distribució normal amb desviació de 70 hores.
+%En mitjana, duren 800 hores si són del tipus A i 650 hores si són del tipus B. Tenim 100 filtres
+%de tipus A i 50 filtres de tipus B i n'instal·lem un escollit a l'atzar.
+%Quina \'es la probabilitat que duri m\'es de 800 hores?
+%
+%
+%----------
+%
+%Sabem que tots els models d'un cert tipus de filtre tenen una vida útil que segueix una distribució normal 
+%amb desviació típica de 70 hores en tots el casos, mentre que la mitjana depèn del model. 
+%En mitjana, els filtres del model A duren 800 hores, mentre que els del model B duren 650 hores. 
+%Tenim 100 filtres de tipus A i 50 filtres de tipus B i n?instal·lem un escollit a l?atzar. Quina és la probabilitat de 
+%que duri més de 800 hores? 
+%
+%
+%----------
+%
+%
+Tenim 100 filtres de tipus A i 50 filtres de
+tipus B, i n'installem un escollit a l'atzar.
+Quina és la probabilitat que duri més de 800 hores?
+Sabem que els dos tipus de filtre segueixen
+distribucions normals amb desviació típica
+de 70 hores, i mitjanes 800 hores per al tipus
+A i 650 hores per al tipus B.
+
+
+
+
+\fp
+
+\ifsolucions  
+\Sol
+$0.3386874$.
+
+\bigskip
+ 
+
+\fi
+
+\bigskip
+
+
+\p
+La vida mitjana d'un cert tipus de motor petit \'es de 10 anys, amb una desviació estàndard de
+2 anys. El fabricant canvia de forma gratu\"{\i}ta tots els motors avariats sempre que estiguin dins el
+període de garantia. Si suposem que el temps de vida d'aquest tipus de motor es distribueix
+segons una normal i el fabricant nom\'es pensa canviar el 3\% dels motors que fallin, quin temps
+de garantia haurà d'estipular?
+\fp
+
+\ifsolucions  
+\Sol 
+% $\texttt{qnorm(0.03, mean=10, sd=2)}\approx
+$ 6.238413$
+ 
+\bigskip
+ 
+
+\fi
+
+\bigskip
+
+\p
+Despr\'es de la fabricació i envasat, la vida de l'activat d'un cert fàrmac \'es normal amb una mitjana
+de 1200 dies i una desviació típica de 40 dies. Es desitja enviar un lot de medicaments de manera
+que la vida mostral no sigui inferior a 1180 dies amb una probabilitat de 0,95. Calculeu la mida mínima
+del lot.
+\fp
+
+\ifsolucions  
+\Sol Onze
+
+\bigskip
+
+\fi
+
+\bigskip
+
+
+
+
+
+%\p
+%Una alarma contraincendis presenta el següent comportament: en cas
+%d'incendi s'activa amb probabilitat del 99\% i s'activa per error
+%amb probabilitat de l'1\%. La probabilitat que hi hagi un incendi
+%en un dia determinat és del 0,2\%.
+%
+%\casos
+%\cas Quina és la probabilitat que l'alarma s'activi un dia determinat?
+%\cas Quina és la probabilitat que hi hagi un incendi si l'alarma s'activa?
+%\fcasos
+%
+%\fp
+
+
+\p
+Un proc\`es de fabricaci\'o dona el {$10$}\% d'\'\i tems defectuosos. 
+\casos
+\cas
+Si seleccionem a l'atzar 5  \'\i tems, quina \'es la probabilitat que no n'hi hagi cap de defectu\'os?
+\cas
+Si seleccionem a l'atzar 100 \'\i tems, quina \'es la probabilitat que el nombre d'{\'\i}tems defectuosos 
+superi estrictament {$13$}?
+\fcasos
+\fp
+
+\ifsolucions
+\Sol
+
+(a) $0.9^5=0.59049$, (b) Aproximant per la normal: $0.1210$ 
+
+(valor exacte del (b),  que no cal,
+ $ 0.1238768$)
+%  $1-\mathtt{pbinom}(13,\mathtt{size}=100, \mathtt{p}=.1)=1-0.8761232= 0.1238768$)
+
+\bigskip
+
+
+\fi
+
+\bigskip
+
+
+% % \p El 43\% de la població del Vinadés sap moure les orelles.
+% % 
+% % \casos
+% % \cas Si es selecciona a l'atzar 8 persones de la població, quina és la
+% % probabilitat que exactament 5 sàpiguen moure les orelles?
+% % \cas De la mateixa mostra, quina és la probabilitat que un nombre parell
+% % de persones sàpiga moure les orelles?
+% % \cas Si es selecciona a l'atzar 121 persones de la població, quina és la
+% % probabilitat que 25 o menys sàpiguen moure les orelles?
+% % \cas Si el resultat de la selecció anterior és que exactament 73 saben moure les orelles,
+% % creuríeu que efectivament  el nombre 43\% és correcte?
+% % \fcasos
+% % \fp
+% % 
+% % 
+% % \ifsolucions
+% % \Sol \\\\
+% % (a) El nombre de persones d'un grup de 8 del Vinadès que saben moure les orelles
+% % segueix una distribució binomial amb $n=8$ i $p=0,43$. així la probabilitat de
+% % trobar-ne exactament 5 és
+% % $$b_{8\,,\,0,43} (5) = {8\choose 5} \cdot  0,\!43^5\cdot   (1 - 0,\!43)^{8-5} = 56 \cdot  0,\!0147 \cdot
+% % 0,\!1852=0,\!1525
+% % $$
+% % \medskip
+% % 
+% % \noindent (b) Un nombre parell ha de ser 0, 2.4, 6, o 8, per tant, la probabilitat és:
+% % \begin{multline*}
+% % \qquad   b_{8\,,\,0,43} (0) + b_{8\,,\,0,43} (2) +b_{8\,,\,0,43} (4) +b_{8\,,\,0,43} (6)
+% % +b_{8\,,\,0,43} (8) = \\[3pt]
+% %                        =  0,\!0111 +   0,\!1776 +  0,\!2526 +    0,\!0575 +   0,\!0011 = 0,\!5 \qquad
+% % \end{multline*}
+% % 
+% % \medskip
+% % 
+% % \noindent (c) Denotem per $X$ el nombre de persones d'entre 121 escollides a l'atzar
+% % a Vinadès que saben moure les orelles. $X$ és una variable aleatòria discreta amb
+% % distribució binomial $B(121\, ,\,  0,\!43)$. El que ens demanen
+% % és $P(X\leq 25)$ i això es calcularia com $\sum_{k=0}^{25} b_{121\,,\,0,43}(k)$.
+% % 
+% % Atès que $n\cdot p\cdot (1-p) = 121\cdot 0,\!43  \cdot (1-0,\!43 ) \approx 30$, podem
+% % utilitzar l'aproximació normal de la binomial ($B(n\, ,\,  p) \approx
+% % N(np,np(1-p))$):
+% % 
+% % $$B(121\, ,\,  0,\!43) \approx
+% % N(121\cdot 0,\!43 \,,\, \sqrt{ 121\cdot 0,\!43  \cdot (1-0,\!43)} ) = N( 52,\!03\,,\, \sqrt{29,\!6571})
+% % $$
+% % 
+% % Aleshores,
+% % $$ P(X\leq 25) =  P\biggl(\frac{X-np}{\sqrt{np(1-p)}} \leq \frac{25 - 52,\!03}{\sqrt{29,\!6571}}\biggr) \approx P\bigl(N(0,1) \leq -4,\!96\bigr) \approx 0
+% % $$
+% % 
+% % 
+% % 
+% % \medskip
+% % 
+% % \noindent (d) Calculem per exemple $P(X\geq 75) =
+% % P\biggl(\frac{X-np}{\sqrt{np(1-p)}} \geq \frac{75 - 52,03}{\sqrt{29,6571}}\biggr) \approx P\bigl(N(0,1) \geq 4,\!21\bigr) \approx 0
+% % $
+% % \medskip
+% % 
+% % També ens podem preguntar amb quin valor $x$ obtenim $P(X\geq x) = 0,\!01$:
+% % $$0,\!01 = P(X\geq x) =  P\biggl(\frac{X-np}{\sqrt{np(1-p)}} \leq \frac{x - 52,\!03}{\sqrt{29,\!6571}}\biggr) \approx P\biggl(N(0,1) \leq \frac{x - 52,\!03}{\sqrt{29,\!6571}}\biggr)
+% % $$
+% % Mirant les taules resulta $\frac{x - 52,\!03}{\sqrt{29,6571}} = 2,\!33$, per tant $x\approx 65$. És a dir, amb les dades que ens proporcionen, la probabilitat d'escollir a l'atzar 121 persones de Vinadès de les que 65 o més
+% % sàpiguen moure les orelles és $0,\!01$, per tant, si han sortit 75, no ens podem creure que
+% % el 43\% de la gent de Vinadès sap moure les orelles.
+% % \medskip
+% % 
+% % 
+% % \fi
+
+
+
+\p
+En un país llunyà, hi ha dues companyies ferroviàries que competeixen pel trànsit de passatgers
+de 1000 alumnes que surten de la ciutat a la mateixa hora per anar al campus de la Universitat.
+Suposeu que els passatgers tenen la mateixa probabilitat de triar cada tren. Si una companyia
+vol assegurar-se de tenir un seient per a cada passatger en un 99\% de viatges, quin és el
+mínim nombre de seients que ha de posar al tren?
+\fp
+
+\ifsolucions
+\Sol 537
+
+\bigskip
+
+\fi
+
+
+\bigskip
+
+\p
+Quatre amics, Janice, Barbara, Kathy i Roberta, van decidir compartir cotxe per arribar a
+la Universitat. Cada dia el conductor seria elegit per selecció aleatòria d'un dels quatre noms.
+Si han compartit el cotxe en un total de 96 viatges, calculeu:
+\casos
+\cas La probabilitat que Janice sigui la conductora com a molt 20 dies.
+\cas La probabilitat que Roberta condueixi amb més de 16 ocasions.
+\cas La probabilitat que Barbara sigui la conductora exactament 24 d'aquests 96 viatges.
+\fcasos
+\fp
+
+\ifsolucions
+\Sol 
+(a) 0.2047, (b) 0.9615, (c) 0.0938
+
+
+(valors exactes, que no calen
+% calculats amb $\mathtt{pbinom}$ i
+% $\mathtt{dbinom}$:
+(a) 0.2065215, (b)  0.9655431, (c) 0.09367857
+)
+\bigskip
+\fi
+
+\bigskip
+
+\p
+El temps que triga a tenir una avaria un determinat aparell segueix una 
+distribuci\'o normal de mitjana 4.3 anys i v\`ariancia {7.2} anys$^2$. 
+\casos
+ \cas A partir de quants anys 
+hauran tingut una avaria el 67\% dels aparells?
+\cas Quin percentage dels aparells tindran una avaria abans dels {4} anys?
+\fcasos
+\fp
+
+
+\ifsolucions
+\Sol 
+(a)  $5.480411$.
+(b) $0.4554896$  ($45.55\%$).
+
+
+\bigskip
+
+\fi
+
+
+\bigskip
+
+% % \p El preu d'una acció en borsa es mou aleatòriament entre 10\$ i 20\$, amb la
+% % mateixa probabilitat en tot el tram (assumim també que la variació de preu d'un
+% % dia no influeix els següents). Hem donat l'ordre al nostre broker que
+% % ens compri paquets de 1.000 accions cada dia durant les properes 40 sessions.
+% % Un cop executada l'ordre, tenim un total de 40.000 accions. A final d'any venem
+% % totes les accions al preu de 16\$ per acció, rebent 640.000\$. Calculeu la probabilitat
+% % que guanyem diners en aquesta operació.
+% % 
+% % \fp
+% % 
+% % \ifsolucions
+% % \Sol \\\\
+% % El preu de cada paquet comprat és una variable aleatòria independent que es
+% % distribueix uniformement entre 10.000\$ i 20.000\$. La seva mitjana i variància són:
+% % $$\mu = (10.000\$ + 20.000\$) / 2 = 15.000\$ $$
+% % $$\sigma^2 = (20.000-10.000)^2/12 = 8.333.333,3333\,, \qquad \sigma= 2886,7513\$
+% % $$
+% % 
+% % D'acord al teorema del límit central, el preu total $T$ dels 40 paquets comprats es
+% % distribueix aproximadament com una variable normal amb:
+% % $$\mu_T = 40 \cdot \mu = 600.000\$ $$
+% % $$\sigma_T^2= n \cdot \sigma^2 =  333.333.333,3333\,,\qquad
+% % \sigma_T = 18.257,4186\$ $$
+% % 
+% % Ara, la probabilitat de que guanyem diners és $P(T<640.000)$. Per a fer aquest càlcul estandarditzem $T$ i utilitzem les taules de la llei normal estàndard:
+% % $$P (T< 640.000) = P \biggl(\,\frac{T-\mu_T}{\sigma_T}<
+% % \frac{640.000-600.000}{18.257,4186}\,\biggr) =
+% % P\bigl(N(0,1)<2,19) =
+% %  $$
+% % \medskip
+% % \fi
+
+
+\p
+La màquina d'una empresa omple bosses de cacau amb una mitjana de 500 grams
+i una desviació típica de 25 grams. Aquestes bosses s'empaqueten en caixes de 100 unitats.
+\casos
+\cas
+Calculeu la probabilitat de que la mitjana dels pesos de les bosses d'un paquet sigui
+inferior a 495 grams.
+\cas
+Calcular la probabilitat de que una caixa de 100 bosses superi els 51 kg.
+\fcasos
+
+
+
+\ifsolucions
+\Sol 
+(a) $0.0228$  (b) $P(N(0,1)> 4)\approx 0$
+
+% \begin{enumerate}[\rm (a)] 
+% \item $X=\text{pes d'una bossa de cacau}$, $X$ és $N(500, 25)$.
+% 
+% Si posem $\overline X =\frac1{100}(X_1+X_2+\dots + X_{100})$, $X_i=\text{pes de l'$i$-èsima bossa de la caixa}$, 
+% $$\overline X  \text{  és } N(500, 2,\!5)\,,$$
+% aleshores:
+% \begin{align*}
+%  P(\overline X < 495) &= P\Bigl( N(0,1)<\frac{495-500}{2,\!5}\Bigr) \\
+%  &= 
+%  P( N(0,1)<-2)  = 1-P( N(0,1)<2) = 1- 0,\!9772 = 0,\!0228
+% \end{align*}
+% 
+% 
+% \item $Y=\text{pes d'una caixa}=X_1+\dots+X_{100}$ és  $N(500\cdot 100, 25\sqrt{100}) =N(50000,250).$
+% \begin{align*}
+% P(Y > 51000) & = P\Bigl(N(0,1) > \frac{51000 - 50000}{250}) \\
+%   & =  P(N(0,1)> 4)\approx 0
+% \end{align*}
+% \end{enumerate}
+% % 
+% % \textbf{Solució amb $\sigma_X= 35$ grams}
+% % 
+% % \begin{enumerate}[\rm (a)] 
+% % \item $X=\text{pes d'una bossa de cacau}$, $X$ és $N(500, 35)$.
+% % 
+% % Si posem $\overline X =\frac1{100}(X_1+X_2+\dots + X_{100})$, $X_i=\text{pes de l'$i$-èsima bossa de la caixa}$, 
+% % $$\overline X  \text{  és } N(500, 3,\!5)\,,$$
+% % aleshores:
+% % \begin{align*}
+% %  P(\overline X < 495) &= P\Bigl( N(0,1)<\frac{495-500}{3,\!5}\Bigr) \\
+% %  &= 
+% %  P( N(0,1)<-1,\!43)  = 1-P( N(0,1)< 1,\!43) = 1- 0,\!9236 = 0,\!0764
+% % \end{align*}
+% % 
+% % 
+% % \item $Y=\text{pes d'una caixa}=X_1+\dots+X_{100}$ és  $N(500\cdot 100, 35\sqrt{100}) =N(50000,350).$
+% % \begin{align*}
+% % P(Y > 51000) & = P\Bigl(N(0,1) > \frac{51000 - 50000}{350}) \\
+% %   &\approx  P(N(0,1)> 2,86) \approx 1-0,9979 = 0,0021
+% % \end{align*}
+% % \end{enumerate}
+
+\fi
+
+\fp
+
+
+\p
+Un servidor que gestiona l'accés a una pàgina web està dissenyat per atendre un màxim de 100 accessos simultanis en un mateix minut. 
+Si els accessos es produeixen de forma independent, i amb un ritme mitjà de 80 accessos per minut:
+\begin{enumerate}[\rm (a)]
+\item  Quina proporció de temps tindrem el servidor saturat? 
+\item  Quina capacitat màxima d'accessos per minut  hauria de tenir el servidor e manera que  la probabilitat de saturar-se fos inferior a 0,001?
+\end{enumerate}
+
+\fp
+
+\ifsolucions  
+\Sol 
+(a) $0.01267366\cong 0.0127$ (b) superior o igual a $108$.
+
+
+
+
+
+
+
+\iffalse
+
+\ifsolucions
+
+
+
+\subsection*{Problemes extres, fora de la llista}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\p Sabem que el temps de reacció a l'aparició d'una dificultat inesperada en un cert
+tipus de videojocs és una variable aleatòria amb desviació típica de $0,\!5$ segons.
+Mesurem el temps de reacció de $70$ jugadors a l'aparició d'una dificultat concreta
+ en un d'aquests jocs i obtenim una mitjana de $3,\!1$ segons.
+ Quina és la probabilitat de que aquesta mitjana difereixi de
+l'esperança poblacional $\mu$ en no més de $0,\!05$ segons?
+\fp
+
+
+\ifsolucions
+\Sol \\\\
+Denotem $T$ el temps de reacció. Es tracta d'una variable de la qual no sabem la
+distribució. Sabem la desviació típica, $\sigma_T=0,\!5$ i volem aproximar
+l'esperança $\mu_T$.
+
+D'acord al teorema del límit central, el temps mitjà  de reacció $\overline T$ d'un grup de
+70 jugadors (que suposarem han estat escollits aleatòriament) segueix
+aproximadament una distribució normal amb
+$$\mu_{\overline T} = \mu_T$$
+i
+$$\sigma_{\overline T} = \frac{0,\!5}{\sqrt{70}}=  0,0598
+$$
+El que volem saber és la probabilitat que $|\mu_T-\overline{T}|<0,\!05$.
+$$P (|\mu_T-\overline{T}|<0,\!05) =
+P \biggl(\,\frac{|\mu_T-\overline{T}|}{\sigma_{\overline T} }<
+\frac{0,\!05}{0,5/\sqrt{70}}\,\biggr) =
+P\bigl(-0,\!84< N(0,1)<0,\!84) =
+ $$
+\medskip
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\p 
+On a un canal de communication sur lequel des signaux, codés en ?mots? formés de l?alphabet 0 et 1, 
+sont transmises. Dans ces mots, les ?0? ne représentent que 10\% des ?lettres? et les ?1? en 
+représentent 90\%.
+La réception étant perturbé, on sait que 80\% des lettres sont bien reçues et que 20\% sont inversés, 
+c?est à dire 20\% des ?0? émises sont reçues comme des ?1? et 20 \% des ?1? émises sont reçues comme 
+des ?0? (faire une petite esquisse de la transmission!)
+Pour minimiser les erreurs de transmission, les ingénieurs ont décidé d?envoyer chaque lettre 7 fois a la suite, 
+c?est à dire s?ils souhaitent transmettre un seul 0, ls envoient 0.00.00.00 et s?ils souhaitent transmettre un 
+seul 1 ils transmettent 1.11.11.11. L?appareil de réception capte la suite 0.10.01.10. Est-ce qu?on va plutôt 
+décider que 0.00.00.00 ou que 1.11.11.11 a été envoyé?
+---------------------
+
+A un canal de comunicació en el qual els senyals codificades per 'paraula' van formar l'alfabet 0 i 1 
+es transmeten. En aquestes paraules, '0', representen només el 10\% de les "lletres" i "1" 
+representen el 90\%.
+La recepció s'interromp, sabem que el 80\% de les cartes són ben rebuts i que el 20\% s'inverteix, 
+és a dir, el 20\% de '0' emès són rebuts com a "1" i 20\% "1" s'emeten rebut com '0' (fer un petit 
+esbós de la transmissió!)
+Per minimitzar els errors de transmissió, els enginyers van decidir enviar a cada lletra a 7 vegades 
+com a resultat, és a dir, si volen transmetre un sol 0, sa envien 0.00.00.00 i si volen passar una sola 
+transmeten 1.11.11.11. La unitat receptora rep la 0.10.01.10 successivament. Anem a decidir que en lloc 0.00.00.00 1.11.11.11 o va ser enviat?
+
+\fp
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\p
+Deux tireurs A et B tirent indépendamment une fois au but chacun. La probabilité d?atteindre le but par le tireur 
+A est égale à 0.8 et elle est de 0.4 pour le tireur B.
+1. Ils ont tiré tous les deux, calculer la probabilité que le but soit atteint exactement une fois.
+2. Ils ont tiré tous les deux et on constate que le but est atteint exactement une fois.
+(a) Trouver la probabilité que le but ait été atteint par le tireur A.
+(b) Trouver la probabilité que le but ait été atteint par le tireur B
+
+
+-----------------
+
+En Joan i en Pere tiren amb arc a una diana, un cop cada un, de forma independent. En Joan encerta un 80\% de les vegades mentre que en Pere només encerta un 40\%. Havent disparat un cop cada un, 
+\casos
+\cas Calculeu la probabilitat que la diana s'hagi assolit exactament una vegada.
+\cas Si veiem que la diana a rebut una única fletxa, 
+ \casos
+\item[(i)] Trobeu la probabilitat que aquesta fos la que ha disparat en Joan.
+\item[(ii)]  Trobeu la probabilitat  fos la que ha disparat en Pere.
+
+\fcasos
+\fcasos
+\fp
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\p 
+
+Un appareil est équipé de 3 capteurs a, b et c. La probabilité de panne du capteur a est 0.15, celle du capteur b est 0.05 et celle du capteur c est 0.08. Les pannes des trois capteurs sont indépendantes et l?appareil fonctionne si deux au moins des capteurs fonctionnent. On note A l?événement ?la capteur a est en panne?, B l?événement ?la capteur b est en panne? et C l?événement ?la capteur c est en panne?.
+1. Calculer la probabilité de l?événement A ? B ? C (c?est-à-dire de l?événement ?a et b fonctionnent et c est en panne?).
+2. Exprimer en fonction de A, B, C et des événements contraires A, B et C l?événement ?l?appareil fonctionne?.
+3. Calculer la probabilité que l?appareil fonctionne.
+4. Sachant que l?appareil fonctionne, qu?elle est la probabilité que le capteur c soit en panne ?
+
+
+-----------------------
+
+Un dispositiu està equipat amb sensors 3 a, b i c. La probabilitat de fallada del sensor és de 0,15, el del sensor és 0.05 bic la del sensor és de 0,08. Les avaries dels tres sensors són independents i la unitat funciona si almenys dos dels sensors estan treballant. Considerem els esdeveniments A=``el sensor a és defectuós",  B=``el sensor b és defectuós"{} 
+i  C=``el sensor c és defectuós".
+\casos
+\cas Calcular la probabilitat de l'esdeveniment $\overline A \cap  \overline B \cap  C$ (és a dir, ``a i b funcionen però c no funciona").
+\cas  Expresseu en termes de A, B, C i els esdeveniments contraris $\overline A$, $\overline B$ i $\overline C$ l'esdeveniment ``el dispositiu funciona".
+\cas Calcular la probabilitat de que el dispositiu funcioni.
+\cas  Sabent que el dispositiu funciona, quina és la probabilitat que el sensor c sigui defectuós?
+\fcasos
+
+
+\fp
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\p
+Dans un certain pays il y a deux régions : celle du Nord ou` habite 40\% de la population et celle du Sud où habite le reste. En été, 30\% des habitants du Nord part en vacances
+à l?étranger mais seulement 15\% des habitants du Sud part en été à l?étranger. Si vous rencontrez à l?étranger un habitant de ce pays, quelle est la probabilité qu?il vienne du Sud ?
+
+-----------------
+
+
+En alguns països hi ha dues regions: el nord ON viu 40\% de la població i la del Sud, on viu la resta. A l'estiu, el 30\% dels residents del nord en vacances
+a l'estranger, però només el 15\% dels habitants del sud d'estiu a l'estranger. Si es troba amb l'estranger resident en aquest país, quina és la probabilitat que es tracta des del Sud?
+
+\fp
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\p
+Lors de l?impression d?un quotidien on peut avoir deux types d?erreurs, appelés erreur A et erreur B. La probabilité d?avoir l?erreur A est 0.2, la probabilité d?avoir l?erreur B mais pas l?erreur A est 0.1 et la probabilité d?avoir simultanément les erreurs A et B est 0.05
+1. Avec quelle probabilité a t-on l?erreur B ?
+2. Avec quelle probabilité n?a t-on ni l?erreur A ni l?erreur B ?
+3. Avoir l?erreur A et avoir l?erreur B sont-ils deux événements indépendants ?
+4. ( cette question n?était pas dans le DS )
+Calculer la probabilité d?avoir l?erreur A sachant qu?on a l?erreur B et la probabilité d?avoir l?erreur B sachant qu?on a l?erreur A
+
+------------------
+
+
+En imprimir un diari un pot tenir dos tipus d'errors, anomenats errors A i B. La probabilitat de cometre l'error A és de 0,2, la probabilitat d'error B però no la un error és 0,1 i la probabilitat d'errors A i B simultàniament és 0,05
+1. Què tan probable és que l'error B?
+2. Què tan probable és que no té ni la A ni B error error?
+3. Feu que l'error i tenen l'error A-B són dos esdeveniments independents?
+4. (aquesta qüestió no era al DS)
+Calcular la probabilitat d'error Sabent que l'error té B i la probabilitat d'error B sabent que un error A
+
+
+\fp
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\p
+
+On a un test de sérologie pour identifier une maladie qui atteint 0,5\% de la population. Sur 99\% des malades, le test réagit (c?est à dire,99\% des malades sont identifiés par le test) mais sur 2\% des sains, le test montre une fausse réaction positive. Patient A fait un test qui revient positif. Quel est la probabilité d?être malade? Refaisons des calculs avec des chiffres de la vraie vie:
+
+1. pour détecter un cancer des femmes à partir de 50 ans font une mammographie. On sait que 1\% des femmes à cet âge sont atteint par un cancer. La détection d?un cancer sur le mammogramme fonctionne dans 9 sur 10 cas. Par contre une fausse détection (c?est à dire des femmes saines aux quels un cancer est ?détecté) est de 9\%. Une femme vient d?apprendre une mammographie positive. Quel est la probabilité d?avoir vraiment un cancer?
+
+2. Cancer du colon : la rate de ce cancer à l?âge de 50 est de 0,3\%. Le médecin offre un test de détection de sang dans les selles. A 50\% des personnes qui souffrent d?un cancer d?intestin, ce test est positif. Les détections faux-positives sont de 3\%. Quel est la probabilité de souffrir d?un cancer sachant que le test à été positives?
+
+3. SIDA: Le test double standard (ELIZA et Western-Blot) détectent dans 99,9\% des le virus IH et la rate de faux-positifs est de 0,01\%. Une personne sans facteurs de risque particuliers appartient à un groupe dans lequel seulement 0,01\% portent le virus VIH. Son test et positif. Quel est la probabilité d?être porteur de VIH?
+
+Remarque: Selon une enquête de l?institut Max-Planck, si on demande à des médecins de choisir comme réponse à la question (1) entre 3 probabilités possibles (à peu près 90\%, à peu près 50\% ou à peu près 9\%) seul un tiers des médecins trouvent la bonne réponse ... Source: http://www.mpib-berlin.mpg.de/de/forschung/abc/rechenbeispiele.htm)
+
+
+--------------------
+
+
+A un prova serològica per a la identificació d'una malaltia que afecta el 0,5\% de la població. Al voltant del 99\% dels pacients, reacciona de prova (és a dir, el 99\% dels pacients són identificades per la prova), però el 2\% de saludable, la prova mostra una reacció positiva falsa. Pacient A és una prova que és positiu. Quina és la probabilitat d'estar malalt? Refer els càlculs amb nombres de la vida real:
+
+1. per detectar el càncer de les dones de 50 anys fer una mamografia. Se sap que l'1\% de les dones en aquesta edat s'aconsegueixen mitjançant un càncer. La detecció d'un càncer a la mamografia opera en 9 de 10 casos. Com contra falsa detecció (és a dir, les dones sanes el que el càncer és "detectada) és del 9\%. Una dona acaba d'assabentar-se una mamografia positiva. Quina és la probabilitat que en realitat té càncer?
+
+2. El càncer de còlon: la taxa d'aquest tipus de càncer a l'edat de 50 és del 0,3\%. El metge proporciona una prova de detecció de sang en femta. 50\% de les persones que pateixen de càncer d'intestí, la prova és positiva. Les deteccions de falsos positius són un 3\%. Quina és la probabilitat de patir càncer sabent que la prova va ser positiva?
+
+3. SIDA: prova doble estàndard (ELIZA i Western Blot) detecten un 99,9\% dels virus HI i la melsa dels falsos positius del 0,01\%. Una persona sense factors específics de risc en un grup en què només el 0,01\% són VIH. La seva prova i positiva. Quina és la probabilitat de ser portador del VIH?
+
+Nota: D'acord amb una enquesta de l'Institut Max-Planck, si se'ls pregunta als metges a escollir com una resposta a la pregunta (1) entre 3 possibles probabilitat (al voltant del 90\%, aproximadament el 50\% o aproximadament 9 \%), només un terç dels metges a trobar la resposta correcta ... Font: http://www.mpib-berlin.mpg.de/de/forschung/abc/rechenbeispiele.htm)
+\fp
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\p
+Per a vols internacionals, una companyia aèria té tres opcions diferents en els postres del menú 
+--- gelat, tarta de poma i pastís de xocolata ---. Basat en l'experiència passada l'aerolínia sap que tots els 
+postres tenen la mateixa probabilitat de ser elegits.
+
+\casos
+\item Si se selecciona una mostra aleatòria de quatre passatgers, quina és la probabilitat que almenys dos hagin triar gelat de postres?
+\item Si se selecciona una mostra aleatòria de 21 passatgers, quina és la probabilitat aproximada que almenys dos triïn gelat de postres?
+\fcasos
+
+
+\fp
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\p
+Sobre la base de l'experiència passada, el 40\% de tots els clients a l'estació de servei automotriu de 
+Miller paguen les seves compres amb targeta de crèdit. Si se selecciona una mostra aleatòria de tres clients, 
+quina és la probabilitat de que
+
+\casos
+\item  cap d'ells pagui amb targeta de crèdit?
+\item dos paguin amb targeta de crèdit?
+\item al menys dos paguin amb targeta de crèdit?
+\item no més de dos paguin amb targeta de crèdit?
+\fcasos
+
+Si se selecciona una mostra aleatòria de 200 clients, quina és la probabilitat aproximada que
+
+
+\casos\setcounter{enumii}{4}
+\item almenys 75 paguin amb targeta de crèdit?
+\item no més de 70 paguin amb targeta de crèdit?
+\item  entre 70 i 75 clients paguin amb una
+targeta de crèdit?
+\fcasos
+
+
+\fp
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\fi
+
+
+\fi
+
+
+
+\end{document}

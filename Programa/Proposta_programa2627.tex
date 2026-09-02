@@ -1,0 +1,320 @@
+\documentclass[11pt,a4paper]{article}
+  
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage[dvips]{graphicx}
+\usepackage{color}
+
+% \usepackage[catalan]{babel}
+\usepackage[latin1]{inputenc}
+
+\definecolor{titol}{rgb}{0.2, 0.7, 0.8}
+
+
+
+\pagestyle{empty}
+\setlength{\textwidth}{16.5 cm}
+\addtolength{\oddsidemargin}{-2.5 cm}
+\addtolength{\topmargin}{-3 cm}
+\setlength{\textheight}{26 cm}
+\nofiles
+
+\newcounter{probl}
+\newcounter{cs}
+\stepcounter{cs}
+
+
+\newenvironment{pr}{\stepcounter{probl}\noindent{\llap{\bf\theprobl .\hspace{.1cm}}}}%
+                   {\vspace{.5cm}}
+\newcommand{\Sol}{\noindent \underline{\bf Soluci\'{o} al problema \theprobl}:}         
+%%% Carles: Afegit \Sol, mogut "\stepcounter{probl}" al savant de l'entorn "pr" de manera que 
+%%%           podem començar sense donor el valor 1 probl.        
+
+\newcommand{\p}{\begin{pr}}
+\newcommand{\fp}{\end{pr}}
+
+\newcommand{\casos}{\begin{itemize}}
+\newcommand{\fcasos}{\end{itemize}\setcounter{cs}{1}}
+\newcommand{\cas}{\item[(\alph{cs})]\stepcounter{cs}}
+
+\newif\ifsolucions
+%% Descomentar aixï¿½ per veure solucions
+\solucionstrue
+
+\newcommand{\newpagewithsolutions}{\ifsolucions\newpage\fi} %%% Added Carles 18/09/2012
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+
+
+%
+%
+%
+%\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+%\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+%%\geometry{A4}  
+%\usepackage[latin1]{inputenc}
+%\usepackage[catalan]{babel}
+%
+%
+%
+%
+%
+%
+%                 		% ... or a4paper or a5paper or ... 
+%%\geometry{landscape}                		% Activate for rotated page geometry
+%%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+%\usepackage{graphicx}				% Use pdf, png, jpg, or epsÂ§ with pdflatex; use eps in DVI mode
+%								% TeX will automatically convert eps --> pdf in pdflatex		
+%\usepackage{amssymb}
+%
+% % % \usepackage{termcal}
+% % \makeatletter
+% % %%%
+% % \def\setdate@#1/#2/#3!{
+% % \setcounter{month}{#2}
+% % \setcounter{date}{#1}
+% % \setcounter{year}{#3}
+% % \global\newmonthtrue\setleap}
+% % %%%
+% % \renewcommand{\monthname}{\ifcase\c@month\or Gen\or Feb\or Març\or Abr%
+% % \or Maig\or Juny\or Jul\or Ago\or Set\or Oct%
+% % \or Nov\or Des\fi}
+% % %%%
+% % \renewcommand{\ordinaldate}{\arabic{date}}  %?????????????????????
+% % %\renewcommand\ordinal[1]{% 
+% % %     \let\last@=\relax\let\last@@=\relax 
+% % %      \expandafter\@rd\the#1x}
+% % %\renewcommand\@rd[1]{\ifx#1x\if\last@@1th\else\@rdend{\last@}\fi\else 
+% % %       \let\last@@=\last@\def\last@{#1}#1\expandafter\@rd\fi}
+% % %       
+% % %\renewcommand\@rdend[1]{\ifcase#1 th\or st\or nd\or rd\else th\fi}
+% % %%%
+% % \makeatother
+% % %%%%%%%%%%%%%%%%%%
+% % \renewcommand\curdate{\arabic{date}/\arabic{month}/\arabic{year}}
+% % \renewcommand{\calprintdate}{%
+% %     \ifnewmonth\framebox{\ordinaldate\ de \monthname}%
+% %      \else \ordinaldate\fi
+% % }
+% % %%%%%%%%%%%%%%%%%%%
+% % 
+% % 
+% % \newcommand{\TRClass}{%
+% % \skipday % Tuesday
+% % \skipday % Tuesday
+% % \skipday % Wednesday (no class)
+% % \calday[Thursday]{\classday} % Thursday
+% % \skipday % Friday 
+% % \skipday\skipday % weekend (no class)
+% % }
+% % %
+% % \newcommand{\Holiday}[2]{%
+% % \options{#1}{\noclassday}
+% % \caltext{#1}{#2}
+% % }
+% % %SetFonts
+
+%SetFonts
+
+
+\begin{document}
+
+%%%%%%%% capçalera %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hrule\smallskip \medskip \noindent\textbf{Estad\'{i}stica
+\hfill\textbf{Enginyeria Informàtica}}\par\par
+                    \medskip\noindent\textsl{\bf Curs 2026 -- 2027}
+\hfill\textbf{UAB}
+                     \medskip\hrule\vspace{0.5cm} % CAP\c{C}ALERA
+%\vspace{0.2cm}
+\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\centerline{\bf Proposta de programació (ús intern, no es mostra als estudiants)}
+
+\bigskip
+
+\hspace{-2cm}
+\begin{tabular}{|c|l|c|l|}
+\hline
+&Dimarts (problemes) & & Divendres (teoria)
+\\
+\hline
+\hline
+
+ 15 Set &
+  
+%  \begin{tabular}{l}  %
+    Presentaci\'o de l'assignatura\\
+    i tema 0
+%  (Vídeo)
+%  \end{tabular}
+ & 
+18 Set &
+ \begin{tabular}{l}  
+   \bf Descriptiva 1\\ \small Poblaci\'o, mostra, variables,  %\\ \small
+   Taules de Freq\"u\`encia, 
+ gr\`afiques
+ \\ \small Estudi descriptiu d'una variable. 
+\\ \small 
+Mesures de centre i dispersi\'o \\
+ \end{tabular}
+\\
+\hline
+\hline
+
+ 22 Set &
+  
+ Problemes descriptiva 1 (llista 1)
+%  \begin{tabular}{l}  %
+%     Presentaci\'o de l'assignatura %\\
+%  (Vídeo)
+%  \end{tabular}
+ & 
+25 Set &
+  \begin{tabular}{l}   
+   \bf Descriptiva 2\\
+\small Estudi descriptiu de dues variables.\\
+\small Taules de conting\`encia.
+\small Regressi\'o lineal 
+\end{tabular}
+\\
+\hline
+29 Set &
+Problemes descriptiva 2 (llista 1)
+& 2 Oct &
+% \begin{tabular}{l}   
+%    \bf Descriptiva 2\\
+% \small Estudi descriptiu de dues variables.\\
+% \small Taules de conting\`encia.
+% \small Regressi\'o lineal 
+% \end{tabular}
+\begin{tabular}{l}\bf Probabilitat 1\\ \small Introducci\'o, Taules de freq\"u\`encia i probabilitat \\
+\small Probabilitat condicionada, Independ\`encia d'esdeveniments \\ \small i F\'ormula de Bayes.
+\end{tabular}
+\\
+\hline
+6 oct &    Problemes probabilitat 1 (llista 2)
+ &
+ 9 oct &
+\begin{tabular}{l}\bf Probabilitat 2\\ \small Variables aleat\`ories, esperan\c ca i vari\`ancia \\
+\small Distribucions discretes: Bernoulli, Binomial i Poisson.
+\end{tabular}
+\\
+\hline
+13 Oct &
+ \begin{tabular}{l}
+ Problemes probabilitat 2 (llista 2)
+          \\ (1a entrega de problemes)
+         \end{tabular}
+          & 16 Oct &
+
+\begin{tabular}{l}\bf Probabilitat 3\\ \small Distribucions cont\'\i nues: Uniforme, exponencial i Normal  
+% % \\
+% % \small Aproximaci\'o de la binomial per la normal.
+\end{tabular}
+\\
+\hline
+20 Oct & Problemes variables aleatòries 1 (llista 3)   &
+23 Oct &
+\begin{tabular}{l}\bf Probabilitat 4 \\ \small Teorema Central del L\'\i mit \\
+ \small Aproximaci\'o de la binomial per la normal.
+ \\ \small Fer algun problema de la llista 3?
+\end{tabular}
+\\
+\hline
+27 Oct &        &
+30 Oct &
+\\
+\hline
+3 Nov &
+  & 6 Nov &
+\begin{tabular}{l}\bf Infer\`encia 1\\ \small
+\small Intervals de Confian\c ca I: Definici\'o, \\
+\small  Intervals per la mitjana, t-Student
+\end{tabular}
+  \\
+\hline
+10 Nov & Problemes variables aleatòries 2 (llista 3)  &
+13 Nov &
+\begin{tabular}{l}\bf   Infer\`encia 2\\ 
+\small Intervals de Confian\c ca II: Intervals per la vari\`ancia. \\
+\small   Intervals per les proporcions 
+\end{tabular}
+% Examen Parcial
+\\
+\hline
+17 Nov & Problemes d'intervals de confiança 1 (llista 4) &
+20 nov &
+ \begin{tabular}{l}\bf Infer\`encia 3\\ 
+\small Test d'hip\`otesi I: concepte de test d'hip\`otesi \\
+\small  test per a l'esperan\c ca, vari\`ancia i proporci\'o 
+\end{tabular}
+\\
+\hline
+24 Nov &
+ Problemes IC 2 (llista 4)
+& 27 nov &
+\begin{tabular}{l}\bf Infer\`encia 4\\ 
+\small Test d'hip\`otesi II: comparaci\'o de dues poblacions \\
+\small  Dades aparellades, Mostres independents. \\
+\small Test de comparaci\'o de mitjanes
+\end{tabular}
+\\
+\hline
+1 Des & \begin{tabular}{l} Problemes IC 3 (llista 4)
+ \\
+ (2a entrega de problemes)
+\end{tabular} &
+4 Des
+& 
+\begin{tabular}{l}\bf Infer\`encia 5\\
+\small Test d'hip\`otesi III: test de comparaci\'o de vari\`ancies \\
+\small tests no param\`etrics: taules de conting\`encia, \\  \small Test de bondat d'ajust \\
+\end{tabular}
+\\
+\hline
+8 Des &
+& 11 Des &
+\begin{tabular}{l}\bf Infer\`encia 6\\
+\small Repàs/completar  \\
+\end{tabular}
+\\
+\hline
+15 Des & \begin{tabular}{l}
+ Problemes Test d'Hipòtesi 1 (llista 5)
+             \\ 3a entrega de problemes
+         \end{tabular}
+ & 18 Des   &  \begin{tabular}{l}
+ Problemes Test d'Hipòtesi  2 i 3 (llista 5)
+             \\ 3a entrega de problemes
+         \end{tabular}
+\\
+%
+\hline
+22 Des &
+ &    &
+\\
+%
+\hline
+\end{tabular}
+
+\begin{itemize}
+ \item Primer parcial:    / Examen final:
+ /
+ Recuperaci\'o:
+\end{itemize}
+
+
+
+
+
+\end{document}

@@ -1,0 +1,1217 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumerate}
+\usepackage{icomma}
+\usepackage[dvips]{graphicx}
+\usepackage{color}
+\usepackage{multicol}
+
+\usepackage[catalan]{babel}
+\usepackage[latin1]{inputenc}
+
+\definecolor{titol}{rgb}{0.2, 0.7, 0.8}
+
+
+
+\pagestyle{empty}
+\setlength{\textwidth}{16.5 cm}
+\addtolength{\oddsidemargin}{-2.1 cm}
+\addtolength{\topmargin}{-3 cm}
+\setlength{\textheight}{26.3 cm}
+\nofiles
+
+\newcounter{probl}
+\newcounter{cs}
+\stepcounter{cs}
+
+
+\newenvironment{pr}{\stepcounter{probl}\noindent{\llap{\bf\theprobl .\hspace{.1cm}}}}%
+                   {\vspace{.6cm}}
+\newcommand{\Sol}{\noindent \underline{\bf Solució al problema \theprobl}:}
+%%% Carles: Afegit \Sol, mogut "\stepcounter{probl}" al savant de l'entorn "pr" de manera que
+%%%           podem començar sense donor el valor 1 probl.
+
+
+\newcommand{\Res}{\noindent \underline{\bf Resultat}:}
+
+\newcommand{\p}{\begin{pr}}
+\newcommand{\fp}{\end{pr}}
+
+\newcommand{\casos}{\begin{itemize}}
+\newcommand{\fcasos}{\end{itemize}\setcounter{cs}{1}}
+\newcommand{\cas}{\item[(\alph{cs})]\stepcounter{cs}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifsolucions
+%% Descomentar aixï¿½ per veure solucions   %%%%%%%%%%
+\solucionstrue
+
+\newcommand{\newpagewithsolutions}{\ifsolucions\newpage\fi} %%% Added Carles 18/09/2012
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+
+
+\begin{document}
+
+\hrule\smallskip \medskip \noindent\textbf{Estadística
+\hfill\textbf{Enginyeria Informàtica}}\par\par
+                    \medskip\noindent\textsl{\bf Curs 2026-2027}
+\hfill\textbf{UAB}
+                     \medskip\hrule\vspace{0.5cm}
+\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\centerline{\bf Llista 5. Inferència estadística II}
+
+\bigskip
+
+\p En un laboratori s'ha sintetitzat un nou compost metàl·lic pel que es preveu un punt de fusió
+de $1260^0$. Quatre determinacions experimentals d'aquest punt han donat els valors
+$$1269^0 \quad 1271^0 \quad 1263^0 \quad 1265^0$$
+Podem acceptar el valor teòric del punt de fusió o hem de concloure que el valor real és major?\\
+Se suposa normalitat. Considereu $\alpha=0.05$.
+\fp
+
+\ifsolucions
+\noindent \Res (Test per la mitjana). Estad\'\i stic $\approx 3.8341$. $t_{3,0.95}=2.3534$.
+Acceptem la hipòtesi alternativa: el punt de fusió teòric és superior a 1260 graus centígrads.
+
+\bigskip
+
+\fi
+
+
+
+\p En un estudi sobre el temps necessari per passar el control de seguretat d'un aeroport, s'han
+examinat 150 passatgers obtenint un valor mitjà de 5.8 minuts amb una desviació típica de 3.1 minuts.
+Proporcionen aquestes dades evidència suficient que el temps mitjà necessari per passar el control és
+superior a 5 minuts? preneu $\alpha=0.01$. %determineu el $p-$valor de la prova.
+
+\fp
+
+
+
+\ifsolucions
+\noindent \Res (Test per la mitjana). Estad\'\i stic $\approx 3.1606$, $ t_{149,0.99}=2.3263$.
+Acceptem la hipòtesi alternativa: 
+ el temps mitjà per passar el control pot ser de 5 minuts.\\
+%\newpage
+\fi
+
+
+
+\p Un investigador treballa sobre la suposició que un equip de mesura té una variabilitat que es tradueix en una desviació típica de 2 unitats en les mesures que efectua. Per comprovar si aquesta suposició és correcta repeteix 16 vegades una mesura i obté un valor de $s^2=6.1$. Quina és la conclusió que en treu? (Se suposa normalitat i es pren $\alpha=0.05$)
+\fp
+
+\ifsolucions
+\noindent \Res(Test per la variància)\\
+Estad\'\i stic:$\approx 22.875 $, $ \chi^2_{15,0.975}=27.4884$
+No refusem la hipòtesi nul·la: 
+ la desviació típica de la mesura pot valdre 2.
+\medskip
+\fi
+
+
+
+\p Un estudi alerta dels alts nivells de radiació a que estan sotmesos els membres de la tripulació dels avions de llarg recorregut. 
+En una mostra de 100 empleats d'una companyia, 23 presenten evidència d'excés de radiació. Podem concloure que la proporció d'individus amb excés de radiació, de la població de la qual s'ha extret la mostra, és major de 0.15? Preneu $\alpha=0.05$. %Quin és el $p-$valor de la prova?
+\fp
+
+\ifsolucions
+\noindent \Res (Test per la proporció). Estad\'\i stic: $2.240448$, 
+$z_{0.95}=1.65$
+Acceptem la hipòtesi alternativa:
+la proporció d'individus amb excès de radiació és superior a 0.15.\\
+%El $p-$valor és: $1-0.9875=0.0125$ (mirant la taula de la normal)
+%\newpage
+\fi
+
+
+
+\p La normativa internacional sobre el contingut d'ozó a l'aire de l'interior dels avions fixa un nivell màxim de 0.25 parts per milió. S'ha pres una mostra de 12 avions amb rutes properes al pol nord i una mostra de 15 avions amb rutes allunyades del pol nord. S'ha obtingut $\overline{x}_1=0.18$ i $\overline{x}_2=0.10.$ Se sap que les distribucions són normals i que $\sigma_1=\sigma_2=0.01.$ Podem concloure amb un nivell de significació $\alpha=0.05$, que les zones polars no alteren la concentració d'ozó a l'aire de l'interior dels avions?
+%Quin és el $p-$valor de la prova?
+\fp
+
+\ifsolucions
+\noindent \Res (Test de comparació de mitjanes). Estad\'\i stic $\approx 20.6559$, $z_{0.975}=1.96$.
+% $$n_1=12, \quad  \overline{x}_1=0.18, \quad \sigma_1=0.01$$
+% $$n_2=15, \quad  \overline{x}_2=0.10, \quad \sigma_1=0.01$$
+Acceptem la hipòtesi alternativa:
+Les zones polars alteren la concentració d'ozó a l'aire dins els avions.\\
+%El valor del $p-value$ és: $1-1=0$ (mirant la taula de la normal)
+\fi
+
+
+
+%\p L'amilassa és un enzim que ajuda a digerir els hidrats de carboni i que es troba a la sang i a l'orina. Els nivells d'amilassa a la sang que es consideren normals estan entre 23 i 85 unitats per litre. Nivells inferiors o superiors a aquests poden indicar malalties pancreàtiques, però també hi ha alguns medicaments que poden fer augmentar els nivells d'amillassa en sang. S'estudia si la Pentazocina pot ser un d'aquests medicaments. Per fer-ho, mesurem el nivell d'amilassa en sang a 14 individus que no segueixen un tractament amb Pentazocina i mesurem el nivell d'amilassa en sang a 16 individus que sí que prenen Pentazocina. Els resultats que obtenim (contingut d'amilassa en unitats per litre) són:
+%$$\begin{array}{|c|cc|} \hline
+%\textrm{sense Pentazocina} & \overline{x}=56.71 & s^2=124.37 \\ \hline
+%\textrm{amb Pentazocina}   & \overline{x}=65.60 & s^2=178.11 \\ \hline
+%\end{array}$$
+%En primer lloc, estudieu si hi ha motius per pensar que la variància és la mateixa en els dues poblacions. Discutiu si podem admetre que el tractament amb Pentazocina fa crèixer els valors mitjans d'amilassa a la sang. Treballeu amb un nivell de significació $\alpha=0.01$ i suposeu normalitat
+%\fp
+%
+%\ifsolucions
+%\noindent \underline{\bf Solució al problema 6}: (Test comparació de variàncies)\\
+%$$n=n_1=14, \quad  \overline{x}_1=56.11, \quad s_1^2=124.37$$
+%$$m=n_2=16, \quad  \overline{x}_2=65.60, \quad s_2^2=178.11$$
+%$$\begin{array}{ll} H_0: & \sigma_1=\sigma_2 \\ H_1: & \sigma_2 > \sigma_1 \end{array} \hspace{2cm}
+% \dfrac{s_2^2}{s_1^2}\sim F_{m-1,n-1}$$
+%$$\dfrac{s_2^2}{s_1^2}=\dfrac{178.11}{124.37}=1.43209 \quad F_{15,13;0.99}=3.82$$
+%Per tant acceptem la hipòtesis nul·la: les variàncies són iguals.
+%
+%\noindent Ara farem un test de comparació de mitjanes amb variàncies desconegudes iguals:
+%$$\begin{array}{ll} H_0: & \mu_2=\mu_1 \\ H_1: & \mu_2 > \mu_1 \end{array} \hspace{2cm}
+% \dfrac{(\overline{x}_2-\overline{x}_1)-(\mu_2-\mu_1)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}=t_{28}$$
+%
+%$$S^2=\dfrac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}=\dfrac{(14-1)\cdot 142,37+(16-1)\cdot178,11}{14+16-2}=161.5164286 \Longrightarrow$$ $$S=\sqrt{161.5164286}=12,70891138$$
+%
+%\noindent Sota la hipòtesi nul·la tenim:
+%$$\dfrac{(\overline{x}_2-\overline{x}_1)-(\mu_2-\mu_1)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}}=
+%\dfrac{(65.60-56.71)-(\mu_1-\mu_1)}{12,70891138\sqrt{\dfrac{1}{14}+\dfrac{1}{16}}}=1.91142$$
+%$$t_{28;0.99}=2.4671$$
+%Per tant acceptem la hipòtesi nul·la:\\
+%el tractament amb Pentazocina no fa créixer els valors de l'amilassa a la sang.
+%
+%\fi
+%
+%\bigskip
+
+%\p En un estudi es vol comparar la concentració d'amilasa en sang d'individus sans amb la d'individus hospitalitzats. En una mostra de 21 individus sans s'ha obtingut, en mil·ligrams per centilitre, $\overline{x}_1=120$ i $s_1=40$ mentre que en una mostra de 16 individus hospitalitzats els resultats han estat $\overline{x}_2=92$ i $s_2=35$. Se suposa normalitat i igualtat de variàncies. Podem concloure de les dades estadístiques, amb un nivell de significació $\alpha=0.05$, que $\mu_1 \neq \mu_2$?
+%\fp
+%
+%\ifsolucions
+%\noindent \Sol    (Test comparació mitjanes)\\
+%$$n_1=21, \quad  \overline{x}_1=120, \quad s_1=40$$
+%$$n_2=16, \quad  \overline{x}_2=92, \quad s_2=35$$
+%$$\begin{array}{ll} H_0: & \mu_2=\mu_1 \\ H_1: & \mu_2 > \mu_1 \end{array} \hspace{2cm}
+% \dfrac{(\overline{x}_2-\overline{x}_1)-(\mu_2-\mu_1)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}=t_{35}$$
+%
+%$$S^2=\dfrac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}=\dfrac{(21-1)\cdot 40^2+(16-1)\cdot 35^2}{21+16-2}=1439.285714 \Longrightarrow$$ $$S=\sqrt{1439.285714 }=37.93791921$$
+%
+%\noindent Sota la hipòtesi nul·la tenim:
+%$$\dfrac{(\overline{x}_2-\overline{x}_1)-(\mu_2-\mu_1)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}}=
+%\dfrac{(120-92)-(\mu_1-\mu_1)}{37.93791921\sqrt{\dfrac{1}{21}+\dfrac{1}{16}}}=2.22409$$
+%$$t_{35;0.95} \approx 1.69$$
+%Per tant acceptem la hipòtesi alternativa: les concentracions d'amilasa a la sang són diferents.
+%%\newpage
+%\fi
+
+
+
+%\p Un pagès ha tractat quatre camps de cols de bruseles amb sulfat potàssic obtenint el següent rendiment (en tones)
+%$$3758 \quad 3716 \quad 4511 \quad 3750$$
+%L'any següent els mateixos camps són tractats amb cainita amb el següent resultat
+%$$3212 \quad 3415 \quad 2987 \quad 3750$$
+%Podem concloure que el tractament amb sulfat és millor que el tractament amb cainita? Se suposa normalitat i es pren $\alpha=0.05$.
+%\fp
+%
+%\ifsolucions
+%\noindent \underline{\bf Solució al problema 8}:(Test comparació mitjanes dades aparellades)\\
+%Com les dades estan aparellades, considerem la nova variable ``diferència'' $D=X-Y$
+%$$D= \quad 546 \quad 301 \quad 1524 \quad 0$$
+%$$n= 4, \quad \overline{D}=592.75 \quad S_D=659.7683306$$
+%
+%$$\begin{array}{ll} H_0: & \mu_2=\mu_1 \Leftrightarrow \mu_D=0 \\ H_1: & \mu_1 > \mu_2 \Leftrightarrow \mu_D > 0 \end{array} \hspace{2cm}
+% \dfrac{\overline{D}-\mu_D}{\dfrac{S_D}{\sqrt{n}}} \sim t_{n-1}=t_{3}$$
+%Sota la hipòtesi nul·la el valor de l'estadístic és:
+%$$\dfrac{\overline{D}-\mu_D}{\dfrac{S_D}{\sqrt{n}}}=\dfrac{592.75-0}{\dfrac{659.7683306}{\sqrt{4}}}=1,79684, \hspace{2cm} t_{3;0.95}=2.3534$$
+%Per tant acceptem la hipòtesis nul·la: les produccions són iguals.
+%
+%\fi
+%
+
+
+%\p Es vol comparar la duració d'una determinada reacció química quan utilitzem dos catalitzadors diferents $C_1$ i $C_2$. S'han completat 10 reaccions utilitzant el catalitzador $C_1$ obtenint $\overline{x}_1=1250 \mu s$ i $s_1=115\mu s$, mentre que per a les 13 ocasions en que s'ha utilitzat el catalitzador $C_2$ s'ha obtingut $\overline{x}_2=1340 \mu s$ i $s_2=106\mu s$. Podem concloure que la duració de la reacció és inferior quan s'utilitza el primer catalitzador? Se suposa normalitat i igualtat de variàncies i es pren $\alpha=0.05$.
+%
+%\fp
+%
+%\ifsolucions
+%\noindent \Sol (Test comparació mitjanes)\\
+%$$n_1=10, \quad  \overline{x}_1=1250, \quad s_1=115$$
+%$$n_2=13, \quad  \overline{x}_2=1340, \quad s_2=106$$
+%$$\begin{array}{ll} H_0: & \mu_1=\mu_2 \\ H_1: & \mu_1 < \mu_2 \end{array} \hspace{2cm}
+% \dfrac{(\overline{x}_1-\overline{x}_2)-(\mu_1-\mu_2)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}=t_{21}$$
+%
+%$$S^2=\dfrac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}=\dfrac{(10-1)\cdot 115^2+(13-1)\cdot 106^2}{10+13-2}=12088.42857 \Longrightarrow$$ $$S=\sqrt{12088.42857}=109.94739$$
+%
+%\noindent Sota la hipòtesi nul·la tenim:
+%$$\dfrac{(\overline{x}_1-\overline{x}_2)-(\mu_1-\mu_2)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}}=
+%\dfrac{(1250-1340)-(\mu_1-\mu_1)}{109.94739\sqrt{\dfrac{1}{10}+\dfrac{1}{13}}}=-1.9461\,,\quad t_{21;0.05}=-1.7207$$
+%Per tant acceptem la hipòtesi alternativa: les duracions de les reaccions són diferents.
+%\bigskip
+%
+%\fi
+%
+
+
+
+\p
+Software Telerín  compta amb un grup de desenvolupament de programari de grans dimensions. Maria 
+Pi la seva cap d'Estadística, ha verificat que el nombre de línies de codi  
+per setmana i per programador  té una distribució normal amb una mitjana de 300 i 
+una desviació estàndard de 20. Fins ara, tothom a Telerín  programava amb el 
+llenguatge de programació propi de
+l'empresa, SuperT. Però ara s'ha adoptat un de nou C$+$o$-$. 
+La Sra.~Pi decideix utilitzar una prova estadística per determinar si amb el  nou 
+llenguatge  millora la productivitat dels programadors. D'una mostra aleatòria 
+de 10 programadors obté una mitjana $\bar x = 310$ línies per setmana. 
+Acceptant que la $X$ continua sent normal i amb la mateixa variància, pot afirmar amb un nivell de significació del 5\% que la mitjana de $X$ ha augmentat?
+
+\fp
+%
+\ifsolucions \noindent \Res \ (Test per a la mitjana). Estad\'\i stic: $\approx 1,5811$, $z_{0.95}= 1,645$.
+No hi ha evidència en contra d'$H_0$. És a dir, no hi ha evidència de que 
+hagi hagut millora.  
+
+\bigskip
+
+\fi
+
+
+
+\p
+Una mostra aleatòria de 300 temps de resposta durant el període de màxima activitat
+ del sistema de consulta interactiva Finances Banal dóna una mitjana mostral de 
+ $\bar t= 0,75$ segons i una desviació típica mostral  de $s=0,40$ segons. 
+ L'acord de nivell de servei entre el departament de sistemes i els usuaris  és que el temps mitjà de resposta per al període de màxima activitat no ha d'excedir de $0,70$ segons. 
+ Passaria els sistema un test amb nivell de significació $\alpha =0,01$?
+\fp
+
+\ifsolucions \noindent \Res \ (Test per a la mitjana) Estad\'\i stic$\approx 2,1651$, $t_{\infty,0.99}= 2,3263$.
+No hi ha evidència en contra d'$H_0$/ a favor de $H_1$. És dir, no hi ha evidència  que superi $0,70$, per tant passa el test.
+\bigskip
+
+
+\fi
+
+
+\p
+Suposem que la pressió dels pneumàtics d'un cert tipus de
+cotxe segueix una distribució normal.
+  L'empresa A afirma que la mitjana és de 193 kPa i la desviació
+   típica de 23 kPa, mentre que l'empresa B afirma que la mitjana és de 198 kPa
+   i la desviació típica de 19 kPa.
+%sigmaA <- 23 varA <- sigmaA^2; varA sigmaB <- 19 varB <- sigmaB^2;
+%varB
+Mesurem la pressió de 31 pneumàtics i trobem una mitjana mostral de
+   195.3 kPa i una desviació típica de 20.5 kPa.
+
+%n <- 132 s <- 20.5 ss <- s*s; ss
+
+\begin{enumerate}
+
+\item Podem afirmar amb un nivell de significació del 5\% que
+  l'empresa A està equivocada, pel que fa a la desviació típica?
+%alpha <- 0.05 "H1: sigma != 23" ulo <- qchisq(alpha/2,n-1); ulo uhi
+%<- qchisq(1-alpha/2,n-1); uhi uob <- (n-1)*ss/varA; uob "Acceptem
+%H0"
+   \item Podem afirmar amb un nivell de significació del 5\% que
+  l'empresa B està equivocada, pel que fa a la desviació típica?
+%alpha <- 0.05 "H1: sigma != 19" ulo <- qchisq(alpha/2,n-1); ulo uhi
+%<- qchisq(1-alpha/2,n-1); uhi uob <- (n-1)*ss/varB; uob "Acceptem
+%H0"
+   \item Què passa si fem les mateixes preguntes però amb un nivell
+   de significació del 10\%?
+%alpha <- 0.10 ulo <- qchisq(alpha/2,n-1); ulo uhi <-
+%qchisq(1-alpha/2,n-1); uhi uobA <- (n-1)*ss/varA; uobA uobB <-
+%(n-1)*ss/varB; uobB "Rebutjem H0 de A; acceptem H0 de B"
+%
+\end{enumerate}
+\fp
+
+%
+\ifsolucions \noindent \Res \ (Tests per la variància)
+
+\begin{enumerate}
+\item
+Estad\'\i stic: $\approx 23.8327$. Regi\'o de rebuig: per sota de $\chi^2_{30,0.025}=16,7909$ o per sobre de $\chi^2_{30,0.975}=46,9792$.
+No podem rebutjar la hipòtesi nul·la: no hi ha evidència en contra del que diu l'empresa A.
+\item
+Estad\'\i stic: $\approx 34.9238$. la regió de rebuig i les conclusions són les mateixes
+
+\item 
+La regi\'o de rebuig ara \'es per sota  $\chi^2_{30,0.005}=18,4927$ i per sobre
+$\chi^2_{30,0.95}=43,7730$, i es mantenen les dues conclusions
+anteriors.
+
+\end{enumerate}
+
+
+
+
+\bigskip
+\fi
+
+
+%
+
+
+\newpage
+
+\p
+El temps mitjà que necessita un usuari per obtenir un tiquet a la caixa del bar de l'Institut és de
+3 minuts  amb una desviació típica de 2 minuts. L'amo el bar decideix col·locar una 
+nova màquina expenedora, que serà rendible si el temps mitjà no excedeix de 110 segons. 
+Una mostra aleatòria de 16 clients dóna els següents temps de servei en segons: 
+\begin{center}
+\begin{tabular}{cccccccc}
+ 156 &  73 &  100 & 110 & 123 & 101 & 125 & 83 \\
+92   & 101 & 64 & 109    & 56   & 179  & 165  &  182
+\end{tabular}
+\end{center}
+Amb nivell de significació del 5\%, podem afirmar que el nou sistema serà rendible? 
+Ha millorat el temps mitjà de l'antiga caixa? i la desviació típica? (suposeu normalitat)
+\fp
+
+
+\ifsolucions \noindent \Res \ 
+
+\casos
+\cas (Test per a la mitjana, 110 segons)
+Regió de rebuig:  valor superiors  a $t_{15,0.95}=1.7531$
+%
+ Estad\'\i stic: 
+$E\approx  0.3768$. 
+No es troba a la regió de rebuig. 
+No hi ha evidència  a favor d'$H_1$, \'es a dir no hi ha evid\`encia per dir
+que no ser\`a rendible.
+
+\cas (Test per a la mitjana, 180 segons)
+Regió de rebuig:  valor inferiors  a $t_{15,0.05}=-1,7531$
+ Estad\'\i stic: 
+$E=  -6,7769$. 
+Ara si que es troba a la regió de rebuig. 
+Podem afirmar que millora el mètode anterior, per que fa al temps de servei.
+
+
+\cas  (Test per a la variància)
+   Plantejament
+Regió de rebuig:  valor inferiors  a $\chi^2_{15,0.050}=7.2609$.
+Estadístic: $E=   1,5958$. Refusem $H_0$
+Podem afirmar que millora el mètode anterior, pel que fa a la desviaic\'o t\'\i pica
+ 
+
+\bigskip
+
+
+
+
+\fcasos
+
+
+\fi
+
+
+
+%%%%%%%%
+\p
+En un estudi amb 200 programadors a la Divisió A de Mikixof SA s'obté que produeixen 
+una mitjana de 76,21 línies de codi per programador-dia, amb una desviació estàndard 
+de la mostra de 10,37. En el mateix estudi, 150 programadors de la Divisió B tenen 
+una mitjana de 72,72 línies amb una desviació estàndard de la mostra de 10,07. 
+
+\casos
+\cas Podem afirmar amb nivell de significació $\alpha=0,01$ que els programadors de la Divisió A 
+són més productius que els de la Divisió B?
+
+\cas Suposem que es descobreix que el departament de personal ha basat les xifres en només 
+7 programadors de la Divisió A i 7 de la divisió B. (Els números són els mateixos, però.) 
+Si acceptem que la distribució de línies de codi pel programador-dia a ambdues divisions es distribueix normalment amb la mateixa variància (desconeguda), podem mantenir la mateixa conclusió 
+que a l'apartat anterior i amb el mateix nivell de significació? 
+\fcasos
+\fp
+%%%%%
+
+\ifsolucions \noindent \Res \ (Tests de comparació de mitjanes)
+
+\casos
+\cas 
+
+Regió de rebuig: $\alpha =0,01$: valor superiors a $z_{.99}= 2,3263$. 
+Estad \'\i stic: 
+$\approx  3,1679$. 
+Es troba a la regió de rebuig. Rebutgem $H_0$: hi ha evid\`encia estad\'\i stica per dir que els programadors de la Divisió A 
+són més productius que els de la Divisió B.
+ 
+
+\cas
+Regió de rebuig:  valors superiors a   $t= 2,6810$. 
+Estad\'\i stic: 
+$\approx  0,6388$. 
+No es troba a la regió de rebuig. 
+No hi ha prou evidència en contra d'$H_0$.
+ No hi ha prou evidència per dir que els programadors de la Divisió A 
+siguin més productius que els de la Divisió B.
+
+
+
+\fcasos
+\fi
+
+
+
+
+\p Els valors de la diüresi (que es distribueix segons una normal) en 12
+	persones sotmeses a una dieta espec\'{\i}fica durant dues setmanes varen
+	ser els seg\"{u}ents, en litres per dia:
+		\[ 1.7 \quad1.8 \quad1.9 \quad1.6 \quad1.9 \quad1.8 \quad1.5 \quad1.8 \quad2.0 \quad1.7 \quad2.0 \quad1.6 \]
+	En un altre grup independent de l'anterior, els valors de 10 persones no sotmeses a la dieta varen ser:
+		\[ 1.5 \quad1.4 \quad1.5 \quad1.3 \quad1.3 \quad1.7 \quad1.3 \quad1.5 \quad1.6 \quad1.7 \]
+	L'objectiu es determinar si les mitjanes dels valors de la diüresi per a les persones que seguien i que no seguien la dieta espec\'{\i}fica s\'on diferents,  amb nivell de significaci\'{o} $\alpha=0.05$. Per tal d'aconseguir aquest objectiu, es demana:
+	\casos
+		\cas En primer lloc fer un test per tal de veure si a partir de les dades es pot dir que les vari\`ancies de les dues poblacions s\'on diferents.
+		\cas En funci\'o del resultat de l'apartat anterior, fer el test de comparaci\'o de mitjanes adient.
+	\fcasos
+\fp
+\ifsolucions
+\noindent \Res \
+(a) (Test quocient de variàncies) Estad\'\i stic $\approx 1.08 $. Zona d'acceptaci\'o $(0.28,3.91)$. Aceptem que les dues variàncies són iguals.
+
+(b) (Test de comparaci\'o de mitjanes, amb vari\`ancies desconegudes
+		per\`o coincidents). Estadístic
+$\approx 4.363989681$. Regió de rebuig:
+$ (-\infty, -2.086)\cup ( 2.086,+\infty)$: mitjanes diferents.
+ \fi
+
+
+
+\bigskip
+
+
+
+\p
+Es va mesurar la capacitat d'enlla\c{c} d'insulina (pmol/mg de prote\"{\i}na) per a una mostra de rates diab\`{e}tiques
+tractades amb una baixa dosi d'insulina i una altra mostra, independent de l'anterior, de rates diab\`{e}tiques tractades amb una dosi alta d'insulina, resultant les seg\"{u}ents dades
+	\[
+	\begin{array}{|c|c|c|c|}
+	\hline & \mbox{Mida mostral}&\mbox{Mitjana mostral}&
+	\mbox{Desviaci\'{o} est\`{a}ndard mostral} \\
+	\hline
+	\mbox{Baixa dosi} &8 &1.98& 0.51\\
+	\mbox{Dosi alta}& 12 & 1.30 & 0.35\\
+	\hline
+	\end{array}
+	\]
+	\casos
+		\cas Podem suposar que les variàncies poblacionals són iguals?
+		\cas Indiquen les dades que hi ha difer\`{e}ncia en el veritable valor mitj\`{a} de la capacitat d'enlla\c{c} de l'insulina segons el nivell de dosi?
+	\fcasos
+	Suposeu normalitat a les dades i treballeu amb nivell de significació $\alpha=0.1$.
+
+
+%
+\fp
+%
+\ifsolucions
+\noindent \Res \ (a) (Test quocient de variàncies):
+Estadístic$\approx 2.123265$. Zona d'accpetació:
+$(0.28,3.01)$. Podem suposar variàncies iguals.
+
+(b) (Test de comparaci\'o de mitjanes, amb vari\`ancies desconegudes
+		per\`o coincidents). Estad ístic $\approx 3.5511$.
+		Regió de rebuig $(-\infty,-1.734)\cup (-1.734,+\infty)  $. La diferència  és significativa.
+\bigskip
+\fi
+
+
+
+%\p
+%Volem determinar si el temps d'operació de la màquina A millora el temps emprat per la màquina B en la mateixa operació. En una successió de proves obtenim els següents temps en segons:
+%\begin{align*}
+%& \text{Màquina A }&42.1 \quad
+%41.3\quad
+%42.4\quad
+%43.2\quad
+%41.8\quad
+%41.0\quad
+%41.8\quad
+%42.8\quad
+%42.3\quad
+%42.7
+%\\
+%&\text{Màquina B:  }&42.7 \quad
+%43.8 \quad
+%42.5 \quad
+%43.1 \quad
+%44.0 \quad
+%43.6 \quad
+%43.3 \quad
+%43.5 \quad
+%41.7 \quad
+%44.1
+%\end{align*}
+%\begin{enumerate}[(a)]
+%\item És raonable suposar que el temps d'operació de totes dues màquines té la mateixa variància?
+%\item Podem concloure que la màquina A opera amb més rapidesa?
+%\end{enumerate}
+%(Suposem normalitat i utilitzeu nivell de significació $\alpha =
+%0,05$).
+%
+%\fp
+%%
+%
+%%
+%\ifsolucions \noindent \Sol \\
+% Primer calculem segons les dues mostres
+% $$\begin{array}{lllll}\sum x_A=421,4 & \sum x_A^2=17762
+% &\overline{x}_A=42,14 &S_A^2=0,4671 &S_A=0,5623 \\
+% \sum x_B=432,3 & \sum x_B^2=18693,39
+% &\overline{x}_B=43,23 &S_B^2=0,5623 &S_B=0,7499
+% \end{array}$$
+%\noindent
+%(a) \ (Test de comparació de variàncies)
+%\begin{enumerate}[-]
+%\item
+%$H_0$: $\sigma_A^2= \sigma_B^2$
+%
+%\item
+%$H_a$: $\sigma_A^2\neq \sigma_B^2$ (dues cues)
+%
+%\item Estadístic: $ F= \dfrac{S_A^2}{S_B^2}$ amb distribució $F$ amb 9 graus de llibertat al numerador i
+%9 al denominador, si $H_0$ és certa.
+%
+%\item Regió de rebuig per nivell de significació $\alpha=0,05$, amb dues cues i segons la distribució $F(9,9)$.
+%D'acord a les taules: $f^{9,9}_{0.975}= 4,03$ i
+%$f^{9,9}_{0.025}=1/f^{9,9}_{0.975}=1/ 4,03=0,25$, per tant rebutgem
+%si $F<0,25$ o $F>4,03$.
+%\end{enumerate}
+%
+%Calculem el valor de l'estadístic a la nostra mostra: $F=
+%\dfrac{0,4671}{0,5623} = 0,8307$. No podem rebutjar $H_0$. Amb
+%nivell de significació $\alpha= 0,05$ podem acceptar igualtat de
+%variàncies.
+%\medskip
+%
+%\noindent (b)  \ (Test de comparació d'esperances)
+%
+%$$\begin{array}{ll} H_0: & \mu_A=\mu_B \\ H_1: & \mu_A < \mu_B \end{array} \hspace{2cm}
+% \dfrac{(\overline{x}_A-\overline{x}_B)-(\mu_A-\mu_B)}{S\sqrt{\dfrac{1}{n_A}+\dfrac{1}{n_B}}} \sim t_{n_A+n_B-2}=t_{18}$$
+%
+%$$S^2=\dfrac{(n_A-1)S_A^2+(n_B-1)S_B^2}{n_A+n_B-2}=\dfrac{(10-1)\cdot 0,4671+(10-1)\cdot 0,5623}{10+10-2}=0,5147 \Longrightarrow$$ $$S=\sqrt{0,5147}=0,7174$$
+%
+%\noindent Sota la hipòtesi nul·la tenim:
+%$$\dfrac{(\overline{x}_A-\overline{x}_B)-(\mu_A-\mu_B)}{S\sqrt{\dfrac{1}{n_A}+\dfrac{1}{n_B}}}=
+%\dfrac{(421,4-432,2)-(0)}{0,7174\sqrt{\dfrac{1}{10}+\dfrac{1}{10}}}=-3,47\,,\quad
+%t_{18;0.05}=-1.7341$$ Per tant acceptem la hipòtesi alternativa: la
+%màquina A opera amb més rapidesa
+%\bigskip
+%\fi
+
+
+
+%\p
+%La variabilitat en la quantitat d'impureses (en parts per milió)
+%presents a un producte químic sintetitzat depèn del procés de producció.
+%
+%Analitzem mostres extretes aleatòriament de la cadena de producció per comparar-les amb
+%altres procedents d'un nou procés de producció que s'ha desenvolupat per reduir la variabilitat
+%d'impureses.
+%A la vista del resultats:
+%\begin{center}
+% \begin{tabular}{c|cc}
+% & Mostra 1  & Mostra 2 \\ \hline
+%$n$ & 21 & 25 \\
+%$s$ &  1,04 & 0,51
+%\end{tabular}
+%\end{center}
+%podem concloure amb
+%nivell de significació $\alpha=0,01$ que el nou procés redueix la variabilitat d'impureses?
+%(Suposem que la quantitat d'impureses presents en el producte sintetitzat
+%segueix una distribució normal)
+%\fp
+%%
+%
+%%
+%\ifsolucions
+%\noindent\Sol \ (Test de comparació de variàncies)
+%\begin{enumerate}[-]
+%\item
+%$H_0$: $\sigma_1^2= \sigma_2^2$
+%
+%\item
+%$H_a$: $\sigma_1^2\geq \sigma_2^2$ (cua superior)
+%
+%\item Estadístic: $ F= \dfrac{s_1^2}{s_2^2}$ amb distribució $F$ amb 20 graus de llibertat al numerador i
+%24 al denominador, si $H_0$ és certa.
+%
+%\item Regió de rebuig per nivell de significació $\alpha=0,01$, amb  cua a la dreta i segons la distribució $F(20,24)$.
+%D'acord a les taules: $f^{20,24}_{0,99}= 2,74$, per tant rebutgem si
+%$F>2,74$.
+%\end{enumerate}
+%
+%Calculem el valor de l'estadístic a la nostra mostra: $F= \dfrac{1,04^2}{0,51^2} = 4,1584$. Rebutgem $H_0$.
+%
+%Amb nivell de significació $\alpha= 0,01$ podem assegurar que el nou procés millora l'anterior
+%quant al contingut d'impureses del producte final.  de la igualtat de variàncies.
+%
+%\bigskip
+%\fi
+%
+%
+
+
+%\p  Un fabricant vol determinar si hi ha menys variabilitat en el xapat de plata realitzat per l'empresa A que
+%en els efectuats per l'empresa B. Mostres aleatòries independents llancen els següents resultats:
+%\begin{center}
+%\begin{tabular}{ccc}
+%&  A   &  B \\ \hline
+% $n$ & 10 & 10 \\
+% $s$  & 0,035   &   0,062
+%\end{tabular}
+%\end{center}
+%Assumint normalitat, podem concloure amb nivell de significació $\alpha=0,05$ que les variàncies són
+%significativament diferents?
+%\fp
+%%
+%
+%%
+%\ifsolucions
+%\noindent\Sol (Test de comparació de variàncies)
+%\begin{enumerate}[-]
+%\item
+%$H_0$: $\sigma_A^2= \sigma_B^2$
+%
+%\item
+%$H_a$: $\sigma_A^2\neq \sigma_B^2$
+%
+%\item Estadístic: $ F= \dfrac{s_A^2}{s_B^2}$ amb distribució $F$ amb 9 graus de llibertat al numerador i també 9 al denominador.
+%
+%\item Regió de rebuig per nivell de significació $\alpha=0,05$, amb dues cues i segons la distribució $F(9,9)$.
+%D'acord a les taules: $f^{9,9}_{0,025}= 4,03$, per tant rebutgem si $F<\frac1{4,03}= 0,25$ o bé si $F>4,03$.
+%\end{enumerate}
+%
+%Calculem el valor de l'estadístic a la nostra mostra: $F= \dfrac{0,035^2}{0,062^2} = 0,3187$. Cau fora de la regió
+%de rebuig per tant no hi ha prou evidència en contra de la igualtat de variàncies.
+%\bigskip
+%\fi
+%
+%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+
+%
+%\ifsolucions \noindent \Sol \ (Tests per la variància)
+%
+%\begin{enumerate}
+%\item
+%
+%$$n=31, \quad  s=20,5, \quad \sigma=23$$
+%$$\begin{array}{ll} H_0: & \sigma=23 \\ H_1: & \sigma \neq23 \end{array} \hspace{2cm}
+%\dfrac{(n-1)s^2}{\sigma^2} \sim \chi^2_{n-1}$$ Sota la hipòtesis
+%nul·la
+%$$\dfrac{(n-1)s^2}{\sigma^2}=\dfrac{(31-1)20,5^2}{23^2}=23,8327 \hspace{1cm} \chi^2_{30,0.025}=16,7909\hspace{1cm} \chi^2_{30,0.975}=46,9792$$
+%no podem acceptar la hipòtesi nul·la: l'empresa A pot no estar
+%equivocada.
+%\item
+%$$n=31, \quad  s=20,5, \quad \sigma=19$$
+%Efectuem el mateix test que a l'apartat anterior.
+%
+% Sota la hipòtesis
+%nul·la
+%$$\dfrac{(n-1)s^2}{\sigma^2}=\dfrac{(31-1)20,5^2}{19^2}=23,8327 \hspace{1cm} \chi^2_{30,0.025}=16,7908\hspace{1cm} \chi^2_{30,0.975}=46,9792$$
+%no podem acceptar la hipòtesi nul·la: l'empresa B pot no estar
+%equivocada.
+%
+%\item
+%Si $\alpha=0.1$, aleshores $\chi^2_{30,0.005}18,4927$ i
+%$\chi^2_{30,0.95}=43,7730$, i es mantenen les dues conclusions
+%anteriors.
+%
+%\end{enumerate}
+%
+%
+%
+%
+%\bigskip
+%\fi
+
+%\p
+%Les variàncies mostrals de dues poblacions normals
+%independents són: 70.2 i 76.8 respectivament. Si coneixem que
+%les grandàries de les mostres són 61 i 121 respectivament.
+%Proveu si es pot admetre que les variàncies poblacionals són
+%iguals, amb un nivell de significació del $5\%$. Suposeu normalitat.
+%\fp
+%%
+%
+%%
+%\ifsolucions
+%\noindent \Sol
+%\hfill [Resp: Acceptem H0: $F_{\text{ob}} = 0.91 \in [0.63 , 1.53]$]
+%
+%\bigskip
+%\fi
+
+
+
+
+%
+%\p
+%Un productor farmacèutic compra un ingredient específic a dos
+%proveïdors diferents. El nivell mitjà d'impureses en la matèria
+%primera és aproximadament el mateix en els dos proveïdors, però al
+%productor li interessa la variabilitat de les impureses entre una
+%tramesa i l'altra. Per tal de comparar la variació en el percentatge
+%d'impureses, el productor selecciona 10 trameses de cada proveïdor
+%i mesura el percentatge d'impuresa en la matèria primera de cada
+%tramesa. Les mitjanes i variàncies mostrals obtingudes són
+%$\bar{x}_1=1.89, s_{1}^2=0.273, \bar{x}_{2}=1.85, s_{2}^2=0.094$.
+%Presenten aquestes dades evidència que hi ha diferència entre les
+%variabilitats? (Preneu $\alpha=0.05$ i suposeu normalitat.)
+%
+%
+%
+%\fp
+%%
+%
+%%
+%\ifsolucions \noindent \Sol \
+%(Test de comparació de variàncies)
+%\medskip
+%\begin{enumerate}[-]
+%\item
+%$H_0$: $\sigma_1^2= \sigma_2^2$
+%
+%\item
+%$H_a$: $\sigma_1^2\neq \sigma_2^2$ (dues cues)
+%
+%\item Estadístic: $ F= \dfrac{s_1^2}{s_2^2}$ amb distribució $F$ amb 9 graus de llibertat al numerador i
+%9 al denominador, si $H_0$ és certa.
+%
+%\item Regió de rebuig per nivell de significació $\alpha=0,05$, amb  dues cues i segons la distribució $F(9,9)$.
+%D'acord a les taules: $f^{9,9}_{0,975}= 4,03$ i
+%$f^{9,9}_{0,025}=1/f^{9,9}_{0,975}=1/ 4,03=0,25$, per tant rebutgem
+%si $F<0,25$ o $F>4,03$.
+%\end{enumerate}
+%
+%Calculem el valor de l'estadístic a la nostra mostra: $F=
+%\dfrac{0,273}{0,094} = 2,9043$. Acceptem $H_0$.
+%
+%Amb nivell de significació $\alpha= 0,05$ les dades no presenten
+%evidència de que hi hagi diferència entre les variàncies.
+%
+%
+%\bigskip
+%\fi
+%
+
+
+% Dossier 236.
+%\p
+%Es va fer una prova estadística per comparar el temps que necessitaven
+%dues màquines per a realitzar unes
+%peces d'acer. La taula següent representa els temps en minuts que van trigar
+%les dues màquines a fabricar
+%7 i 10 peces, respectivament:
+%
+%$$\begin{array}{|l|c|c|c|c|c|c|c|c|c|c|}
+%\hline
+%\text{Màquina 1} & 7,3& 8,5& 7,4& 8,7& 8,3& 6,2& 6,9 &&&\\
+%\hline
+%\text{Màquina 2}& 5,4& 6,3& 7,2& 5,5& 4,8& 5,9& 7,1& 5,6& 6,1& 5,3
+%\\ \hline
+%\end{array}$$
+%Suposant normalitat de les dades, es pot afirmar amb un nivell de significació
+%del 5\% que la segona màquina és més ràpida que la primera?
+%Feu primer el test de variàncies iguals.
+%\fp
+%%
+%
+%%
+%\ifsolucions \noindent \Sol \\
+%\medskip  Primer calculem segons les dues mostres
+% $$\begin{array}{lllll}\sum x_1=53,3 & \sum x_1^2=410,93
+% &\overline{x}_1=7,6143 &S_1^2=0,8481 &S_1=0,9209 \\
+% \sum x_2=59,2 & \sum x_2^2=355,86
+% &\overline{x}_2=5,92 &S_2^2=0,5996 &S_2=0,7743
+% \end{array}$$
+%
+%(Test de comparació de variàncies)
+%
+%\begin{enumerate}[-]
+%\item
+%$H_0$: $\sigma_1^2= \sigma_2^2$
+%
+%\item
+%$H_a$: $\sigma_1^2\neq \sigma_2^2$ (dues cues)
+%
+%\item Estadístic: $ F= \dfrac{s_1^2}{s_2^2}$ amb distribució $F$ amb 6 graus de llibertat al numerador i
+%9 al denominador, si $H_0$ és certa.
+%
+%\item Regió de rebuig per nivell de significació $\alpha=0,05$, amb  dues cues i segons la distribució $F(6,9)$.
+%D'acord a les taules: $f^{6,9}_{0,975}= 4,32$ i
+%$f^{6,9}_{0,025}=1/f^{9,6}_{0,975}=1/ 5,52=0,18$, per tant rebutgem
+%si $F<0,18$ o $F>4,32$.
+%\end{enumerate}
+%
+%Calculem el valor de l'estadístic a la nostra mostra: $F=
+%\dfrac{0,8481}{0,5956} = 1,4144$. Acceptem $H_0$.
+%
+%Amb nivell de significació $\alpha= 0,05$ podem acceptar que les
+%variàncies són iguals.
+%\medskip
+%
+%(Test de comparació d'esperances)
+%
+%$$\begin{array}{ll} H_0: & \mu_1=\mu_2 \\ H_1: & \mu_1 > \mu_2 \end{array} \hspace{2cm}
+% \dfrac{(\overline{x}_1-\overline{x}_2)-(\mu_1-\mu_2)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}=t_{15}$$
+%
+%$$S^2=\dfrac{(n_1-1)S_1^2+(n2-1)S_2^2}{n_1+n_2-2}=\dfrac{(7-1)\cdot 0,8481+(10-1)\cdot 0,5996}{7+10-2}=0,699 \Longrightarrow$$ $$S=\sqrt{0,699}=0,8361$$
+%
+%\noindent Sota la hipòtesi nul·la tenim:
+%$$\dfrac{(\overline{x}_1-\overline{x}_1)-(\mu_A-\mu_B)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}}=
+%\dfrac{(7,6143-5,92)-(0)}{0,8361\sqrt{\dfrac{1}{7}+\dfrac{1}{10}}}=4,1120\,,\quad
+%t_{15;0.95}=1,7531$$ Per tant acceptem la hipòtesi alternativa: la
+%segona màquina és més ràpida que la primera.
+%\bigskip
+%
+%
+%\fi
+
+% Dossier 239
+%\p
+%Es va fer un estudi per comparar el contingut de la nicotina en dues
+%marques de tabac. Es van prendre
+%cinc mesures de la marca A: 24, 27, 26, 21 i 24 mg, i cinc mesures de
+%tabac de la marca B: 27, 28, 23, 31
+%i 26 mg. Suposant normalitat:
+%
+%a) decidiu amb $\alpha=0.05$, si es pot acceptar que
+%les variàncies poblacionals dels
+%continguts de la nicotina són
+%iguals a les dues marques;
+%
+%b) esbrineu si els continguts mitjans de la nicotina són significativament
+%diferents amb un nivell de
+%significació de 0.1.
+%
+%\fp
+%%
+%
+%%
+%\ifsolucions \noindent \Sol\medskip  Primer calculem segons les dues
+%mostres
+% $$\begin{array}{lllll}\sum x_1=122 & \sum x_1^2=2998
+% &\overline{x}_1=24,4 &S_1^2=5,3 &S_1=2,3022\\
+% \sum x_2=135 & \sum x_2^2=3679
+% &\overline{x}_2=27 &S_2^2=8,5 &S_2=9155
+% \end{array}$$
+%
+%(Test de comparació de variàncies)
+%
+%\begin{enumerate}[-]
+%\item
+%$H_0$: $\sigma_1^2= \sigma_2^2$
+%
+%\item
+%$H_a$: $\sigma_1^2\neq \sigma_2^2$ (dues cues)
+%
+%\item Estadístic: $ F= \dfrac{s_1^2}{s_2^2}$ amb distribució $F$ amb 4 graus de llibertat al numerador i
+%4 al denominador, si $H_0$ és certa.
+%
+%\item Regió de rebuig per nivell de significació $\alpha=0,05$, amb  dues cues i segons la distribució $F(4,4)$.
+%D'acord a les taules: $f^{4,4}_{0,975}= 9,60$ i
+%$f^{4,4}_{0,025}=1/f^{4,4}_{0,975}=1/ 9,60=0,10$, per tant rebutgem
+%si $F<0,10$ o $F>9,60$.
+%\end{enumerate}
+%
+%Calculem el valor de l'estadístic a la nostra mostra: $F=
+%\dfrac{5,3}{8,5} = 0,6235$. Acceptem $H_0$.
+%
+%Amb nivell de significació $\alpha= 0,05$ podem acceptar que les
+%variàncies són iguals.
+%\medskip
+%
+%(Test de comparació d'esperances)
+%
+%$$\begin{array}{ll} H_0: & \mu_1=\mu_2 \\ H_1: & \mu_1 \neq \mu_2 \end{array} \hspace{2cm}
+% \dfrac{(\overline{x}_1-\overline{x}_2)-(\mu_1-\mu_2)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}} \sim t_{n_1+n_2-2}=t_{8}$$
+%
+%$$S^2=\dfrac{(n_1-1)S_1^2+(n2-1)S_2^2}{n_1+n_2-2}=\dfrac{(5-1)\cdot5,3+(5-1)\cdot8,5}{5+5-2}=6,9 \Longrightarrow$$ $$S=\sqrt{6,9}=2,6268$$
+%
+%\noindent Sota la hipòtesi nul·la tenim:
+%$$\dfrac{(\overline{x}_1-\overline{x}_1)-(\mu_A-\mu_B)}{S\sqrt{\dfrac{1}{n_1}+\dfrac{1}{n_2}}}=
+%\dfrac{(24,4-27)-(0)}{2,6268\sqrt{\dfrac{1}{5}+\dfrac{1}{5}}}=-1,565\,,\quad
+%t_{8;0.05}=-2,3060, \quad t_{8;0.95}=2,3060$$ Per tant no acceptem
+%la hipòtesi alternativa: els continguts mitjans de nicotina no són
+%significativament diferents.
+%\bigskip
+%
+%
+%
+% \fi
+%
+
+
+
+
+\p Un estudi sobre conducci\'o vol analitzar si hi ha relaci\'o entre mirar el m\`obil al volant i superar els l\'\i mits de velocitat.
+En una mostra de 250 conductors triats a l'atzar obtenim els resultats seg\"uents:
+	\begin{center}
+		{\renewcommand{\arraystretch}{1.2}\tabcolsep6pt
+			\begin{tabular}{|c||c|c|}
+				\hline
+				 & Mira el m\`obil al volant & No el mira \\
+				\hline
+				\hline
+				Mai no supera els l\'imits de velocitat & 49 & 55 \\
+				\hline
+				Ocasionalment els pot superar & 44 & 39 \\
+				\hline
+				Sovint els supera & 33 & 30 \\
+				\hline
+		\end{tabular}}
+	\end{center}
+
+	%
+	 Podem afirmar que hi ha relació entre mirar el m\`obil al volant i superar els l\'\i mits de velocitat?
+	 Treballeu amb nivell de significació $\alpha=0.1$.
+
+\fp
+
+\smallskip
+
+\ifsolucions
+\noindent \Res (Test homogeneïtat / d'independ\`encia).
+ Estad\'\i stic obs:
+$\approx 0.77
+$
+\bigskip
+$\chi^2_{2, .9}=4.60517$.
+Acceptem que s\'on independents.
+
+
+
+\bigskip
+
+\fi
+
+
+
+\p Es vol fer un estudi sobre l'activitat esportiva dels col·lectius
+d'una universitat. S'han seleccionat alguns individus del Personal
+Docent i Investigador (PDI) i del Personal d'Administració i Serveis
+(PAS), i s'ha observat quants d'ells practiquen regularment l'esport.
+Dels 40 PDI seleccionats 8 practiquen l'esport; dels 50 membres del
+PAS el practiquen 12.
+Amb aquestes dades, podem assegurar amb nivell de significació
+$\alpha=0,05$,  que alguns d'aquests col·lectius  hi ha més practicants
+de l'esport que en altres?
+
+
+\fp
+
+\smallskip
+
+\ifsolucions
+\noindent \Res (Test d'homogeneïtat/independència)\\
+Estad\'\i stic: $\approx 0.206$, regi\'o de rebuig: $(3.84, +\infty)$.\\
+Només podem concloure que amb un 95\%
+de confiança no tenim evidència en contra de que la proporció de practicants de
+l'esport a un i altre col·lectiu sigui la mateixa.
+
+
+%\newpage
+\bigskip
+\fi
+
+
+
+\p Volem comparar la popularitat de Linux entre els estudiants de tres universitats diferents, UAB, UB i UPC.
+Realizem una enquesta a una mostar alea\`oria de 500 estudiants i obtenim:
+\begin{equation*}
+\begin{array}{|c||c|c|}\hline
+\text{Universitat $\backslash$ Usuari Linux} & \text{Si} & \text{no} \\ \hline\hline  &&\\[-1em]
+\text{UAB} & 83  & 70 \\
+\text{UB} & 126  & 50 \\
+\text{UPC} & 88  & 73 \\ \hline
+\end{array}%
+\end{equation*}
+Es pot concloure que la proporci\'o d'estudiants que utilitzen linux \' es diferent a cada universitat? Contrasta les hipòtesis amb un nivell de significació del 5\%.
+
+
+\fp
+
+\ifsolucions
+\noindent \Res(Test d'independència/homogeneïtat)\\
+Estad\'\i stic obs $\approx 13.8717$. regi\'o de rebuig: $(5.9915,+\infty)$. Regió de rebuig $(5.9915, +\infty)$:
+hi ha relació entre les variables.
+
+\bigskip
+
+\fi
+
+
+\p En un estudi sobre els hàbits televisius dels nens, un psicòleg evolutiu selecciona una mostra aleatòria de 300 estudiants de primer grau - 100 nens i 200 nenes. A cada nen se li va preguntar quin dels següents programes de televisió que més els agrada: \emph{El Llanero Solitario,} \emph{Barrio Sésamo} o \emph{Los Simpson}. Els resultats es mostren a la taula de contingència:
+\begin{center}
+\begin{tabular}{ccccc}\hline
+  Preferències de visualització &   \emph{El Llanero Solitario} &  \emph{Barrio Sésamo} & \emph{Los Simpson}& Total \\ \hline
+Nens    &   50 &  30 &   20 &    100 \\
+Nenes & 50  &  80  &  70  &  200 \\\hline
+\end{tabular}
+ \end{center}
+Podem assegurar amb nivell de significació de 0,05 que les preferències dels nens per aquests programes de TV difereixen significativament dels de  les nenes?
+\fp
+
+\ifsolucions
+\noindent \Res (Test d'homogeneïtat/independ\`encia)
+Estad\'\i stic $\approx 19,32 $. regi\'o de rebuig: $(5.9915,+\infty)$.
+
+Atès que $19,32>5,99$, rebutgem la hipòtesi nul·la amb nivell de significació $\alpha= 0.05$.
+%\newpage
+\fi
+
+
+\bigskip
+
+
+\bigskip
+
+\p En un grup de 83 persones s'ha estudiat la possible relació entre el color del cabell i el color dels ulls obtenint
+$$\begin{array}{c|ccc|}
+ & \textrm{c.castany} & \textrm{c.negre} & \textrm{c.ros} \\ \hline
+\textrm{u.blaus} & 4 & 0 & 7 \\
+\textrm{u.castanys} & 43 & 9 & 3 \\
+\textrm{u.verds} & 13 & 3 & 1 \\
+\end{array}$$
+Podem pensar que aquestes dues característiques són independents?
+(Feu un test amb un nivell de significació del $5\%$)
+
+\fp
+
+\ifsolucions
+\noindent \Res
+(Test d'independència khi-quadrat)\\
+Quan qualculem les freqüències esperades, alguns valors son inferiors a 5, això invalida el test: La mostra que tenim no és prou gran!
+
+\fi
+
+\bigskip
+
+
+\bigskip
+
+
+\p Despr\' es de llan\c car tres monedes 240 vegades i anotar el nombre de cares que surten cada vegada, obtenim el seg\" uent resultat:
+	\begin{center}
+	 \begin{tabular}{|r||c|c|c|c|}
+	 \hline
+	     & 0 cares & 1 cara & 2 cares  & 3 cares \\
+	   \hline
+	  freq\" u\`encia & 24 & 97 & 96 & 23
+	  \\
+	  \hline
+	 \end{tabular}
+	\end{center}
+ Determineu amb un nivell de significaci\'o del 5\% si les monedes s\'on equilibrades (si cara i creu tenen la mateixa probabilitat).
+
+\fp
+
+
+\ifsolucions
+\noindent \Res
+Test de bondat d'ajust amb una binomal $B(3, 1/2)$:
+La regi\'o de rebuig \'es $(\chi^2_{3,0.95},+\infty)=( 7.8147,+\infty)$, i
+$
+ E=3.7778
+ $:
+S{\'\i} que estan equilibrades.
+
+\fi
+
+
+\vspace{3.2cm}
+
+
+
+
+\hrule
+
+\
+
+\textcolor{blue}{
+Algunes comandes de \texttt{R} i el seu resultat:
+\begin{multicols*}{2}
+\noindent\texttt{%
+qnorm(0.95) = 1.644854\\
+qnorm(.99) = 2.326348\\
+ \\
+pnorm(1.5811) = 0.9430724\\
+pnorm(2.1651) = 0.98481\\
+pnorm(2.240448) = 0.9874691\\
+pnorm(3.1679) = 0.9992323\\
+pnorm(20.6559) = 1\\
+  \\
+qt(.95, df= 3) = 2.353363\\
+qt(0.99, df=12) = 2.680998\\
+qt(0.95, df=15) = 1.75305\\
+qt(0.95, df=18) = 1.734064\\
+qt(0.975, df=20) = 2.085963\\
+qt(.99, df=149) = 2.351635\\
+ \\
+pt(3.8341, df=3) = 0.9843631\\
+pt(0.63388, df=12) =0.7309727\\
+pt(0.3768, df=15) = 0.6442004\\
+pt(-6.7769, df = 15) = 3.116234e-06\\
+pt(3.5511, df=18) = 0.9988588\\
+pt(4.364, df=20) = 0.9998498\\
+pt(3.1606, df=149) = 0.9990463\\
+ \\
+qchisq(.95, df=1) = 3.841459\\
+qchisq(0.9, df=2) = 4.60517 \\
+qchisq(.95, df=2) = 5.991465\\
+qchisq(.95, df=3) = 7.814728\\
+qchisq(0.025, df=15) = 6.262138\\
+qchisq(0.05, df=15) = 7.260944\\
+qchisq(0.975, df=15) = 27.48839\\
+qchisq(0.025, df=30) = 16.79077\\
+qchisq(0.975, df=30) = 46.97924\\
+ \\
+pchisq(.206, df=1) = 0.3500792\\
+pchisq(.77, df=2) = 0.3195494\\
+pchisq(12.10, df=2) = 0.9976421\\
+pchisq(19.32, df=2) = 0.9999362\\
+pchisq(3.7778, df=3) = 0.7135211\\
+pchisq(22.875, df=15) = 0.9131699\\
+pchisq(1.5958, df=15) = 6.504806e-06\\
+pchisq(23.8327, df=30) = 0.2204594\\
+ \\
+qf(.95, df1=7, df2=11) = 3.01233\\
+qf(.05, df1=7, df2=11) = 0.2775436\\
+qf(.95, df1=11, df2=7) = 3.603037\\
+qf(.05, df1=11, df2=7) = 0.3319689\\
+qf(.975, df1=11, df2=9) = 3.912074\\
+qf(.025, df1=11, df2=9) = 0.2787147\\
+ \\
+pf(2.1233, df1=7, df2=11) = 0.8727693\\
+pf(0.926, df1=9, df2=12) = 0.4641196\\
+pf(1.08, df1=11, df2=9) = 0.5384185\\
+pf(0.4710, df1=11, df2=7) = 0.1272532
+%
+}
+\end{multicols*}
+}
+
+
+
+
+\end{document}
+

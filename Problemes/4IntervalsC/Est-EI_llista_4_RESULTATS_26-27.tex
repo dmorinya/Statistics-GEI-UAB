@@ -1,0 +1,592 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{multicol}
+\usepackage[dvips]{graphicx}
+\usepackage{color}
+
+% \usepackage[catalan]{babel}
+\usepackage[latin1]{inputenc}
+
+\definecolor{titol}{rgb}{0.2, 0.7, 0.8}
+
+
+
+\pagestyle{empty}
+\setlength{\textwidth}{16.5 cm}
+\addtolength{\oddsidemargin}{-2.1 cm}
+\addtolength{\topmargin}{-3 cm}
+\setlength{\textheight}{26 cm}
+\nofiles
+
+\newcounter{probl}
+\newcounter{cs}
+\stepcounter{cs}
+
+
+\newenvironment{pr}{\stepcounter{probl}\noindent{\llap{\bf\theprobl .\hspace{.1cm}}}}%
+                   {\vspace{.6cm}}
+\newcommand{\Sol}{\noindent \underline{\bf Resultat del problema \theprobl}: }               
+%                    
+% \newcommand{\Sol}{\noindent \underline{\bf Solució al problema \theprobl}:}
+%%% Carles: Afegit \Sol, mogut "\stepcounter{probl}" al savant de l'entorn "pr" de manera que
+%%%           podem començar sense donor el valor 1 probl.
+
+\newcommand{\p}{\begin{pr}}
+\newcommand{\fp}{\end{pr}}
+
+\newcommand{\casos}{\begin{itemize}}
+\newcommand{\fcasos}{\end{itemize}\setcounter{cs}{1}}
+\newcommand{\cas}{\item[(\alph{cs})]\stepcounter{cs}}
+
+\newif\ifsolucions
+%% Descomentar la comanda de sota per veure solucions
+\solucionstrue
+
+\let\solucio\ifsolucions
+\newcommand{\newpagewithsolutions}{\ifsolucions\newpage\fi} %%% Added Carles 18/09/2012
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Z}{\mathbb{Z}}
+
+
+
+
+\begin{document}
+
+\hrule\smallskip \medskip \noindent\textbf{Estad\'{i}stica
+\hfill\textbf{Enginyeria Informàtica}}\par\par
+                    \medskip\noindent\textsl{\bf Curs 2026 - 2027}
+\hfill\textbf{UAB}
+                     \medskip\hrule\vspace{0.5cm}
+\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\centerline{\bf Llista 4. Inferència estadística I}
+
+\bigskip
+
+
+
+\p  Una moneda es llançada 600 vegades. 
+
+\casos
+
+\cas Suposeu que \'es una moneda equilibrada.
+Determineu  el valor $\varepsilon$ tal que
+la probabilitat que el nombre de cares estigui 
+entre $300 - \varepsilon$ i $300 + \varepsilon$
+sigui aproximadament $0.80$.
+
+\cas Suposeu que la moneda sigui biaixada i la probabilitat de cara sigui $p=0.3$. Determineu el valor 
+$\varepsilon$ tal que la probabilitat que el 
+nombre de cares estigui entre 
+$180 - \varepsilon$ i $180 + \varepsilon$
+sigui aproximadament $0.95$.
+
+\cas Feu el mateix càlcul per $p=0.6$ i 
+l'interval entre 
+$360 - \varepsilon$ i $360 + \varepsilon$.
+%\cas 
+%Si en els 400 llançaments, han sortit 178 cares, calculeu 
+%els valors de $p$ pels quals aquest valor està entre  
+%$400p - \varepsilon$  i  
+%$400p + \varepsilon$, on $\varepsilon$ es calcula
+%com als apartats anteriors.
+%%
+\fcasos
+\fp
+\solucio\Sol
+(a) 16, (b) 22, (c) 24.
+
+
+
+\bigskip
+\fi
+
+
+
+
+
+\p
+Per comprovar la funcionalitat de la nostra connexió a internet fem 15
+lectures a l'atzar de la velocitat de baixada obtenint una mitjana de
+83.94 Mbps. 
+Sabent que la variància és
+$\sigma^2= 25\text{ Mbps}^2$ i suposant normalitat, determineu un interval de confiança per a l'esperança $\mu$ 
+amb coeficient de confiança del 95\%.
+\ifsolucions
+\medskip
+
+\Sol
+$\mu =	83,9400	\pm 	2,5303	$ 
+ o bé 
+ $81,4097	<  \mu < 	86,4703	$
+
+\bigskip
+\fi
+
+\fp
+
+\p En un procés productiu s'utilitza un cert material auxiliar. 
+Denotem per $X$ el consum d'aquest material per unitat del producte obtingut, mesurat en mil·ligrams. 
+Sabem per estudis anteriors, en diferents línies de producció, que $X$ té una distribució normal amb 
+desviació típica sempre de $20$~mg. Prenem una mostra aleatòria de 
+20 observacions a la nostra línia de producció i obtenim una mitjana mostral $\bar X = 120$ mg. 
+\casos
+\cas Trobeu una estimació del consum mitjà d'aquest material mitjançant un interval de confiança amb coeficient de confiança $0,95$. 
+\cas Com de gran hauria de ser la mostra si volem un interval de confiança, amb el mateix coeficient de confiança,  
+però amb una amplada no superior a 10 mg?
+\fcasos
+
+\ifsolucions
+\medskip
+
+\Sol
+(a) 
+ $(111.2348  ,  128.7652 )$  
+(b) $n \geq 62$  
+
+\bigskip
+\fi
+
+\fp
+
+\p 30 jugadors seleccionats a l'atzar  passen una pantalla d'\emph{Angry birds}
+en un temps mitjà de $\overline{x}=735$~s. Es coneix la desviació típica
+poblacional $\sigma=12$ s i se suposa normalitat. Calculeu un interval de
+confiança del temps mitjà necessari per passar aquesta pantalla,
+amb un nivell de confiança de 0,95. Quina seria la resposta si aquest
+mateix temps mitjà l'haguessin obtingut 100 o 1000 jugadors?
+
+\ifsolucions
+\medskip
+\Sol
+(i) $n=30$: $  (730.71,739.29) $
+(ii) $n=100$: $(732.65,  737.35)$
+(iii) $n=1000$: $(734.26,   735.74)$.
+
+\bigskip
+
+\fi
+\fp
+
+
+
+\p Una empresa alimentària indica en un paquet d'arròs que el seu pes mitjà és de 900 grams.\\
+En una inspecció s'agafen 10 paquets, que pesen (en grams)
+$$894 \quad 890 \quad 900 \quad 892 \quad 895 \quad 895 \quad 896 \quad 894 \quad 903 \quad 899$$
+Suposem que el pes dels paquets d'arròs segueix una distribució normal. Es demana:
+\casos
+\cas Trobeu un interval de confiança del $99\%$ per al pes mitjà d'un paquet d'arròs, suposant que la desviació típica és de 4 grams. És consistent aquest interval amb la informació indicada en el pes?
+\cas Si suposem desconeguda la desviació típica, quin interval prendríem per al pes mitjà amb el mateix
+nivell de confiança?
+\fcasos
+
+
+\ifsolucions
+\Sol
+(a) $(892,54\,,\   899.05)$. No, 900 no pertanmy a l'interval   (b) $(891.81,899.78)$
+\fi
+\fp
+
+%\newpagewithsolutions
+
+\p Durant el mal temps a l'hivern, de vegades s'utilitza sal per eliminar el gel de les carreteres. Per tal d'estimar la quantitat de sal que s'està introduint al medi per aquesta causa, es van fer les següents observacions
+del número total X de tones de sal utilitzades a les carreteres per setmana, en districtes seleccionats aleatòriament:
+$$3900 \quad 3875 \quad 3820 \quad 3860 \quad 3840 \quad 3852 \quad 3800 \quad 3825 \quad 3790$$
+\casos
+\cas Suposant que X es distribueix normalment, trobeu un interval de confiança del $90\%$ per a la mitjana, suposant que la desviació típica és de $35$ tones.
+\cas Quin interval donaríem si no coneguéssim la desviació típica?
+\fcasos
+\fp
+
+%\bigskip
+
+\ifsolucions \Sol (a) $(3821.03,3859.41)$, (b) 
+$(3818.21,3862.24)$
+% \fcasos
+\fi
+
+%\newpagewithsolutions
+
+\p
+Llancem un nou producte al mercat i en fem publicitat. Es vol saber quina proporció 
+del sector de població a qui va
+adreçat aquest producte el coneix. D'una mostra de 160 persones entrevistades en aquest sector de població,
+el $40\%$ va declarar que coneixien el nostre producte. Construïu un interval de confiança del $95\%$
+per a la proporció de persones d'aquest sector que coneixen el producte.
+\fp
+
+\ifsolucions \Sol
+% \noindent \underline{\bf Solució al problema \theprobl}:\\
+$0.40\pm 0.0759=(0.3241,0.4729)
+$
+
+\bigskip
+
+\fi
+
+
+\p
+Una companyia aèria vol determinar el pes mitjà de l'equipatge de ma dels passatgers 
+en vols nacionals. Els pesos en Kg.\  dels equipatges de ma de cinc
+passatgers triats a l'atzar 
+ha sigut: 
+\begin{center}
+11.50,\quad 6.90, \quad 9.20, \quad 9.20, \quad 10.35.  
+\end{center}
+Suposant normalitat, quin interval de 
+confiança del 90\% 
+obté la companyia pel pes mitjà 
+d'aquests equipatges?
+
+\ifsolucions\Sol
+$9.4300	\pm 	1.6262	= ( 7.8038	,	11.0562 )$
+
+\bigskip
+\fi
+
+
+\fp
+
+
+
+\p La pluja que es precipita a través d'aire no contaminat té un pH de 5,7. En un estudi sobre la pluja àcida en una determinada regió s'ha analitzat una mostra de precipitacions de pluja de mida 40 obtenint una mitjana del pH de 5,4. Se sap que la desviació típica és de 0,5. Calculeu un interval de confiança de la mitjana del pH de les precipitacions en aquesta regió amb un nivell de confiança del $99\%$.
+
+\ifsolucions
+\Sol$(5.20,5.60)$
+
+\bigskip
+
+\fi
+
+
+\fp
+
+
+%\newpagewithsolutions
+
+
+
+\p  Volem estimar el pes real dels pans de pagès de quilo que ens ven el forner del barri
+mitjançant un interval de confiança d'una amplitud de com a molt 20 grams i un coeficient de confiança del $99\%$. Suposem normalitat i que una bona estimació de $\sigma$ és 35 gr.
+Quants pans haurem de mesurar per obtenir aquest interval? Quina seria la resposta si treballéssim amb un nivell de confiança del $95\%$?
+
+\ifsolucions
+\Sol
+$99\%$: 82 \text{ pans}
+$95\%$: 48 \text{ pans}
+\medskip
+\fi
+\fp
+
+
+
+%\p
+%Es vol estimar el pes dels nadons nascuts en un hospital mitjançant un interval d'una amplitud de 80 grams i un nivell de confiança del $99\%$. Se suposa normalitat i que una bona estimació de $\sigma$ és 200 grams. Quants registres de naixements haurem de consultat? Quina seria la resposta si treballéssim amb un nivell de confiança del $95\%$?
+%\ifsolucions
+%\medskip
+%\Sol
+%$$\sigma=200 \quad z=2.575(99\%), \quad z=1.96(95\%)$$
+%
+%$$\dfrac{\overline{x}-\mu}{\dfrac{\sigma}{\sqrt{n}}} \sim N(0,1) \Longrightarrow
+%IC(\mu) = \overline{x} \pm e=(\overline{x}-z\dfrac{\sigma}{\sqrt{n}},\overline{x}+z\dfrac{\sigma}{\sqrt{n}})$$
+%$$80=2e=2z\dfrac{\sigma}{\sqrt{n}} \Longrightarrow n=\left(\dfrac{2z\sigma}{80}\right)^2=\left(\dfrac{400z}{80}\right)^2=(5z)^2$$
+%$$99\%: \quad n=(5\cdot 2,575)^2=165.75 \approx 166$$
+%$$95\%: \quad n=(5\cdot 1,96)^2=96.04 \approx 97$$
+%
+%\fi
+%\fp
+
+
+
+%\newpagewithsolutions
+
+%\p En un estudi sobre la retinopatia es necessita conèixer el valor mitjà de la
+%concentració de glucosa en sang (en mg/100ml) de les persones afectades d'aquesta
+%malaltia. Si volem obtenir un interval de confiança d'aquest valor mitjà amb nivell de
+%confiança del $90\%$ i amb una amplitud d'una unitat, quants historials clínics
+%haurem de consultar? Se suposa que una bona estimació de $\sigma$  \linebreak
+%és 3.2 unitats.
+%\ifsolucions
+%
+%\Sol \\
+%$$\sigma=3.2, \quad z=1.645(90\%)$$
+%
+%\noindent No sabem que la variable sigui normal, apliquem el Teorema Central de Límit:
+%$$\dfrac{\overline{x}-\mu}{\dfrac{\sigma}{\sqrt{n}}} \sim N(0,1) \Longrightarrow
+%IC(\mu)=(\overline{x}-z\dfrac{\sigma}{\sqrt{n}},\overline{x}+z\dfrac{\sigma}{\sqrt{n}})$$
+%$$1=2e=2z\dfrac{\sigma}{\sqrt{n}} \Longrightarrow n=(2z\sigma)^2=(2\cdot 1,645\cdot 3,2)^2=110.84 \approx 111$$
+%
+%\bigskip
+%
+%\fi
+%\fp
+
+\p 
+S'han enquestat 518 estudiants de la UAB escollits de manera aleat\`oria i 
+115 han respost que s'oposen als  graus de tres anys.
+Doneu un interval de confian\c ca per la proporci\'o d'estudiants en contra 
+dels graus de tres anys, amb un nivell de confian\c ca del $99$\%.
+ 
+
+\ifsolucions
+\medskip
+\Sol $0.2220\pm 0.0470 =(0.1750, 0.2690)
+$
+
+\bigskip
+
+\fi
+\fp
+
+
+\p En un estudi psicològic es demana a 9 voluntaris que completin una tasca el més ràpidament possible.
+El temps necessitat pels 9 voluntaris ha tingut una mitjana de $\overline{x}=7$ min i una desviació típica
+de $s=2$ min. Se suposa normalitat. Construïu intervals de confiança per la mitjana $\mu$ amb nivell de
+confiança 0.90, 0.95 i 0.99.
+
+\ifsolucions
+\medskip
+\Sol
+$0.90$: $(5.76,8.24)$
+\
+$0.95$: $(5.46,8.54)$
+\
+$0.99$: $(4.76,9.24)$
+\fi
+\fp
+
+%\newpagewithsolutions
+
+%\p * En una mostra de 14 jugadors de bàsquet s'ha trobat que el percentatge de greix corporal tenia
+%una mitjana de $17.9\%$ i una desviació típica de $3.6\%$. Se suposa normalitat. Calculeu un interval
+%de confiança amb un nivell de confiança del $95\%$ pel valor mitjà del percentatge de greix corporal
+% corresponent a la població de jugadors de bàsquet.
+%
+%
+%
+%\ifsolucions
+%\medskip
+%\Sol
+%$$n=14, \quad \overline{x}=17.9, \quad s=3.6, \quad 1-\alpha=95\%$$
+%
+%$$\dfrac{\overline{x}-\mu}{\dfrac{s}{\sqrt{n}}} \sim t_{n-1}=t_{13} \Longrightarrow
+%IC(\mu)=(\overline{x}-t\dfrac{s}{\sqrt{n}},\overline{x}+t\dfrac{s}{\sqrt{n}})=$$
+%$$(17.9-2.1604\dfrac{3.6}{\sqrt{14}},17.9+2.1604\dfrac{3.6}{\sqrt{14}})=(17.9-2.07867,17.9+2.0786)=(15.82,19.98)$$
+%
+%\bigskip
+%
+%\fi
+%\fp
+
+
+
+
+
+
+
+
+\p
+S'ha  estudiat el temps d'espera d'un tramvia a una parada concreta  i s'han obtingut els següents
+valors (en minuts):
+\begin{gather*}
+ 14 \, , \
+13 \, , \
+15 \, , \
+15 \, , \
+12 \, , \
+15 \, , \
+14 \, , \
+13 \, , \
+15 \, , \
+15 \, , \
+12 \, , \
+15 \, , \
+14 \, , \
+13 \, , \\
+15 \, , \
+15 \, , \
+12 \, , \
+15 \, , \
+14 \, , \
+13 \, , \
+15 \, , \
+15 \, , \
+12 \, , \
+15 \, , \
+14 \, , \
+13 \, , \
+15 \,.
+\end{gather*}
+
+Suposem que el temps d'espera segueix una distribució normal.
+ 
+
+\casos
+\cas  
+Construïu un interval de confiança per al temps d'espera mitjà amb coeficient de confiança del 90\%
+
+\cas
+Construïu un interval de confiança per a la desviaci\'o t\'\i pica del temps d'espera amb coeficient de confiança del 90\%
+
+\fcasos
+
+\ifsolucions
+
+\medskip
+\Sol (a) $(13.6245,14.3753)$, (b) $
+(0.9350, 1.4868)
+$
+
+ 
+
+
+\fi
+\fp
+
+
+
+
+
+
+
+\p  En una mostra aleatòria de les classes de teoria del curs d'estadística de la Universitat de Dalian es va observar
+una  assistència de (en \%)
+$$ 72 \, , \   70 \, , \  58 \, , \   62 \, , \   67 \, , \   58 \, , \
+90 \, , \   91 \, , \   56 \, , \   68 \, , \   68 \, , \   70 \, , \   71 \, , \   52 \, , \   69 $$
+Calculeu un interval de confiança del 95\% per al percentatge d'assistència mitjana.
+
+\ifsolucions
+\medskip
+\Sol $(62.055,74.205)$
+
+\fi \fp
+
+
+
+
+
+
+\p  Quina mida mostral es necessitaria per estimar la proporció d'atletes que superen una marca concreta amb una amplada de l'interval de com a molt el 4\% i una confiança del $95\%$?
+
+
+\ifsolucions
+\medskip
+\Sol $n\geq 2401$
+
+
+\bigskip
+
+\fi
+\fp
+
+
+\p L'amo de la cafeteria de l'Escola vol saber quina proporció d'estudiants estan
+disconformes amb la relació qualitat/preu. Quina mida de mostra necessitarà per estimar aquesta proporció amb un error inferior al $2.5\%$ i una confiança del $95\%$?
+
+\ifsolucions
+\Sol $n\geq 1537$.
+\bigskip
+
+\fi
+\fp
+
+\p En una mostra de 300 individus d'una determinada població humana s'ha trobat que la proporció de daltònics és de $\hat{p}=0.08$. Construïu un interval de confiança per p amb nivell de confiança 0.95. Quina mida hauria de tenir la mostra si volguéssim obtenir un interval d'amplitud 0.02 i amb el mateix nivell de confiança?
+
+\ifsolucions
+\Sol $(0.0493,0.1107) \approx (0.05,0.11)$, $n \geq  2828$
+
+\bigskip
+
+\fi
+\fp
+
+
+
+\p  El nombre d'errors diaris que es cometen en intentar connectar-se amb una determinada xarxa 
+informàtica segueix una distribució normal amb par\`ametres desconeguts.
+Per intentar estimar la variabilitat, s'agafa una mostra aleat\`oria de mida 10 i s'obtenen els resultats: 
+ {$$
+{2,\ 3,\ 4,\ 5,\ 4,\ 3,\ 5,\ 2,\ 4,\ 1.}
+$$}
+Calculeu l'interval de confiança per la desviaci\'o t\'\i pica del nombre d'errors diaris amb un nivell de confian\c ca del 90\% 
+ 
+
+\ifsolucions
+\medskip
+\Sol $(0.9755,2.2005)$
+
+\bigskip
+
+\fi
+\fp
+
+
+
+
+\p  Utilitzeu la següent mostra aleatòria de preus de la gasolina per construir un interval de confiança del 90\% per al preu mitjà d'un litre:
+$$1'269\, , \    1'379\, , \
+1'273\, , \    1'355\, , \
+1'299\, , \    1'315\, , \    1'273\, , \   1'373\, , \    1'335\, , \    1'325\,.$$
+Calculeu també un interval de confiança del 90\% per a la desviació típica. (Suposeu normalitat)
+
+\ifsolucions
+\medskip
+\Sol (a)
+$
+1'3196 \pm 0'023860363= (1'2957\,\, ,\,
+1'3435)$ 
+(b) $  (0.0300 , 0.0677)  $
+
+\fi
+\fp
+
+
+
+\hrule 
+
+\
+
+\textcolor{blue}{
+Algunes comandes de \texttt{R} i el seu resultat:
+\begin{multicols*}{2}
+\noindent\texttt{%
+qnorm(.9) = 1.281552\\
+qnorm(.95) = 1.644854\\
+qnorm(.975) = 1.959964\\
+qnorm(.995) = 2.575829\\
+qchisq(0.05,df=9) = 3.325113\\
+qchisq(0.95,df=9) = 16.91898\\
+qchisq(.05, df=26) = 15.37916 \\
+qchisq(0.05,df=9) = 3.325113\\
+qchisq(0.95,df=9) = 16.91898\\
+qchisq(.05, df=26) = 15.37916\\
+% }
+% 
+% \texttt{
+qt(0.95, df=4) = 2.131847\\
+qt(0.95, df=8) = 1.859548\\
+qt(0.975, df=8) = 2.306004\\
+qt(0.995, df=8) = 3.355387\\
+qt(0.95, df=9) = 1.833113\\
+qt(0.995, df= 9) = 3.249836\\
+qt(.975, df=14) = 2.144787\\
+qt(0.95, df= 26) = 1.705618\\
+%
+}
+\end{multicols*}
+}
+
+
+
+
+
+\end{document}
