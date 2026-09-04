@@ -1,0 +1,11 @@
+function(nmax=1000, a, b, p){
+    x= rbinom(nmax, 1, p) # resultats de les rondes: 0 i 1 Bernoulli~p
+    x[x==0] = -1 # canviem el 0 per -1
+    traj = cumsum(x)+a # trajectoria
+    if ({ all( traj<a+b ) & all( traj>0 )})
+    { res<-"Joc inacabat";nrond<-nmax }
+    if( {any( which(traj>=a+b) ) | any( which(traj<=0) )} )
+    { trunc<- 1+min( which(traj>=a+b), which(traj<=0) )
+    if (trunc <= nmax) {traj[trunc:nmax] <- NA};nrond<-trunc-1
+    if (traj[nrond]==a+b) {res<-"A guanya"} else {res<-"B guanya"}}
+    list(traj=traj,nrond=nrond,guanyador=res)}
